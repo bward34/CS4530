@@ -25,12 +25,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let clockView: ClockView = ClockView()
         clockView.translatesAutoresizingMaskIntoConstraints = false
+        clockView.backgroundColor = UIColor.clear
         mainView.addSubview(clockView)
         
         let views : [String : Any] = ["clock" : clockView]
         
-        mainView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-12-[clock]-12-|", options: [], metrics: nil, views: views))
-        mainView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-12-[clock]-12-|", options: [], metrics: nil, views: views))
+        mainView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[clock(<=\(mainView.frame.width))]-|", options: [], metrics: nil, views: views))
+        mainView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-[clock(<=\(mainView.frame.width))]-|", options: [], metrics: nil, views: views))
         return true
     }
 }
