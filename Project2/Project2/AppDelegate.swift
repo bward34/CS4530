@@ -39,22 +39,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         clockView.backgroundColor = UIColor.clear
         mainView.addSubview(clockView)
         
-        timeZoneLabel.frame = CGRect(x: 0.0, y: 30.0, width: mainView.frame.width, height: 40.0)
+        timeZoneLabel.frame = CGRect(x: 0.0, y: 30.0, width: mainView.frame.width, height: 20.0)
         timeZoneLabel.textAlignment = NSTextAlignment.center
         timeZoneLabel.font = UIFont(name: "HelveticaNeue-UltraLight", size: 25)
         timeZoneLabel.textColor = .white
+        timeZoneLabel.translatesAutoresizingMaskIntoConstraints = false
         mainView.addSubview(timeZoneLabel)
         
-        gmtOffset.frame = CGRect(x: 0.0, y: 80.0, width: mainView.frame.width, height: 40.0)
+        gmtOffset.frame = CGRect(x: 0.0, y: 80.0, width: mainView.frame.width, height: 20.0)
         gmtOffset.textAlignment = NSTextAlignment.center
         gmtOffset.font = UIFont(name: "HelveticaNeue-UltraLight", size: 15)
         gmtOffset.textColor = .white
+        gmtOffset.translatesAutoresizingMaskIntoConstraints = false
         mainView.addSubview(gmtOffset)
         
         let views : [String : Any] = ["clock" : clockView, "tzLabel" : timeZoneLabel, "offset" : gmtOffset]
         
-        mainView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[tzLabel]-0-[offset]-0-[clock(<=\(mainView.frame.width))]-|", options: [], metrics: nil, views: views))
+        mainView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[tzLabel][offset][clock(<=\(mainView.frame.width))]-|", options: [], metrics: nil, views: views))
+        mainView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-[tzLabel(<=\(mainView.frame.width))]-|", options: [], metrics: nil, views: views))
+        mainView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-[offset(<=\(mainView.frame.width))]-|", options: [], metrics: nil, views: views))
         mainView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-[clock(<=\(mainView.frame.width))]-|", options: [], metrics: nil, views: views))
+        
         return true
     }
     

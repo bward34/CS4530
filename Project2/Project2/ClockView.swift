@@ -12,7 +12,7 @@ class ClockView: UIView {
     
     private var faceRect : CGRect = CGRect.zero
     private var touchPoint: CGPoint = CGPoint(x: 0.0, y: 0.0)
-    private var angle : CGFloat = 0.0
+    private var hourAngle : CGFloat = 0.0
     private var secondAngle : CGFloat = 0.0
     private var minuteAngle : CGFloat = 0.0
     
@@ -38,18 +38,15 @@ class ClockView: UIView {
         calender.timeZone = TimeZone(secondsFromGMT: 0)!
         
         GMT_START_HOUR = calender.component(.hour, from: date)
-        //GMT_START_HOUR = 12
         secondAngle = (CGFloat(calender.component(.second, from: date)) * 6.0) * .pi/180
         minuteAngle = (CGFloat(calender.component(.minute, from: date)) * 6.0) * .pi/180
-
-        
         GMT_START_HOUR = GMT_START_HOUR > 12 ? GMT_START_HOUR - 12 : GMT_START_HOUR
         NEW_HOUR = GMT_START_HOUR
         CURR_AMPM = GMT_START_HOUR > 12 ? 1 : 0
         
         
-        angle = (CGFloat(GMT_START_HOUR) * 30.0) * .pi/180
-        CURR_QUAD = getQuadrant(angle: Double(angle))
+        hourAngle = ((CGFloat(GMT_START_HOUR) * 30.0) * .pi/180) + (round((minuteAngle - .pi/2) / 360.0) * 15.0)
+        CURR_QUAD = getQuadrant(angle: Double(hourAngle))
 
         
         Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(calculateTime), userInfo: nil, repeats: true)
@@ -71,9 +68,9 @@ class ClockView: UIView {
             y: touchPoint.y - faceRect.midX
         )
         
-        angle = atan2(point.y, point.x) + .pi/2
+        hourAngle = atan2(point.y, point.x) + .pi/2
         PREV_QUAD = CURR_QUAD
-        CURR_QUAD = getQuadrant(angle: Double(angle))
+        CURR_QUAD = getQuadrant(angle: Double(hourAngle))
         
         updateAngle()
         
@@ -100,12 +97,20 @@ class ClockView: UIView {
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        print("this is new houe \(NEW_HOUR)")
+        
         var offset : Int = 0
         
         if(CURR_AMPM == PREV_AMPM) {
             if(CURR_HOUR == 12 && NEW_HOUR == 12 ) {
-                offset = 0
+                if(CLOCKWISE < 0) {
+                    offset = 0
+                }
+                else if(CLOCKWISE > 0 && DIFF_GMT == 0) {
+                    offset = NEW_HOUR * -1
+                }
+                else {
+                    offset = 0
+                }
             }
             else if(CURR_HOUR == 12) {
                 offset = NEW_HOUR
@@ -121,7 +126,18 @@ class ClockView: UIView {
             }
         }
         else {
-            if(CURR_HOUR == 12 && CLOCKWISE < 0) { //counter and 12
+            if(CURR_HOUR == 12 && NEW_HOUR == 12) {
+                if(CLOCKWISE > 0) {
+                    offset = GMT_START_HOUR == 12 && PREV_QUAD != 4 ? 12 : -12
+                }
+                else if(CLOCKWISE < 0 && DIFF_GMT == 0) {
+                    offset = GMT_START_HOUR == 12 ? NEW_HOUR : NEW_HOUR * -1
+                }
+                else {
+                    offset = -12
+                }
+            }
+            else if(CURR_HOUR == 12 && CLOCKWISE < 0) { //counter and 12
                 offset = (12 - NEW_HOUR) * -1
             }
             else if(CURR_HOUR == 12 && CLOCKWISE > 0) { // clockwise and 12
@@ -140,7 +156,6 @@ class ClockView: UIView {
         
         DIFF_GMT += offset
         
-        //Resets the offsets
         if(DIFF_GMT > 12) {
             if(NEW_HOUR < 12) {
                 DIFF_GMT = NEW_HOUR > GMT_START_HOUR ? (12 - (NEW_HOUR - GMT_START_HOUR)) * -1 : (GMT_START_HOUR - NEW_HOUR) * -1
@@ -167,21 +182,22 @@ class ClockView: UIView {
                 }
             }
         }
+        if(DIFF_GMT == -12) {
+            DIFF_GMT = 0
+        }
         CLOCKWISE = 0
         updateTimeZoneLabel()
+        setNeedsDisplay()
         print("this is the offset \(DIFF_GMT)")
     }
     
     override func draw(_ rect: CGRect) {
         super.draw(rect)
         
-        let radius = bounds.width / 2
+        let radius = (bounds.width * 0.8) / 2
         let phaseShift : CGFloat = .pi/2
         
-        //print("bounds.width: \(bounds.width)")
-        //print("bounds.height: \(bounds.height)")
-        
-        faceRect = CGRect(x: 0.0, y: 0.0, width: bounds.width, height: bounds.width)
+        faceRect = CGRect(x: bounds.width * 0.1 , y: 0.0, width: bounds.width * 0.8, height: bounds.width * 0.8)
         faceRect.origin.y = (bounds.height - faceRect.height) / 2.0
         
         var faceCenter : CGRect = CGRect(x: 0.0, y: 0.0, width: 10.0, height: 10.0)
@@ -233,7 +249,7 @@ class ClockView: UIView {
         
         let minuteHand : UIBezierPath = UIBezierPath()
         minuteHand.move(to: CGPoint(x: faceRect.midX, y: faceRect.midY))
-        minuteHand.addLine(to: CGPoint(x: (radius * 0.6) * ((cos(minuteAngle - phaseShift)))  + faceRect.midX, y: (radius * 0.6) * (sin(minuteAngle - phaseShift)) + faceRect.midY))
+        minuteHand.addLine(to: CGPoint(x: (radius * 0.78) * ((cos(minuteAngle - phaseShift)))  + faceRect.midX, y: (radius * 0.78) * (sin(minuteAngle - phaseShift)) + faceRect.midY))
         minuteHand.lineWidth = 5.0
         minuteHand.lineCapStyle = .round
         UIColor(red: 0.372, green: 0.376, blue: 0.384, alpha: 1.0).setStroke()
@@ -241,7 +257,7 @@ class ClockView: UIView {
         
         let hourHand : UIBezierPath = UIBezierPath()
         hourHand.move(to: CGPoint(x: faceRect.midX, y: faceRect.midY))
-        hourHand.addLine(to: CGPoint(x: (radius * 0.78) * ((cos(angle - phaseShift)))  + faceRect.midX, y: (radius * 0.78) * (sin(angle - phaseShift)) + faceRect.midY))
+        hourHand.addLine(to: CGPoint(x: (radius * 0.55) * ((cos(hourAngle - phaseShift)))  + faceRect.midX, y: (radius * 0.55) * (sin(hourAngle - phaseShift)) + faceRect.midY))
         hourHand.lineWidth = 5.0
         hourHand.lineCapStyle = .round
         UIColor(red: 0.0, green: 0.298, blue: 0.329, alpha: 1.0).setStroke()
@@ -273,7 +289,7 @@ class ClockView: UIView {
     
     func updateAngle() {
         
-        let radian = angle > 0 ? angle * 180 / .pi : (270 + (90 + (angle  * 180 / .pi)))
+        let radian = hourAngle > 0 ? hourAngle * 180 / .pi : (270 + (90 + (hourAngle  * 180 / .pi)))
         
         switch radian {
         case (0.0...29.99) :
@@ -385,6 +401,4 @@ class ClockView: UIView {
     func getOffSet() -> Int {
         return DIFF_GMT
     }
-    
-    
 }
