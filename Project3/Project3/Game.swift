@@ -37,28 +37,28 @@ class Game {
         
         //initalize board with 10 X 10 of water
         player1Board = [
-        [.water, .water, .water, .water, .water, .water, .water, .water, .water, .water],
-        [.water, .water, .water, .water, .water, .water, .water, .water, .water, .water],
-        [.water, .water, .water, .water, .water, .water, .water, .water, .water, .water],
-        [.water, .water, .water, .water, .water, .water, .water, .water, .water, .water],
-        [.water, .water, .water, .water, .water, .water, .water, .water, .water, .water],
-        [.water, .water, .water, .water, .water, .water, .water, .water, .water, .water],
-        [.water, .water, .water, .water, .water, .water, .water, .water, .water, .water],
-        [.water, .water, .water, .water, .water, .water, .water, .water, .water, .water],
-        [.water, .water, .water, .water, .water, .water, .water, .water, .water, .water],
-        [.water, .water, .water, .water, .water, .water, .water, .water, .water, .water],]
+            [.water, .water, .water, .water, .water, .water, .water, .water, .water, .water],
+            [.water, .water, .water, .water, .water, .water, .water, .water, .water, .water],
+            [.water, .water, .water, .water, .water, .water, .water, .water, .water, .water],
+            [.water, .water, .water, .water, .water, .water, .water, .water, .water, .water],
+            [.water, .water, .water, .water, .water, .water, .water, .water, .water, .water],
+            [.water, .water, .water, .water, .water, .water, .water, .water, .water, .water],
+            [.water, .water, .water, .water, .water, .water, .water, .water, .water, .water],
+            [.water, .water, .water, .water, .water, .water, .water, .water, .water, .water],
+            [.water, .water, .water, .water, .water, .water, .water, .water, .water, .water],
+            [.water, .water, .water, .water, .water, .water, .water, .water, .water, .water],]
         
         player2Board = [
-        [.water, .water, .water, .water, .water, .water, .water, .water, .water, .water],
-        [.water, .water, .water, .water, .water, .water, .water, .water, .water, .water],
-        [.water, .water, .water, .water, .water, .water, .water, .water, .water, .water],
-        [.water, .water, .water, .water, .water, .water, .water, .water, .water, .water],
-        [.water, .water, .water, .water, .water, .water, .water, .water, .water, .water],
-        [.water, .water, .water, .water, .water, .water, .water, .water, .water, .water],
-        [.water, .water, .water, .water, .water, .water, .water, .water, .water, .water],
-        [.water, .water, .water, .water, .water, .water, .water, .water, .water, .water],
-        [.water, .water, .water, .water, .water, .water, .water, .water, .water, .water],
-        [.water, .water, .water, .water, .water, .water, .water, .water, .water, .water],]
+            [.water, .water, .water, .water, .water, .water, .water, .water, .water, .water],
+            [.water, .water, .water, .water, .water, .water, .water, .water, .water, .water],
+            [.water, .water, .water, .water, .water, .water, .water, .water, .water, .water],
+            [.water, .water, .water, .water, .water, .water, .water, .water, .water, .water],
+            [.water, .water, .water, .water, .water, .water, .water, .water, .water, .water],
+            [.water, .water, .water, .water, .water, .water, .water, .water, .water, .water],
+            [.water, .water, .water, .water, .water, .water, .water, .water, .water, .water],
+            [.water, .water, .water, .water, .water, .water, .water, .water, .water, .water],
+            [.water, .water, .water, .water, .water, .water, .water, .water, .water, .water],
+            [.water, .water, .water, .water, .water, .water, .water, .water, .water, .water],]
         
         boards = [ .player1 : player2Board, .player2 : player1Board]
         ships = [.ship5 : 0, .ship4 : 0, .ship3 : 0, .ship2_2 : 0, .ship2_1 : 0]
@@ -77,77 +77,81 @@ class Game {
                 let direction : Int = (Int.random(in: 1...10) % 4)
                 var removeDict : Bool = false
                 
-                let currShipLength : Int = shipLength[shipLength.startIndex].key
+                var currShipLength : Int = shipLength[shipLength.startIndex].key
                 let shipToken : Token = shipLength[shipLength.startIndex].value
                 
+                if(currShipLength == 1) {
+                    currShipLength = 2
+                }
                 print("This is the ship token: \(currShipLength)")
                 
                 switch direction {
                 case 0: //Top
                     if row - (currShipLength - 1) >= 0 {
-                        for var i in (row - (currShipLength - 1)...row) {
+                        for i in (row - (currShipLength - 1)...row) {
                             if(boards[player]?[col][i] == .water) {
                                 boards[player]?[col][i] = shipToken
                                 removeDict = true
                             }
                             else {
-                                for j in (row - (currShipLength - 1)) ..< (i - 1) {
+                                for j in (row - (currShipLength - 1)) ..< i {
                                     boards[player]?[col][j] = .water
                                 }
-                                i = row
-                                removeDict = false;
+                                removeDict = false
+                                break
                             }
                         }
                     }
                     break
                 case 1: // Bottom
                     if row + (currShipLength - 1) < 10 {
-                        for var i in row...(row + (currShipLength - 1)) {
+                        for i in row...(row + (currShipLength - 1)) {
                             if(boards[player]?[col][i] == .water) {
                                 boards[player]?[col][i] = shipToken
-                                 removeDict = true
+                                removeDict = true
                             }
                             else {
-                                for j in row ..< (i - 1) {
+                                for j in row ..< i {
                                     boards[player]?[col][j] = .water
                                 }
-                                i = (row + (currShipLength - 1))
-                                removeDict = false;
+                                removeDict = false
+                                break
                             }
                         }
                     }
                     break
                 case 2: //Left
                     if col - (currShipLength - 1) >= 0 {
-                        for var i in (col - (currShipLength - 1)...col) {
+                        for i in (col - (currShipLength - 1)...col) {
                             if(boards[player]?[i][row] == .water) {
                                 boards[player]?[i][row] = shipToken
-                                 removeDict = true
+                                removeDict = true
                             }
-                            else
-                            {
-                                for j in (col - (currShipLength - 1)) ..< (i - 1) {
-                                   boards[player]?[j][row] = .water
+                            else {
+                                for j in (col - (currShipLength - 1)) ..< i {
+                                    boards[player]?[j][row] = .water
                                 }
-                                i = col
-                                removeDict = false;
+                                removeDict = false
+                                break
                             }
                         }
                     }
                     break
                 case 3: //Right
                     if col + (currShipLength - 1) < 10 {
-                        for var i in col...(col + currShipLength - 1) {
+                        for i in col...(col + currShipLength - 1) {
                             if(boards[player]?[i][row] == .water) {
                                 boards[player]?[i][row] = shipToken
-                                 removeDict = true
+                                removeDict = true
                             }
                             else {
-                                for j in col ..< (i - 1) {
-                                 boards[player]?[j][row] = .water
+                                for j in col ..< i {
+                                    boards[player]?[j][row] = .water
                                 }
-                                i = (col + currShipLength - 1)
+                                
                                 removeDict = false
+                                break
+                                
                             }
                         }
                     }
@@ -185,7 +189,8 @@ class Game {
         //TODO: Determine winner
     }
     
-    func printDict() {
+    //A debugger method
+    private func printDict() {
         for (_, board) in boards {
             print("board")
             for x in 0 ..< board.count {
