@@ -61,7 +61,7 @@ class Game {
             [.water, .water, .water, .water, .water, .water, .water, .water, .water, .water],]
         
         boards = [ .player1 : player2Board, .player2 : player1Board]
-        ships = [.ship5 : 0, .ship4 : 0, .ship3 : 0, .ship2_2 : 0, .ship2_1 : 0]
+        ships = [.ship5 : 5, .ship4 : 4, .ship3 : 3, .ship2_2 : 2, .ship2_1 : 2]
         
         createBoard()
     }
@@ -69,35 +69,30 @@ class Game {
     private func createBoard() {
         
         for(player, _) in boards {
-            var shipLength : [Int : Token] = [5 : .ship5, 4 : .ship4, 3 : .ship3, 2 : .ship2_2, 1 : .ship2_1]
+            var shipLength : [Token : Int] = [.ship5 : 5, .ship4 : 4, .ship3 : 3, .ship2_2 : 2, .ship2_1 : 2]
             while shipLength.count != 0 {
                 
                 let col : Int = Int.random(in: 0...9)
                 let row : Int = Int.random(in: 0...9)
                 let direction : Int = (Int.random(in: 1...10) % 4)
-                var removeDict : Bool = false
+                var removeShip : Bool = false
                 
-                var currShipLength : Int = shipLength[shipLength.startIndex].key
-                let shipToken : Token = shipLength[shipLength.startIndex].value
-                
-                if(currShipLength == 1) {
-                    currShipLength = 2
-                }
-                print("This is the ship token: \(currShipLength)")
+                let currShipLength : Int = shipLength[shipLength.startIndex].value
+                let shipToken : Token = shipLength[shipLength.startIndex].key
                 
                 switch direction {
                 case 0: //Top
                     if row - (currShipLength - 1) >= 0 {
                         for i in (row - (currShipLength - 1)...row) {
-                            if(boards[player]?[col][i] == .water) {
-                                boards[player]?[col][i] = shipToken
-                                removeDict = true
+                            if(boards[player]?[i][col] == .water) {
+                                boards[player]?[i][col] = shipToken
+                                removeShip = true
                             }
                             else {
                                 for j in (row - (currShipLength - 1)) ..< i {
-                                    boards[player]?[col][j] = .water
+                                    boards[player]?[j][col] = .water
                                 }
-                                removeDict = false
+                                removeShip = false
                                 break
                             }
                         }
@@ -106,15 +101,15 @@ class Game {
                 case 1: // Bottom
                     if row + (currShipLength - 1) < 10 {
                         for i in row...(row + (currShipLength - 1)) {
-                            if(boards[player]?[col][i] == .water) {
-                                boards[player]?[col][i] = shipToken
-                                removeDict = true
+                            if(boards[player]?[i][col] == .water) {
+                                boards[player]?[i][col] = shipToken
+                                removeShip = true
                             }
                             else {
                                 for j in row ..< i {
-                                    boards[player]?[col][j] = .water
+                                    boards[player]?[j][col] = .water
                                 }
-                                removeDict = false
+                                removeShip = false
                                 break
                             }
                         }
@@ -123,15 +118,15 @@ class Game {
                 case 2: //Left
                     if col - (currShipLength - 1) >= 0 {
                         for i in (col - (currShipLength - 1)...col) {
-                            if(boards[player]?[i][row] == .water) {
-                                boards[player]?[i][row] = shipToken
-                                removeDict = true
+                            if(boards[player]?[row][i] == .water) {
+                                boards[player]?[row][i] = shipToken
+                                removeShip = true
                             }
                             else {
                                 for j in (col - (currShipLength - 1)) ..< i {
-                                    boards[player]?[j][row] = .water
+                                    boards[player]?[row][j] = .water
                                 }
-                                removeDict = false
+                                removeShip = false
                                 break
                             }
                         }
@@ -140,18 +135,16 @@ class Game {
                 case 3: //Right
                     if col + (currShipLength - 1) < 10 {
                         for i in col...(col + currShipLength - 1) {
-                            if(boards[player]?[i][row] == .water) {
-                                boards[player]?[i][row] = shipToken
-                                removeDict = true
+                            if(boards[player]?[row][i] == .water) {
+                                boards[player]?[row][i] = shipToken
+                                removeShip = true
                             }
                             else {
                                 for j in col ..< i {
-                                    boards[player]?[j][row] = .water
+                                    boards[player]?[row][j] = .water
                                 }
-                                
-                                removeDict = false
+                                removeShip = false
                                 break
-                                
                             }
                         }
                     }
@@ -159,8 +152,8 @@ class Game {
                 default:
                     break
                 }
-                if(removeDict) {
-                    shipLength.removeValue(forKey: currShipLength)
+                if(removeShip) {
+                    shipLength.removeValue(forKey: shipToken)
                 }
             }
         }
