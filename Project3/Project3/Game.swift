@@ -6,11 +6,14 @@
 //  Copyright © 2019 Brandon Ward. All rights reserved.
 //
 
-import Foundation
+protocol GameDelegate {
+    func game(_ game: Game, cellChangedAt col: Int, and row: Int)
+   // func winner
+}
 
 class Game {
     
-    private enum Token {
+    enum Token {
         case player1
         case player2
         case water
@@ -24,12 +27,15 @@ class Game {
         case none
     }
     
+    var delegate : GameDelegate?
+    
     private var player1Board : [[Token]]
     private var player2Board : [[Token]]
-    private var boards : [Token : [[Token]]]
-    private var currentPlayer : Token
     private var winner : Token
     private var ships : [ Token : Int ]
+    
+    var boards : [Token : [[Token]]]
+    var currentPlayer : Token
     
     init() {
         currentPlayer = .player1
@@ -66,6 +72,9 @@ class Game {
         createBoard()
     }
     
+    /**
+     A function for creating the two player's board objects.
+    */
     private func createBoard() {
         
         for(player, _) in boards {
@@ -159,13 +168,19 @@ class Game {
         }
         
         printDict()
-        
-        
     }
     
+    
+    /**
+     A function called when the current player takes their turn. Determines
+     a hit or miss by the board dictionary object
+     - parameters:
+        - col: The column which the user takes turn at.
+        - row: The row which the user takes turn at.
+    */
     func takeTurn(at col: Int, and row: Int) {
         if(boards[currentPlayer]?[col][row] != .water) {
-            //check which ships was hit
+            //TODO: check which ships was hit
             boards[currentPlayer]?[col][row] = .hit
         }
         else {
@@ -179,10 +194,14 @@ class Game {
             currentPlayer = .player1
         }
         
+        delegate?.game(self, cellChangedAt: col, and: row)
+        
         //TODO: Determine winner
     }
     
-    //A debugger method
+    /**
+     A debugger method for printing the created game board from the game object.
+     */
     private func printDict() {
         for (_, board) in boards {
             print("board")
