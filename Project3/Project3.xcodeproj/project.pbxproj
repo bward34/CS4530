@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		54520F582228A70500B01C42 /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54520F572228A70500B01C42 /* GameView.swift */; };
 		5460A73E222B12B700CCEB71 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5460A73D222B12B700CCEB71 /* Default-568h@2x.png */; };
+		5460A744222B4A7900CCEB71 /* SwitchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5460A743222B4A7900CCEB71 /* SwitchView.swift */; };
+		5460A746222B4B2800CCEB71 /* SwitchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5460A745222B4B2800CCEB71 /* SwitchViewController.swift */; };
 		549913632222313700A8D1EC /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 549913622222313700A8D1EC /* GameViewController.swift */; };
 		54A13AF02221DFE7001E3AD3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A13AEF2221DFE7001E3AD3 /* AppDelegate.swift */; };
 		54A13AF72221DFE8001E3AD3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 54A13AF62221DFE8001E3AD3 /* Assets.xcassets */; };
@@ -18,6 +20,8 @@
 /* Begin PBXFileReference section */
 		54520F572228A70500B01C42 /* GameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
 		5460A73D222B12B700CCEB71 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		5460A743222B4A7900CCEB71 /* SwitchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchView.swift; sourceTree = "<group>"; };
+		5460A745222B4B2800CCEB71 /* SwitchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchViewController.swift; sourceTree = "<group>"; };
 		549913622222313700A8D1EC /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 		54A13AEC2221DFE7001E3AD3 /* Project3.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Project3.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		54A13AEF2221DFE7001E3AD3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -37,6 +41,32 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5460A740222B2F2E00CCEB71 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				54520F572228A70500B01C42 /* GameView.swift */,
+				5460A743222B4A7900CCEB71 /* SwitchView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		5460A741222B2F7500CCEB71 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				54A13B012221E183001E3AD3 /* Game.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		5460A742222B2F8800CCEB71 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				549913622222313700A8D1EC /* GameViewController.swift */,
+				5460A745222B4B2800CCEB71 /* SwitchViewController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
 		54A13AE32221DFE7001E3AD3 = {
 			isa = PBXGroup;
 			children = (
@@ -57,12 +87,12 @@
 		54A13AEE2221DFE7001E3AD3 /* Project3 */ = {
 			isa = PBXGroup;
 			children = (
+				5460A742222B2F8800CCEB71 /* Controllers */,
+				5460A741222B2F7500CCEB71 /* Models */,
+				5460A740222B2F2E00CCEB71 /* Views */,
 				54A13AEF2221DFE7001E3AD3 /* AppDelegate.swift */,
 				54A13AF62221DFE8001E3AD3 /* Assets.xcassets */,
 				54A13AFB2221DFE9001E3AD3 /* Info.plist */,
-				54A13B012221E183001E3AD3 /* Game.swift */,
-				54520F572228A70500B01C42 /* GameView.swift */,
-				549913622222313700A8D1EC /* GameViewController.swift */,
 			);
 			path = Project3;
 			sourceTree = "<group>";
@@ -137,9 +167,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5460A746222B4B2800CCEB71 /* SwitchViewController.swift in Sources */,
 				54A13AF02221DFE7001E3AD3 /* AppDelegate.swift in Sources */,
 				549913632222313700A8D1EC /* GameViewController.swift in Sources */,
 				54520F582228A70500B01C42 /* GameView.swift in Sources */,
+				5460A744222B4A7900CCEB71 /* SwitchView.swift in Sources */,
 				54A13B022221E183001E3AD3 /* Game.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

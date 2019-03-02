@@ -9,8 +9,8 @@
 import UIKit
 
 protocol GameViewDelegate {
-    func gameView(_ gameView: GameView, currentPlayerTokens row: Int, and col: Int) -> String
-    func gameView(_ gameView: GameView, otherPlayerTokens row: Int, and col: Int) -> String
+    func gameView(_ gameView: GameView, currentPlayerTokens col: Int, and row: Int) -> String
+    func gameView(_ gameView: GameView, otherPlayerTokens col: Int, and row: Int) -> String
     func gameView(_ gameView: GameView, cellTouchedAt col: Int, and row: Int)
 }
 
@@ -41,16 +41,13 @@ class GameView: UIView {
         setNeedsDisplay()
     }
 
-    /**
-     draw logic
-     */
     override func draw(_ rect: CGRect) {
         super.draw(rect)
         
         //Draw grid lines
         let context = UIGraphicsGetCurrentContext()
         
-        currentPlayerBoard = CGRect.init(x: bounds.midX, y: bounds.midY, width: bounds.width * 0.9, height: bounds.width * 0.7)
+        currentPlayerBoard = CGRect.init(x: bounds.midX, y: bounds.midY, width: bounds.width * 0.75, height: bounds.width * 0.75)
         currentPlayerBoard.origin.y = ((bounds.height - currentPlayerBoard.height) / 2.0) * 1.8
         currentPlayerBoard.origin.x = (bounds.width - currentPlayerBoard.width) / 2.0
         context?.addRect(currentPlayerBoard)
@@ -59,8 +56,8 @@ class GameView: UIView {
         context?.setFillColor(UIColor.darkGray.cgColor)
         context?.drawPath(using: .fillStroke)
         
-        otherPlayerBoard = CGRect.init(x: bounds.midX, y: bounds.midY, width: bounds.width * 0.9, height: bounds.width * 0.7)
-        otherPlayerBoard.origin.y = ((bounds.height - otherPlayerBoard.height) / 2.0) * 0.4
+        otherPlayerBoard = CGRect.init(x: bounds.midX, y: bounds.midY, width: bounds.width * 0.75, height: bounds.width * 0.75)
+        otherPlayerBoard.origin.y = ((bounds.height - otherPlayerBoard.height) / 2.0) * 0.3
         otherPlayerBoard.origin.x = (bounds.width - otherPlayerBoard.width) / 2.0
         context?.addRect(otherPlayerBoard)
         context?.setLineWidth(1.0)
@@ -81,14 +78,14 @@ class GameView: UIView {
             let otherEndX_ROW : CGFloat = otherPlayerBoard.width + otherPlayerBoard.origin.x
             let otherEndY_ROW : CGFloat = otherPlayerBoard.origin.y + (otherPlayerBoard.height * percentage)
             
-            let currStartX_COL : CGFloat = currentPlayerBoard.origin.x + currentPlayerBoard.width * percentage
+            let currStartX_COL : CGFloat = currentPlayerBoard.origin.x + (currentPlayerBoard.width * percentage)
             let currStartY_COL : CGFloat = currentPlayerBoard.origin.y
-            let currEndX_COL : CGFloat = currentPlayerBoard.origin.x + currentPlayerBoard.width * percentage
+            let currEndX_COL : CGFloat = currentPlayerBoard.origin.x + (currentPlayerBoard.width * percentage)
             let currEndY_COL : CGFloat = currentPlayerBoard.height + currentPlayerBoard.origin.y
             
-            let otherStartX_COL : CGFloat = otherPlayerBoard.origin.x + otherPlayerBoard.width * percentage
+            let otherStartX_COL : CGFloat = otherPlayerBoard.origin.x + (otherPlayerBoard.width * percentage)
             let otherStartY_COL : CGFloat = otherPlayerBoard.origin.y
-            let otherEndX_COL : CGFloat = otherPlayerBoard.origin.x + otherPlayerBoard.width * percentage
+            let otherEndX_COL : CGFloat = otherPlayerBoard.origin.x + (otherPlayerBoard.width * percentage)
             let otherEndY_COL : CGFloat = otherPlayerBoard.height + otherPlayerBoard.origin.y
             
             //Add rows for both boards
@@ -111,23 +108,25 @@ class GameView: UIView {
         
         
         if let dataSource = dataSource {
+        //Fills bottom board
         for col in 0 ..< 10 {
             for row in 0 ..< 10 {
 
                 let x = (CGFloat(col) + 0.25) * 0.1 * currentPlayerBoard.width + currentPlayerBoard.origin.x
                 let y = (CGFloat(row) + 0.25) * 0.1 * currentPlayerBoard.height + currentPlayerBoard.origin.y
                 let point : CGPoint = CGPoint(x: x, y: y)
-                let cell = dataSource.gameView(self, currentPlayerTokens: row, and: col)
+                let cell = dataSource.gameView(self, currentPlayerTokens: col, and: row)
                 cell.draw(at: point, withAttributes: nil)
                 }
             }
+        //Fills top board -> board being played on
         for col in 0 ..< 10 {
                 for row in 0 ..< 10 {
                     
                     let x = (CGFloat(col) + 0.25) * 0.1 * otherPlayerBoard.width + otherPlayerBoard.origin.x
                     let y = (CGFloat(row) + 0.25) * 0.1 * otherPlayerBoard.height + otherPlayerBoard.origin.y
                     let point : CGPoint = CGPoint(x: x, y: y)
-                    let cell = dataSource.gameView(self, otherPlayerTokens: row, and: col)
+                    let cell = dataSource.gameView(self, otherPlayerTokens: col, and: row)
                     cell.draw(at: point, withAttributes: nil)
                 }
             }
@@ -138,12 +137,10 @@ class GameView: UIView {
         let touch: UITouch = touches.first!
         let touchPoint: CGPoint = touch.location(in: self)
         if otherPlayerBoard.contains(touchPoint) {
-            let col: Int = Int(floor(fmax(0.0, fmin(9.0, touchPoint.x / bounds.width * 10.0))))
-            let row: Int = Int(floor(fmax(0.0, fmin(9.0, touchPoint.x / bounds.width * 10.0))))
+            let col: Int = Int((touchPoint.x - otherPlayerBoard.origin.x) / (otherPlayerBoard.width / 10.0))
+            let row: Int = Int((touchPoint.y - otherPlayerBoard.origin.y) / (otherPlayerBoard.height / 10.0))
             
             dataSource?.gameView(self, cellTouchedAt: col, and: row)
         }
-        
-        
     }
 }

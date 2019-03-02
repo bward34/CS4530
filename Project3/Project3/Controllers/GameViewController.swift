@@ -34,10 +34,9 @@ class GameViewController: UIViewController, GameViewDelegate, GameDelegate {
         gameView.reloadData()
     }
     
-    //glue code
     func gameView(_ gameView: GameView, currentPlayerTokens col: Int, and row: Int) -> String{
         var cell : String
-        switch(game.boards[game.currentPlayer]?[col][row]) {
+        switch(game.boards[game.currentPlayer]?[row][col]) {
         case .water?: cell = ""
             break
         case .hit?: cell = "✅"
@@ -53,7 +52,7 @@ class GameViewController: UIViewController, GameViewDelegate, GameDelegate {
     func gameView(_ gameView: GameView, otherPlayerTokens col: Int, and row: Int) -> String{
         let player : Game.Token = game.currentPlayer == .player1 ? Game.Token.player2 : Game.Token.player1
         var cell : String
-        switch game.boards[player]?[col][row] {
+        switch game.boards[player]?[row][col] {
         case .water?: cell = ""
             break
         case .hit?: cell = "✅"
@@ -71,6 +70,8 @@ class GameViewController: UIViewController, GameViewDelegate, GameDelegate {
     }
     
     func game(_ game: Game, cellChangedAt col: Int, and row: Int) {
-        gameView.reloadData()
+      //  gameView.reloadData()
+      let selfView: SwitchViewController = SwitchViewController()
+      present(selfView, animated: true, completion: nil)
     }
 }
