@@ -9,17 +9,28 @@
 import UIKit
 
 protocol GameViewDelegate {
-    func gameView(_ gameView: GameView, cellFor col: Int, and row: Int) -> String
+    func gameView(_ gameView: GameView, currentPlayerTokens row: Int, and col: Int) -> String
+    func gameView(_ gameView: GameView, otherPlayerTokens row: Int, and col: Int) -> String
     func gameView(_ gameView: GameView, cellTouchedAt col: Int, and row: Int)
 }
 
 class GameView: UIView {
     
+    /**
+     The board that the other player is playing on. The is the current users
+     ships. Displays ships with hits and misses.
+     */
+    var currentPlayerBoard: CGRect = CGRect()
+    /**
+     The board that the current player plays on. This contains no
+     ships, only hits and misses.
+     */
+    var otherPlayerBoard: CGRect = CGRect()
     var dataSource: GameViewDelegate?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = UIColor.blue
+        backgroundColor = UIColor.lightGray
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -30,66 +41,94 @@ class GameView: UIView {
         setNeedsDisplay()
     }
 
+    /**
+     draw logic
+     */
     override func draw(_ rect: CGRect) {
         super.draw(rect)
         
         //Draw grid lines
         let context = UIGraphicsGetCurrentContext()
         
-        context?.move(to: CGPoint(x: 0, y: bounds.height * 0.1))
-        context?.addLine(to: CGPoint(x: bounds.width, y: bounds.height * 0.1))
-        context?.move(to: CGPoint(x: 0, y: bounds.height * 0.2))
-        context?.addLine(to: CGPoint(x: bounds.width, y: bounds.height * 0.2))
-        context?.move(to: CGPoint(x: 0, y: bounds.height * 0.3))
-        context?.addLine(to: CGPoint(x: bounds.width, y: bounds.height * 0.3))
-        context?.move(to: CGPoint(x: 0, y: bounds.height * 0.4))
-        context?.addLine(to: CGPoint(x: bounds.width, y: bounds.height * 0.4))
-        context?.move(to: CGPoint(x: 0, y: bounds.height * 0.4))
-        context?.addLine(to: CGPoint(x: bounds.width, y: bounds.height * 0.4))
-        context?.move(to: CGPoint(x: 0, y: bounds.height * 0.4))
-        context?.addLine(to: CGPoint(x: bounds.width, y: bounds.height * 0.4))
-        context?.move(to: CGPoint(x: 0, y: bounds.height * 0.5))
-        context?.addLine(to: CGPoint(x: bounds.width, y: bounds.height * 0.5))
-        context?.move(to: CGPoint(x: 0, y: bounds.height * 0.5))
-        context?.addLine(to: CGPoint(x: bounds.width, y: bounds.height * 0.5))
-        context?.move(to: CGPoint(x: 0, y: bounds.height * 0.6))
-        context?.addLine(to: CGPoint(x: bounds.width, y: bounds.height * 0.6))
-        context?.move(to: CGPoint(x: 0, y: bounds.height * 0.7))
-        context?.addLine(to: CGPoint(x: bounds.width, y: bounds.height * 0.7))
-        context?.move(to: CGPoint(x: 0, y: bounds.height * 0.8))
-        context?.addLine(to: CGPoint(x: bounds.width, y: bounds.height * 0.8))
-        context?.move(to: CGPoint(x: 0, y: bounds.height * 0.9))
-        context?.addLine(to: CGPoint(x: bounds.width, y: bounds.height * 0.9))
-    
-        context?.move(to: CGPoint(x: bounds.width * 0.1, y: 0))
-        context?.addLine(to: CGPoint(x: bounds.width * 0.1, y: bounds.height))
-        context?.move(to: CGPoint(x: bounds.width * 0.2, y: 0))
-        context?.addLine(to: CGPoint(x: bounds.width * 0.2, y: bounds.height))
-        context?.move(to: CGPoint(x: bounds.width * 0.3, y: 0))
-        context?.addLine(to: CGPoint(x: bounds.width * 0.3, y: bounds.height))
-        context?.move(to: CGPoint(x: bounds.width * 0.4, y: 0))
-        context?.addLine(to: CGPoint(x: bounds.width * 0.4, y: bounds.height))
-        context?.move(to: CGPoint(x: bounds.width * 0.5, y: 0))
-        context?.addLine(to: CGPoint(x: bounds.width * 0.5, y: bounds.height))
-        context?.move(to: CGPoint(x: bounds.width * 0.6, y: 0))
-        context?.addLine(to: CGPoint(x: bounds.width * 0.6, y: bounds.height))
-        context?.move(to: CGPoint(x: bounds.width * 0.7, y: 0))
-        context?.addLine(to: CGPoint(x: bounds.width * 0.7, y: bounds.height))
-        context?.move(to: CGPoint(x: bounds.width * 0.8, y: 0))
-        context?.addLine(to: CGPoint(x: bounds.width * 0.8, y: bounds.height))
-        context?.move(to: CGPoint(x: bounds.width * 0.9, y: 0))
-        context?.addLine(to: CGPoint(x: bounds.width * 0.9, y: bounds.height))
+        currentPlayerBoard = CGRect.init(x: bounds.midX, y: bounds.midY, width: bounds.width * 0.9, height: bounds.width * 0.7)
+        currentPlayerBoard.origin.y = ((bounds.height - currentPlayerBoard.height) / 2.0) * 1.8
+        currentPlayerBoard.origin.x = (bounds.width - currentPlayerBoard.width) / 2.0
+        context?.addRect(currentPlayerBoard)
+        context?.setLineWidth(1.0)
+        context?.setStrokeColor(UIColor.white.cgColor)
+        context?.setFillColor(UIColor.darkGray.cgColor)
+        context?.drawPath(using: .fillStroke)
         
+        otherPlayerBoard = CGRect.init(x: bounds.midX, y: bounds.midY, width: bounds.width * 0.9, height: bounds.width * 0.7)
+        otherPlayerBoard.origin.y = ((bounds.height - otherPlayerBoard.height) / 2.0) * 0.4
+        otherPlayerBoard.origin.x = (bounds.width - otherPlayerBoard.width) / 2.0
+        context?.addRect(otherPlayerBoard)
+        context?.setLineWidth(1.0)
+        context?.setStrokeColor(UIColor.white.cgColor)
+        context?.setFillColor(UIColor.blue.cgColor)
+        context?.drawPath(using: .fillStroke)
+
+        var percentage : CGFloat = 0.0
+        while percentage < 1.0 {
+            
+            let currStartX_ROW : CGFloat = currentPlayerBoard.origin.x
+            let currStartY_ROW : CGFloat = currentPlayerBoard.origin.y + (currentPlayerBoard.height * percentage)
+            let currEndX_ROW : CGFloat = currentPlayerBoard.width + currentPlayerBoard.origin.x
+            let currEndY_ROW : CGFloat = currentPlayerBoard.origin.y + (currentPlayerBoard.height * percentage)
+            
+            let otherStartX_ROW : CGFloat = otherPlayerBoard.origin.x
+            let otherStartY_ROW : CGFloat = otherPlayerBoard.origin.y + (otherPlayerBoard.height * percentage)
+            let otherEndX_ROW : CGFloat = otherPlayerBoard.width + otherPlayerBoard.origin.x
+            let otherEndY_ROW : CGFloat = otherPlayerBoard.origin.y + (otherPlayerBoard.height * percentage)
+            
+            let currStartX_COL : CGFloat = currentPlayerBoard.origin.x + currentPlayerBoard.width * percentage
+            let currStartY_COL : CGFloat = currentPlayerBoard.origin.y
+            let currEndX_COL : CGFloat = currentPlayerBoard.origin.x + currentPlayerBoard.width * percentage
+            let currEndY_COL : CGFloat = currentPlayerBoard.height + currentPlayerBoard.origin.y
+            
+            let otherStartX_COL : CGFloat = otherPlayerBoard.origin.x + otherPlayerBoard.width * percentage
+            let otherStartY_COL : CGFloat = otherPlayerBoard.origin.y
+            let otherEndX_COL : CGFloat = otherPlayerBoard.origin.x + otherPlayerBoard.width * percentage
+            let otherEndY_COL : CGFloat = otherPlayerBoard.height + otherPlayerBoard.origin.y
+            
+            //Add rows for both boards
+            context?.move(to: CGPoint(x: currStartX_ROW, y: currStartY_ROW))
+            context?.addLine(to: CGPoint(x: currEndX_ROW, y: currEndY_ROW))
+            context?.move(to: CGPoint(x: otherStartX_ROW, y: otherStartY_ROW))
+            context?.addLine(to: CGPoint(x: otherEndX_ROW, y: otherEndY_ROW))
+            
+            //Add cols for both boards
+            context?.move(to: CGPoint(x: currStartX_COL, y: currStartY_COL))
+            context?.addLine(to: CGPoint(x: currEndX_COL, y: currEndY_COL))
+            context?.move(to: CGPoint(x: otherStartX_COL, y: otherStartY_COL))
+            context?.addLine(to: CGPoint(x: otherEndX_COL, y: otherEndY_COL))
+            
+            percentage += 0.1
+        }
+
         context?.setStrokeColor(UIColor.white.cgColor)
         context?.drawPath(using: .stroke)
         
         
         if let dataSource = dataSource {
-        for row in 0 ..< 10 {
-            for col in 0 ..< 10 {
-                
-                let cell = dataSource.gameView(self, cellFor: col, and: row)
-                cell.draw(at: CGPoint(x: (CGFloat(col) + 0.5) * 0.1 * bounds.width, y: (CGFloat(row) + 0.5 ) * 0.1 * bounds.height), withAttributes: nil)
+        for col in 0 ..< 10 {
+            for row in 0 ..< 10 {
+
+                let x = (CGFloat(col) + 0.25) * 0.1 * currentPlayerBoard.width + currentPlayerBoard.origin.x
+                let y = (CGFloat(row) + 0.25) * 0.1 * currentPlayerBoard.height + currentPlayerBoard.origin.y
+                let point : CGPoint = CGPoint(x: x, y: y)
+                let cell = dataSource.gameView(self, currentPlayerTokens: row, and: col)
+                cell.draw(at: point, withAttributes: nil)
+                }
+            }
+        for col in 0 ..< 10 {
+                for row in 0 ..< 10 {
+                    
+                    let x = (CGFloat(col) + 0.25) * 0.1 * otherPlayerBoard.width + otherPlayerBoard.origin.x
+                    let y = (CGFloat(row) + 0.25) * 0.1 * otherPlayerBoard.height + otherPlayerBoard.origin.y
+                    let point : CGPoint = CGPoint(x: x, y: y)
+                    let cell = dataSource.gameView(self, otherPlayerTokens: row, and: col)
+                    cell.draw(at: point, withAttributes: nil)
                 }
             }
         }
@@ -98,10 +137,13 @@ class GameView: UIView {
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         let touch: UITouch = touches.first!
         let touchPoint: CGPoint = touch.location(in: self)
+        if otherPlayerBoard.contains(touchPoint) {
+            let col: Int = Int(floor(fmax(0.0, fmin(9.0, touchPoint.x / bounds.width * 10.0))))
+            let row: Int = Int(floor(fmax(0.0, fmin(9.0, touchPoint.x / bounds.width * 10.0))))
+            
+            dataSource?.gameView(self, cellTouchedAt: col, and: row)
+        }
         
-        let col: Int = Int(floor(fmax(0.0, fmin(9.0, touchPoint.x / bounds.width * 10.0))))
-        let row: Int = Int(floor(fmax(0.0, fmin(9.0, touchPoint.x / bounds.width * 10.0))))
         
-        dataSource?.gameView(self, cellTouchedAt: col, and: row)
     }
 }

@@ -203,8 +203,14 @@ class Game {
      A debugger method for printing the created game board from the game object.
      */
     private func printDict() {
-        for (_, board) in boards {
-            print("board")
+        for (player, board) in boards {
+            if(player == .player1) {
+              print("player1's")
+            }
+            else {
+                print("player2's")
+            }
+     
             for x in 0 ..< board.count {
                 var data : String = ""
                 for y in 0 ..< board[x].count {
