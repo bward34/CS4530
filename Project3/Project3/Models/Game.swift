@@ -37,6 +37,7 @@ class Game {
     
     var boards : [Token : [[Token]]]
     var currentPlayer : Token
+    var hitOrMiss : String
     
     init() {
         currentPlayer = .player1
@@ -72,6 +73,7 @@ class Game {
                      .player2 : [.ship5 : 5, .ship4 : 4, .ship3 : 3, .ship2_2 : 2, .ship2_1 : 2]]
         shipsSunk = [.player1 : [.ship5 : false, .ship4 : false, .ship3 : false, .ship2_2 : false, .ship2_1 : false],
                      .player2 : [.ship5 : false, .ship4 : false, .ship3 : false, .ship2_2 : false, .ship2_1 : false]]
+        hitOrMiss = ""
         
         createBoard()
     }
@@ -184,13 +186,14 @@ class Game {
     */
     func takeTurn(at col: Int, and row: Int) {
         let player : Token = currentPlayer == .player1 ? .player2: .player1
-        if boards[player]?[row][col] != .water {
-            
+        if boards[player]?[row][col] != .water  && boards[player]?[row][col] != .hit && boards[player]?[row][col] != .miss {
+            hitOrMiss = "HIT!"
             updateShipCount(player: currentPlayer, ship: boards[player]![row][col])
             boards[player]?[row][col] = .hit
         }
         else if boards[player]?[row][col] != .hit {
             boards[player]?[row][col] = .miss
+            hitOrMiss = "MISS!"
         }
         
         if(currentPlayer == .player1) {
@@ -199,10 +202,7 @@ class Game {
         else {
             currentPlayer = .player1
         }
-        
         delegate?.game(self, cellChangedAt: col, and: row)
-        
-        //TODO: Determine winner
     }
     
     private func updateShipCount(player: Token, ship: Token) {
@@ -228,7 +228,7 @@ class Game {
         
         if shipCount[player]?[ship, default: 0] == 0 {
             shipsSunk[player]?[ship, default: false] = true
-            //TODO : NOTIFY OF A SINK
+            hitOrMiss = "SUNK!"
         }
     }
     

@@ -34,6 +34,10 @@ class GameViewController: UIViewController, GameViewDelegate, GameDelegate {
         gameView.reloadData()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+         gameView.reloadData()
+    }
+    
     func gameView(_ gameView: GameView, currentPlayerTokens col: Int, and row: Int) -> String{
         var cell : String
         switch(game.boards[game.currentPlayer]?[row][col]) {
@@ -43,7 +47,17 @@ class GameViewController: UIViewController, GameViewDelegate, GameDelegate {
             break
         case .miss?: cell = "❌"
             break
-        default: cell = "🚤"
+        case .ship2_1?: cell = "🚤"
+            break
+        case .ship2_2?: cell = "🛥"
+            break
+        case .ship3?: cell = "🛳"
+            break
+        case .ship4?: cell = "🚢"
+            break
+        case .ship5?: cell = "⛴"
+            break
+        default: cell = ""
         }
         
         return cell
@@ -70,8 +84,8 @@ class GameViewController: UIViewController, GameViewDelegate, GameDelegate {
     }
     
     func game(_ game: Game, cellChangedAt col: Int, and row: Int) {
-      //  gameView.reloadData()
-      let selfView: SwitchViewController = SwitchViewController()
+        let selfView: SwitchViewController = SwitchViewController()
+        selfView.currentGame = game
       present(selfView, animated: true, completion: nil)
     }
 }

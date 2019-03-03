@@ -47,7 +47,7 @@ class GameView: UIView {
         //Draw grid lines
         let context = UIGraphicsGetCurrentContext()
         
-        currentPlayerBoard = CGRect.init(x: bounds.midX, y: bounds.midY, width: bounds.width * 0.75, height: bounds.width * 0.75)
+        currentPlayerBoard = CGRect(x: bounds.midX, y: bounds.midY, width: bounds.width * 0.75, height: bounds.width * 0.75)
         currentPlayerBoard.origin.y = ((bounds.height - currentPlayerBoard.height) / 2.0) * 1.8
         currentPlayerBoard.origin.x = (bounds.width - currentPlayerBoard.width) / 2.0
         context?.addRect(currentPlayerBoard)
@@ -56,7 +56,7 @@ class GameView: UIView {
         context?.setFillColor(UIColor.darkGray.cgColor)
         context?.drawPath(using: .fillStroke)
         
-        otherPlayerBoard = CGRect.init(x: bounds.midX, y: bounds.midY, width: bounds.width * 0.75, height: bounds.width * 0.75)
+        otherPlayerBoard = CGRect(x: bounds.midX, y: bounds.midY, width: bounds.width * 0.75, height: bounds.width * 0.75)
         otherPlayerBoard.origin.y = ((bounds.height - otherPlayerBoard.height) / 2.0) * 0.3
         otherPlayerBoard.origin.x = (bounds.width - otherPlayerBoard.width) / 2.0
         context?.addRect(otherPlayerBoard)
