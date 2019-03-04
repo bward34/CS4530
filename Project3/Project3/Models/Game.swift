@@ -6,12 +6,14 @@
 //  Copyright © 2019 Brandon Ward. All rights reserved.
 //
 
+import Foundation
+
 protocol GameDelegate {
     func game(_ game: Game, cellChangedAt col: Int, and row: Int)
    // func winner
 }
 
-class Game {
+class Game: Codable {
     
     enum Token {
         case player1
@@ -29,15 +31,15 @@ class Game {
     
     var delegate : GameDelegate?
     
-    private var player1Board : [[Token]]
-    private var player2Board : [[Token]]
-    private var winner : Token
-    private var shipCount : [Token : [ Token : Int ]]
-    private var shipsSunk : [Token : [ Token : Bool]]
+    private var player1Board : [[Token]] = [[]]
+    private var player2Board : [[Token]] = [[]]
+    private var winner : Token = .none
+    private var shipCount : [Token : [ Token : Int ]] = [.player1 : [:], .player2 : [:]]
+    private var shipsSunk : [Token : [ Token : Bool]] = [.player1 : [:], .player2 : [:]]
     
-    var boards : [Token : [[Token]]]
-    var currentPlayer : Token
-    var hitOrMiss : String
+    var boards : [Token : [[Token]]] = [.player1 : [], .player2 : []]
+    var currentPlayer : Token = .none
+    var hitOrMiss : String = ""
     
     init() {
         currentPlayer = .player1
@@ -232,18 +234,348 @@ class Game {
         }
     }
     
+    required init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: GameKeys.self)
+        let winnerToken = try values.decode(String.self, forKey: Game.GameKeys.winner)
+        let currentPlayerToken = try values.decode(String.self, forKey: Game.GameKeys.currentPlayer)
+        let boardToken = try values.decode([String : [[String]]].self, forKey: Game.GameKeys.boards)
+        let shipCountToken = try values.decode([String : [String : Int ]].self, forKey: Game.GameKeys.shipCount)
+        let shipSunkToken = try values.decode([String : [String : Bool ]].self, forKey: Game.GameKeys.shipSunk)
+        
+        if (winnerToken == "player1") {
+            winner = .player1
+        }
+        else if winnerToken == "player2" {
+            winner = .player2
+        }
+        else {
+            winner = .none
+        }
+        
+        if (currentPlayerToken == "player1") {
+            currentPlayer = .player1
+        }
+        else {
+            currentPlayer = .player2
+        }
+        
+        boards = decodePlayerBoard(stringDict: boardToken)
+        shipCount = decodeShipCount(shipCountString: shipCountToken)
+        shipsSunk = decodeShipSunk(shipSunkString: shipSunkToken)
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: GameKeys.self)
+        var winnerString = ""
+        var currentPlayerString = ""
+        var shipCountDictString : [String : [String : Int]]
+        var shipBoolDictString : [String : [String : Bool]]
+        var boardsDictString : [String: [[String]]]
+        
+        shipCountDictString = encodeShipCount()
+        shipBoolDictString = encodeShipSunk()
+        boardsDictString = encodePlayerBoard()
+        
+        if winner == .player1 {
+            winnerString = "player1"
+        }
+        else if winner == .player2 {
+            winnerString = "player2"
+        }
+        else {
+            winnerString = "none"
+        }
+        
+        if currentPlayer == .player1 {
+            currentPlayerString = "player1"
+        }
+        else {
+            currentPlayerString = "player2"
+        }
+        
+        try container.encode(shipCountDictString, forKey: Game.GameKeys.shipCount)
+        try container.encode(shipBoolDictString, forKey: Game.GameKeys.shipSunk)
+        try container.encode(boardsDictString, forKey: Game.GameKeys.boards)
+        try container.encode(winnerString, forKey: Game.GameKeys.winner)
+        try container.encode(currentPlayerString, forKey: Game.GameKeys.currentPlayer)
+        
+    }
+    
+    enum Error: Swift.Error {
+        case writing
+        case decoding
+    }
+    
+    enum GameKeys: CodingKey {
+        case boards
+        case currentPlayer
+        case shipCount
+        case shipSunk
+        case winner
+    }
+    
+    /**
+     A method for converting the boards dictionary to strings for
+     encoding.
+     - returns: A dictionary for encoding.
+     */
+    func encodePlayerBoard() ->  [String : [[String]]] {
+        var boardsString : [String : [[String]]] = [:]
+        for(player, board) in boards {
+            var boardItems : [[String]] = []
+            for x in 0 ..< board.count {
+                for y in 0 ..< board[x].count {
+                    switch board[x][y] {
+                    case .water:
+                        boardItems[x][y] = "water"
+                        break
+                    case .hit:
+                        boardItems[x][y] = "hit"
+                        break
+                    case .miss:
+                        boardItems[x][y] = "miss"
+                        break
+                    case .ship2_1:
+                        boardItems[x][y] = "ship2_1"
+                        break
+                    case .ship2_2:
+                        boardItems[x][y] = "ship2_2"
+                        break
+                    case .ship3:
+                        boardItems[x][y] = "ship3"
+                        break
+                    case .ship4:
+                        boardItems[x][y] = "ship4"
+                        break
+                    case .ship5:
+                        boardItems[x][y] = "ship5"
+                        break
+                    default :
+                        break
+                    }
+                }
+            }
+           let playerString = player == .player1 ? "player1" : "player2"
+           boardsString.updateValue(boardItems, forKey: playerString)
+        }
+        return boardsString
+    }
+    
+    /**
+     A method for converting the shipsCount dictionary to strings for
+     encoding.
+     - returns: A dictionary for encoding.
+     */
+    func encodeShipCount() -> [String : [String : Int]] {
+        var shipCountString : [String : [String : Int]] = [:]
+        for (player, countDict) in shipCount {
+            var shipCountDict : [String : Int] = [:]
+            for(ship, count) in countDict {
+                var shipString = ""
+                var countAdd = 0
+                switch ship {
+                case .ship2_1 : shipString = "ship2_1"
+                                countAdd = count
+                    break
+                case .ship2_2 :  shipString = "ship2_2"
+                                 countAdd = count
+                    break
+                case .ship3 : shipString = "ship3"
+                              countAdd = count
+                    break
+                case .ship4 : shipString = "ship4"
+                              countAdd = count
+                    break
+                case .ship5 : shipString = "ship5"
+                              countAdd = count
+                default :
+                    break
+                }
+                shipCountDict.updateValue(countAdd, forKey: shipString)
+            }
+            let playerString = player == .player1 ? "player1" : "player2"
+            shipCountString.updateValue(shipCountDict, forKey: playerString)
+        }
+        return shipCountString
+    }
+    
+    /**
+     A method for converting the shipsSunk dictionary to strings for
+     encoding.
+     - returns: A dictionary for encoding.
+    */
+    func encodeShipSunk() -> [String : [String : Bool]] {
+        var shipSunkString : [String : [String : Bool]] = [:]
+        for (player, boolDict) in shipsSunk {
+            var shipBoolDict : [String : Bool] = [:]
+            for(ship, boolVal) in boolDict {
+                var shipString = ""
+                var boolAdd = false
+                switch ship {
+                case .ship2_1 : shipString = "ship2_1"
+                                boolAdd = boolVal
+                    break
+                case .ship2_2 :  shipString = "ship2_2"
+                                boolAdd = boolVal
+                    break
+                case .ship3 : shipString = "ship3"
+                                boolAdd = boolVal
+                    break
+                case .ship4 : shipString = "ship4"
+                                boolAdd = boolVal
+                    break
+                case .ship5 : shipString = "ship5"
+                                boolAdd = boolVal
+                default :
+                    break
+                }
+                shipBoolDict.updateValue(boolAdd, forKey: shipString)
+            }
+            let playerString = player == .player1 ? "player1" : "player2"
+            shipSunkString.updateValue(shipBoolDict, forKey: playerString)
+        }
+        return shipSunkString
+    }
+    
+    
+    //MARK : DECODE HELPERS
+    
+    /**
+     A method for converting the boards dictionary to tokens for
+     decoding.
+     - returns: A dictionary for encoding.
+     */
+    func decodePlayerBoard(stringDict : [String : [[String]]]) ->  [Token : [[Token]]] {
+        var boardsToken : [Token : [[Token]]] = [.player1 : [], .player2 : []]
+        for(player, board) in stringDict {
+            var boardItems : [[Token]] = []
+            for x in 0 ..< board.count {
+                for y in 0 ..< board[x].count {
+                    switch board[x][y] {
+                    case "water":
+                        boardItems[x][y] = .water
+                        break
+                    case "hit":
+                        boardItems[x][y] = .hit
+                        break
+                    case "miss":
+                        boardItems[x][y] = .miss
+                        break
+                    case "ship2_1":
+                        boardItems[x][y] = .ship2_1
+                        break
+                    case "ship2_2":
+                        boardItems[x][y] = .ship2_2
+                        break
+                    case "ship3":
+                        boardItems[x][y] = .ship3
+                        break
+                    case "ship4":
+                        boardItems[x][y] = .ship4
+                        break
+                    case "ship5":
+                        boardItems[x][y] = .ship5
+                        break
+                    default :
+                        break
+                    }
+                }
+            }
+            let playerToken = player == "player1" ? Game.Token.player1 : Game.Token.player2
+            boardsToken.updateValue(boardItems, forKey: playerToken)
+        }
+        return boardsToken
+    }
+    
+    /**
+     A method for converting the shipsCount dictionary to tokens for
+     decoding
+     - returns: A dictionary for encoding.
+     */
+    func decodeShipCount(shipCountString : [String : [String : Int]]) -> [Token : [Token : Int]] {
+        var shipCount : [Token : [Token : Int]] = [:]
+        for (player, countDict) in shipCountString {
+            var shipCountDict : [Token : Int] = [:]
+            for(ship, count) in countDict {
+                var shipToken = Game.Token.none
+                var countAdd = 0
+                switch ship {
+                case "ship2_1" : shipToken = .ship2_1
+                                countAdd = count
+                    break
+                case "ship2_2" : shipToken = .ship2_1
+                                countAdd = count
+                    break
+                case "ship3" : shipToken = .ship3
+                               countAdd = count
+                    break
+                case "ship4" : shipToken = .ship4
+                               countAdd = count
+                    break
+                case "ship5" : shipToken = .ship5
+                               countAdd = count
+                default :
+                    break
+                }
+                shipCountDict.updateValue(countAdd, forKey: shipToken)
+            }
+            let playerToken = player == "player1" ? Game.Token.player1 : Game.Token.player2
+            shipCount.updateValue(shipCountDict, forKey: playerToken)
+        }
+        return shipCount
+    }
+    
+    /**
+     A method for converting the shipsSunk dictionary to tokens for
+     decoding.
+     - returns: A dictionary for encoding.
+     */
+    func decodeShipSunk(shipSunkString: [String : [String : Bool]]) -> [Token : [Token : Bool]] {
+        var shipSunkToken : [Token : [Token : Bool]] = [:]
+        for (player, boolDict) in shipSunkString {
+            var shipBoolDict : [Token : Bool] = [:]
+            for(ship, boolVal) in boolDict {
+                var shipString = Game.Token.none
+                var boolAdd = false
+                switch ship {
+                case "ship2_1" : shipString = .ship2_1
+                                 boolAdd = boolVal
+                    break
+                case "ship2_2" :  shipString = .ship2_2
+                                  boolAdd = boolVal
+                    break
+                case "ship3" : shipString = .ship3
+                               boolAdd = boolVal
+                    break
+                case "ship4" : shipString = .ship4
+                               boolAdd = boolVal
+                    break
+                case "ship5" : shipString = .ship5
+                               boolAdd = boolVal
+                default :
+                    break
+                }
+                shipBoolDict.updateValue(boolAdd, forKey: shipString)
+            }
+            let playerString = player == "player1" ? Game.Token.player1 : Game.Token.player2
+            shipSunkToken.updateValue(shipBoolDict, forKey: playerString)
+        }
+        return shipSunkToken
+    }
+    
+    
     /**
      A debugger method for printing the created game board from the game object.
      */
     private func printDict() {
         for (player, board) in boards {
             if(player == .player1) {
-              print("player1's")
+                print("player1's")
             }
             else {
                 print("player2's")
             }
-     
+            
             for x in 0 ..< board.count {
                 var data : String = ""
                 for y in 0 ..< board[x].count {
@@ -257,10 +589,10 @@ class Game {
                         data = data + " 4"
                     }
                     else if(board[x][y] == .ship3) {
-                         data = data + " 3"
+                        data = data + " 3"
                     }
                     else if(board[x][y] == .ship2_2) {
-                       data = data + " 2"
+                        data = data + " 2"
                     }
                     else if(board[x][y] == .ship2_1) {
                         data = data + " 1"
