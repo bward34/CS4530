@@ -10,7 +10,6 @@ import Foundation
 
 protocol GameDelegate {
     func game(_ game: Game, cellChangedAt col: Int, and row: Int)
-   // func winner
 }
 
 class Game: Codable {
@@ -33,12 +32,12 @@ class Game: Codable {
     
     private var player1Board : [[Token]] = [[]]
     private var player2Board : [[Token]] = [[]]
-    private var winner : Token = .none
     private var shipCount : [Token : [ Token : Int ]] = [.player1 : [:], .player2 : [:]]
-    private var shipsSunk : [Token : [ Token : Bool]] = [.player1 : [:], .player2 : [:]]
     
+    var shipsSunk : [Token : [ Token : Bool]] = [.player1 : [:], .player2 : [:]]
     var boards : [Token : [[Token]]] = [.player1 : [], .player2 : []]
     var currentPlayer : Token = .none
+    var winner : Token = .none
     var hitOrMiss : String = ""
     
     init() {
@@ -187,24 +186,26 @@ class Game: Codable {
         - row: The row which the user takes turn at.
     */
     func takeTurn(at col: Int, and row: Int) {
-        let player : Token = currentPlayer == .player1 ? .player2: .player1
-        if boards[player]?[row][col] != .water  && boards[player]?[row][col] != .hit && boards[player]?[row][col] != .miss {
-            hitOrMiss = "HIT!"
-            updateShipCount(player: currentPlayer, ship: boards[player]![row][col])
-            boards[player]?[row][col] = .hit
+        if(winner == .none) {
+            let player : Token = currentPlayer == .player1 ? .player2: .player1
+            if boards[player]?[row][col] != .water  && boards[player]?[row][col] != .hit && boards[player]?[row][col] != .miss {
+                hitOrMiss = "HIT!"
+                updateShipCount(player: currentPlayer, ship: boards[player]![row][col])
+                boards[player]?[row][col] = .hit
+            }
+            else if boards[player]?[row][col] != .hit && boards[player]?[row][col] == .water {
+                boards[player]?[row][col] = .miss
+                hitOrMiss = "MISS!"
+            }
+            
+            if(currentPlayer == .player1) {
+                currentPlayer = .player2
+            }
+            else {
+                currentPlayer = .player1
+            }
+            delegate?.game(self, cellChangedAt: col, and: row)
         }
-        else if boards[player]?[row][col] != .hit {
-            boards[player]?[row][col] = .miss
-            hitOrMiss = "MISS!"
-        }
-        
-        if(currentPlayer == .player1) {
-            currentPlayer = .player2
-        }
-        else {
-            currentPlayer = .player1
-        }
-        delegate?.game(self, cellChangedAt: col, and: row)
     }
     
     private func updateShipCount(player: Token, ship: Token) {
@@ -228,9 +229,19 @@ class Game: Codable {
             break
         }
         
+        //Check if there is a winner yet
         if shipCount[player]?[ship, default: 0] == 0 {
             shipsSunk[player]?[ship, default: false] = true
             hitOrMiss = "SUNK!"
+            var shipSunk = 0
+            for(_, count) in shipCount[player]! {
+                if count == 0 {
+                    shipSunk += 1
+                }
+            }
+            if shipSunk == 5 {
+                winner = player
+            }
         }
     }
     
@@ -302,8 +313,8 @@ class Game: Codable {
     }
     
     enum Error: Swift.Error {
+        case encoding
         case writing
-        case decoding
     }
     
     enum GameKeys: CodingKey {
@@ -324,36 +335,40 @@ class Game: Codable {
         for(player, board) in boards {
             var boardItems : [[String]] = []
             for x in 0 ..< board.count {
+                var rowColStrings : [String] = []
                 for y in 0 ..< board[x].count {
+                    var tokenString : String = ""
                     switch board[x][y] {
                     case .water:
-                        boardItems[x][y] = "water"
+                        tokenString = "water"
                         break
                     case .hit:
-                        boardItems[x][y] = "hit"
+                        tokenString = "hit"
                         break
                     case .miss:
-                        boardItems[x][y] = "miss"
+                        tokenString = "miss"
                         break
                     case .ship2_1:
-                        boardItems[x][y] = "ship2_1"
+                        tokenString = "ship2_1"
                         break
                     case .ship2_2:
-                        boardItems[x][y] = "ship2_2"
+                        tokenString = "ship2_2"
                         break
                     case .ship3:
-                        boardItems[x][y] = "ship3"
+                        tokenString = "ship3"
                         break
                     case .ship4:
-                        boardItems[x][y] = "ship4"
+                        tokenString = "ship4"
                         break
                     case .ship5:
-                        boardItems[x][y] = "ship5"
+                        tokenString = "ship5"
                         break
                     default :
                         break
                     }
+                    rowColStrings.append(tokenString)
                 }
+                boardItems.append(rowColStrings)
             }
            let playerString = player == .player1 ? "player1" : "player2"
            boardsString.updateValue(boardItems, forKey: playerString)
@@ -437,9 +452,6 @@ class Game: Codable {
         return shipSunkString
     }
     
-    
-    //MARK : DECODE HELPERS
-    
     /**
      A method for converting the boards dictionary to tokens for
      decoding.
@@ -450,36 +462,40 @@ class Game: Codable {
         for(player, board) in stringDict {
             var boardItems : [[Token]] = []
             for x in 0 ..< board.count {
+                var rowColTokens : [Token] = []
                 for y in 0 ..< board[x].count {
+                    var newToken : Token = .none
                     switch board[x][y] {
                     case "water":
-                        boardItems[x][y] = .water
+                        newToken = .water
                         break
                     case "hit":
-                        boardItems[x][y] = .hit
+                        newToken = .hit
                         break
                     case "miss":
-                        boardItems[x][y] = .miss
+                        newToken = .miss
                         break
                     case "ship2_1":
-                        boardItems[x][y] = .ship2_1
+                        newToken = .ship2_1
                         break
                     case "ship2_2":
-                        boardItems[x][y] = .ship2_2
+                        newToken = .ship2_2
                         break
                     case "ship3":
-                        boardItems[x][y] = .ship3
+                        newToken = .ship3
                         break
                     case "ship4":
-                        boardItems[x][y] = .ship4
+                        newToken = .ship4
                         break
                     case "ship5":
-                        boardItems[x][y] = .ship5
+                        newToken = .ship5
                         break
                     default :
                         break
                     }
+                    rowColTokens.append(newToken)
                 }
+                boardItems.append(rowColTokens)
             }
             let playerToken = player == "player1" ? Game.Token.player1 : Game.Token.player2
             boardsToken.updateValue(boardItems, forKey: playerToken)
@@ -603,4 +619,21 @@ class Game: Codable {
         }
     }
 
+}
+
+extension Array where Element == Game {
+    func save(to url: URL) throws {
+        guard let jsonData = try? JSONEncoder().encode(self) else {
+            throw Game.Error.encoding
+        }
+        guard (try? jsonData.write(to: url)) != nil else {
+            throw Game.Error.writing
+        }
+        
+    }
+    
+    init(from url: URL) throws {
+        let jsonData = try! Data(contentsOf: url)
+        self = try JSONDecoder().decode([Game].self, from: jsonData)
+    }
 }

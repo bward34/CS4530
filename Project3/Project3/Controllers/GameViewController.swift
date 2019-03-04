@@ -10,7 +10,9 @@ import UIKit
 
 class GameViewController: UIViewController, GameViewDelegate, GameDelegate {
     
+    var gamesList : [Game] = []
     var game: Game = Game()
+    var gameIndex : Int = 0
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
@@ -30,12 +32,21 @@ class GameViewController: UIViewController, GameViewDelegate, GameDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        game.delegate = self
         gameView.dataSource = self
         gameView.reloadData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
-         gameView.reloadData()
+        let documentsDirectory = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+        do {
+            try gamesList.save(to: documentsDirectory.appendingPathComponent(Constants.gamesList))
+        } catch let error where error is Game.Error {
+            print(error)
+        } catch {
+              print(error)
+        }
+        gameView.reloadData()
     }
     
     func gameView(_ gameView: GameView, currentPlayerTokens col: Int, and row: Int) -> String{
@@ -86,6 +97,15 @@ class GameViewController: UIViewController, GameViewDelegate, GameDelegate {
     func game(_ game: Game, cellChangedAt col: Int, and row: Int) {
         let selfView: SwitchViewController = SwitchViewController()
         selfView.currentGame = game
+        gamesList[gameIndex] = game
+        let documentsDirectory = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+        do {
+            try gamesList.save(to: documentsDirectory.appendingPathComponent(Constants.gamesList))
+        } catch let error where error is Game.Error {
+              print(error)
+        } catch {
+              print(error)
+        }
       present(selfView, animated: true, completion: nil)
     }
 }

@@ -49,7 +49,7 @@ class HomeView: UIView {
         addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-[gameLabel]-|", options: [], metrics: nil, views: ["gameLabel": gameLabel]))
         addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-[homeTableView]-|", options: [], metrics: nil, views: ["homeTableView": homeTableView]))
         addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-[newGameButton]-|", options: [], metrics: nil, views: ["newGameButton": newGameButton]))
-        addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-12-[gameLabel]-[homeTableView]-[newGameButton]-12-|", options: [], metrics: nil, views: ["gameLabel" : gameLabel,"homeTableView": homeTableView, "newGameButton" : newGameButton]))
+        addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[gameLabel]-[homeTableView]-[newGameButton]-|", options: [], metrics: nil, views: ["gameLabel" : gameLabel,"homeTableView": homeTableView, "newGameButton" : newGameButton]))
     }
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
