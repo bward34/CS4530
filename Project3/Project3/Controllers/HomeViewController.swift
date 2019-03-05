@@ -78,7 +78,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
             
         }
         cell.backgroundColor = .white
-        cell.detailTextLabel?.text = " P1 Ships Remain: \(getShipsNotSunk(shipsSunk: gamesList[indexPath.row].shipsSunk[Game.Token.player2]!)) P2 Ships Remain: \(getShipsNotSunk(shipsSunk: gamesList[indexPath.row].shipsSunk[Game.Token.player1]!))"
+        cell.detailTextLabel?.text = " P1 Ships Remain: \(getShipsNotSunk(shipsSunk: gamesList[indexPath.row].shipsSunk[Game.Token.player1]!)) P2 Ships Remain: \(getShipsNotSunk(shipsSunk: gamesList[indexPath.row].shipsSunk[Game.Token.player2]!))"
         cell.detailTextLabel?.font = UIFont(name: "HelveticaNeue", size: 10)
         cell.textLabel?.font = UIFont(name: "HelveticaNeue", size: 10)
         cell.textLabel?.text = gameProgress

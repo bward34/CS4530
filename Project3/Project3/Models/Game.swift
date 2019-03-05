@@ -190,11 +190,17 @@ class Game: Codable {
             let player : Token = currentPlayer == .player1 ? .player2: .player1
             if boards[player]?[row][col] != .water  && boards[player]?[row][col] != .hit && boards[player]?[row][col] != .miss {
                 hitOrMiss = "HIT!"
-                updateShipCount(player: currentPlayer, ship: boards[player]![row][col])
+                updateShipCount(player: player, ship: boards[player]![row][col], currentPlayer: currentPlayer)
                 boards[player]?[row][col] = .hit
             }
-            else if boards[player]?[row][col] != .hit && boards[player]?[row][col] == .water {
+            else if  boards[player]?[row][col] == .water {
                 boards[player]?[row][col] = .miss
+                hitOrMiss = "MISS!"
+            }
+            else if boards[player]?[row][col] == .hit {
+                 hitOrMiss = "HIT!"
+            }
+            else {
                 hitOrMiss = "MISS!"
             }
             
@@ -208,7 +214,7 @@ class Game: Codable {
         }
     }
     
-    private func updateShipCount(player: Token, ship: Token) {
+    private func updateShipCount(player: Token, ship: Token, currentPlayer: Token) {
         switch ship {
         case .ship2_1:
             shipCount[player]?[ship, default: 0] -= 1
@@ -234,13 +240,13 @@ class Game: Codable {
             shipsSunk[player]?[ship, default: false] = true
             hitOrMiss = "SUNK!"
             var shipSunk = 0
-            for(_, count) in shipCount[player]! {
-                if count == 0 {
+            for(_, sunk) in shipsSunk[player]! {
+                if sunk {
                     shipSunk += 1
                 }
             }
             if shipSunk == 5 {
-                winner = player
+                winner = currentPlayer
             }
         }
     }
@@ -519,7 +525,7 @@ class Game: Codable {
                 case "ship2_1" : shipToken = .ship2_1
                                 countAdd = count
                     break
-                case "ship2_2" : shipToken = .ship2_1
+                case "ship2_2" : shipToken = .ship2_2
                                 countAdd = count
                     break
                 case "ship3" : shipToken = .ship3

@@ -27,6 +27,7 @@ class GameView: UIView {
      */
     var otherPlayerBoard: CGRect = CGRect()
     var dataSource: GameViewDelegate?
+    var isPortrait : Bool = true
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -46,19 +47,41 @@ class GameView: UIView {
         
         //Draw grid lines
         let context = UIGraphicsGetCurrentContext()
+        var ratio : CGFloat = 0.0
+        if isPortrait {
+            ratio = frame.width > 500 ? 0.5 : 0.3
+            currentPlayerBoard = CGRect(x: frame.midX, y: frame.midY, width: frame.width - (frame.width * ratio), height: frame.width - (frame.width * ratio))
+            currentPlayerBoard.origin.y = ((frame.height - currentPlayerBoard.height) / 2.0) * 1.8
+            currentPlayerBoard.origin.x = (frame.width - currentPlayerBoard.width) / 2.0
+        }
+        else {
+            ratio = frame.height > 500 ? 0.5 : 0.3
+            currentPlayerBoard = CGRect(x: frame.midX, y: frame.midY, width: frame.height - (frame.height * ratio), height: frame.height - (frame.height * ratio))
+            currentPlayerBoard.origin.y = ((frame.height - currentPlayerBoard.height) / 2.0)
+            currentPlayerBoard.origin.x = ((frame.width - currentPlayerBoard.width) / 2.0) * 1.8
+        }
         
-        currentPlayerBoard = CGRect(x: bounds.midX, y: bounds.midY, width: bounds.width * 0.75, height: bounds.width * 0.75)
-        currentPlayerBoard.origin.y = ((bounds.height - currentPlayerBoard.height) / 2.0) * 1.8
-        currentPlayerBoard.origin.x = (bounds.width - currentPlayerBoard.width) / 2.0
+        
         context?.addRect(currentPlayerBoard)
         context?.setLineWidth(1.0)
         context?.setStrokeColor(UIColor.white.cgColor)
         context?.setFillColor(UIColor.darkGray.cgColor)
         context?.drawPath(using: .fillStroke)
         
-        otherPlayerBoard = CGRect(x: bounds.midX, y: bounds.midY, width: bounds.width * 0.75, height: bounds.width * 0.75)
-        otherPlayerBoard.origin.y = ((bounds.height - otherPlayerBoard.height) / 2.0) * 0.3
-        otherPlayerBoard.origin.x = (bounds.width - otherPlayerBoard.width) / 2.0
+        if isPortrait {
+            ratio = frame.width > 500 ? 0.5 : 0.3
+            otherPlayerBoard = CGRect(x: frame.midX, y: frame.midY, width: frame.width - (frame.width * ratio), height: frame.width - (frame.width * ratio))
+            otherPlayerBoard.origin.y = ((frame.height - otherPlayerBoard.height) / 2.0) * 0.3
+            otherPlayerBoard.origin.x = (frame.width - otherPlayerBoard.width) / 2.0
+        }
+        else
+        {
+            ratio = frame.height > 500 ? 0.5 : 0.3
+            otherPlayerBoard = CGRect(x: frame.midX, y: frame.midY, width: frame.height - (frame.height * ratio), height: frame.height - (frame.width * ratio))
+            otherPlayerBoard.origin.y = ((frame.height - otherPlayerBoard.height) / 2.0)
+            otherPlayerBoard.origin.x = ((frame.width - otherPlayerBoard.width) / 2.0) * 0.3
+        }
+        
         context?.addRect(otherPlayerBoard)
         context?.setLineWidth(1.0)
         context?.setStrokeColor(UIColor.white.cgColor)

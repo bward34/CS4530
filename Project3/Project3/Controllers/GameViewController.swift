@@ -49,6 +49,16 @@ class GameViewController: UIViewController, GameViewDelegate, GameDelegate {
         gameView.reloadData()
     }
     
+    override func viewWillTransition(to: CGSize, with: UIViewControllerTransitionCoordinator) {
+        if UIApplication.shared.statusBarOrientation.isPortrait {
+            gameView.isPortrait = false
+        }
+        else {
+            gameView.isPortrait = true
+        }
+        gameView.setNeedsDisplay()
+    }
+    
     func gameView(_ gameView: GameView, currentPlayerTokens col: Int, and row: Int) -> String{
         var cell : String
         switch(game.boards[game.currentPlayer]?[row][col]) {
