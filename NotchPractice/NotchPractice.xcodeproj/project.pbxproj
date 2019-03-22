@@ -7,21 +7,23 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5434425C222DF72400E0E7CB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5434425B222DF72400E0E7CB /* AppDelegate.swift */; };
-		5434425E222DF72400E0E7CB /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5434425D222DF72400E0E7CB /* ViewController.swift */; };
-		54344263222DF72700E0E7CB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 54344262222DF72700E0E7CB /* Assets.xcassets */; };
+		54ACCEC72240648B0098C314 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54ACCEC62240648B0098C314 /* AppDelegate.swift */; };
+		54ACCEC92240648B0098C314 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54ACCEC82240648B0098C314 /* ViewController.swift */; };
+		54ACCECE2240648F0098C314 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 54ACCECD2240648F0098C314 /* Assets.xcassets */; };
+		54ACCED12240648F0098C314 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 54ACCECF2240648F0098C314 /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		54344258222DF72400E0E7CB /* WebScrapper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WebScrapper.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		5434425B222DF72400E0E7CB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		5434425D222DF72400E0E7CB /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		54344262222DF72700E0E7CB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		54344267222DF72700E0E7CB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		54ACCEC32240648B0098C314 /* NotchPractice.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NotchPractice.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		54ACCEC62240648B0098C314 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		54ACCEC82240648B0098C314 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		54ACCECD2240648F0098C314 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		54ACCED02240648F0098C314 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		54ACCED22240648F0098C314 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		54344255222DF72400E0E7CB /* Frameworks */ = {
+		54ACCEC02240648B0098C314 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -31,69 +33,70 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		5434424F222DF72400E0E7CB = {
+		54ACCEBA2240648A0098C314 = {
 			isa = PBXGroup;
 			children = (
-				5434425A222DF72400E0E7CB /* WebScrapper */,
-				54344259222DF72400E0E7CB /* Products */,
+				54ACCEC52240648B0098C314 /* NotchPractice */,
+				54ACCEC42240648B0098C314 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		54344259222DF72400E0E7CB /* Products */ = {
+		54ACCEC42240648B0098C314 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				54344258222DF72400E0E7CB /* WebScrapper.app */,
+				54ACCEC32240648B0098C314 /* NotchPractice.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		5434425A222DF72400E0E7CB /* WebScrapper */ = {
+		54ACCEC52240648B0098C314 /* NotchPractice */ = {
 			isa = PBXGroup;
 			children = (
-				5434425B222DF72400E0E7CB /* AppDelegate.swift */,
-				5434425D222DF72400E0E7CB /* ViewController.swift */,
-				54344262222DF72700E0E7CB /* Assets.xcassets */,
-				54344267222DF72700E0E7CB /* Info.plist */,
+				54ACCEC62240648B0098C314 /* AppDelegate.swift */,
+				54ACCEC82240648B0098C314 /* ViewController.swift */,
+				54ACCECD2240648F0098C314 /* Assets.xcassets */,
+				54ACCECF2240648F0098C314 /* LaunchScreen.storyboard */,
+				54ACCED22240648F0098C314 /* Info.plist */,
 			);
-			path = WebScrapper;
+			path = NotchPractice;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		54344257222DF72400E0E7CB /* WebScrapper */ = {
+		54ACCEC22240648B0098C314 /* NotchPractice */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 5434426A222DF72700E0E7CB /* Build configuration list for PBXNativeTarget "WebScrapper" */;
+			buildConfigurationList = 54ACCED52240648F0098C314 /* Build configuration list for PBXNativeTarget "NotchPractice" */;
 			buildPhases = (
-				54344254222DF72400E0E7CB /* Sources */,
-				54344255222DF72400E0E7CB /* Frameworks */,
-				54344256222DF72400E0E7CB /* Resources */,
+				54ACCEBF2240648B0098C314 /* Sources */,
+				54ACCEC02240648B0098C314 /* Frameworks */,
+				54ACCEC12240648B0098C314 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = WebScrapper;
-			productName = WebScrapper;
-			productReference = 54344258222DF72400E0E7CB /* WebScrapper.app */;
+			name = NotchPractice;
+			productName = NotchPractice;
+			productReference = 54ACCEC32240648B0098C314 /* NotchPractice.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		54344250222DF72400E0E7CB /* Project object */ = {
+		54ACCEBB2240648B0098C314 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1010;
 				LastUpgradeCheck = 1010;
 				ORGANIZATIONNAME = "Brandon Ward";
 				TargetAttributes = {
-					54344257222DF72400E0E7CB = {
+					54ACCEC22240648B0098C314 = {
 						CreatedOnToolsVersion = 10.1;
 					};
 				};
 			};
-			buildConfigurationList = 54344253222DF72400E0E7CB /* Build configuration list for PBXProject "WebScrapper" */;
+			buildConfigurationList = 54ACCEBE2240648B0098C314 /* Build configuration list for PBXProject "NotchPractice" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -101,41 +104,53 @@
 				en,
 				Base,
 			);
-			mainGroup = 5434424F222DF72400E0E7CB;
-			productRefGroup = 54344259222DF72400E0E7CB /* Products */;
+			mainGroup = 54ACCEBA2240648A0098C314;
+			productRefGroup = 54ACCEC42240648B0098C314 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				54344257222DF72400E0E7CB /* WebScrapper */,
+				54ACCEC22240648B0098C314 /* NotchPractice */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		54344256222DF72400E0E7CB /* Resources */ = {
+		54ACCEC12240648B0098C314 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				54344263222DF72700E0E7CB /* Assets.xcassets in Resources */,
+				54ACCED12240648F0098C314 /* LaunchScreen.storyboard in Resources */,
+				54ACCECE2240648F0098C314 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		54344254222DF72400E0E7CB /* Sources */ = {
+		54ACCEBF2240648B0098C314 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5434425E222DF72400E0E7CB /* ViewController.swift in Sources */,
-				5434425C222DF72400E0E7CB /* AppDelegate.swift in Sources */,
+				54ACCEC92240648B0098C314 /* ViewController.swift in Sources */,
+				54ACCEC72240648B0098C314 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXVariantGroup section */
+		54ACCECF2240648F0098C314 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				54ACCED02240648F0098C314 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
 /* Begin XCBuildConfiguration section */
-		54344268222DF72700E0E7CB /* Debug */ = {
+		54ACCED32240648F0098C314 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -196,7 +211,7 @@
 			};
 			name = Debug;
 		};
-		54344269222DF72700E0E7CB /* Release */ = {
+		54ACCED42240648F0098C314 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -251,36 +266,36 @@
 			};
 			name = Release;
 		};
-		5434426B222DF72700E0E7CB /* Debug */ = {
+		54ACCED62240648F0098C314 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 534QMCJ57L;
-				INFOPLIST_FILE = WebScrapper/Info.plist;
+				INFOPLIST_FILE = NotchPractice/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.brandonward.WebScrapper;
+				PRODUCT_BUNDLE_IDENTIFIER = com.brandonward.NotchPractice;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
-		5434426C222DF72700E0E7CB /* Release */ = {
+		54ACCED72240648F0098C314 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 534QMCJ57L;
-				INFOPLIST_FILE = WebScrapper/Info.plist;
+				INFOPLIST_FILE = NotchPractice/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.brandonward.WebScrapper;
+				PRODUCT_BUNDLE_IDENTIFIER = com.brandonward.NotchPractice;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -290,25 +305,25 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		54344253222DF72400E0E7CB /* Build configuration list for PBXProject "WebScrapper" */ = {
+		54ACCEBE2240648B0098C314 /* Build configuration list for PBXProject "NotchPractice" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				54344268222DF72700E0E7CB /* Debug */,
-				54344269222DF72700E0E7CB /* Release */,
+				54ACCED32240648F0098C314 /* Debug */,
+				54ACCED42240648F0098C314 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		5434426A222DF72700E0E7CB /* Build configuration list for PBXNativeTarget "WebScrapper" */ = {
+		54ACCED52240648F0098C314 /* Build configuration list for PBXNativeTarget "NotchPractice" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				5434426B222DF72700E0E7CB /* Debug */,
-				5434426C222DF72700E0E7CB /* Release */,
+				54ACCED62240648F0098C314 /* Debug */,
+				54ACCED72240648F0098C314 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 54344250222DF72400E0E7CB /* Project object */;
+	rootObject = 54ACCEBB2240648B0098C314 /* Project object */;
 }

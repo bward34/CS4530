@@ -1,8 +1,8 @@
 //
 //  AppDelegate.swift
-//  WebScrapper
+//  NotchPractice
 //
-//  Created by Brandon Ward on 3/4/19.
+//  Created by Brandon Ward on 3/18/19.
 //  Copyright © 2019 Brandon Ward. All rights reserved.
 //
 
@@ -16,10 +16,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
-        window = UIWindow(frame: UIScreen.main.bounds)
-        window?.rootViewController = ViewController()
-        window?.makeKeyAndVisible()
-        
         return true
     }
 
