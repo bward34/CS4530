@@ -1,6 +1,6 @@
 //
 //  HomeViewController.swift
-//  Project3
+//  Project3 - Project4
 //
 //  Created by Brandon Ward on 3/3/19.
 //  Copyright © 2019 Brandon Ward. All rights reserved.
@@ -37,10 +37,11 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
             }
             print(dataString)
            self?.lobbyGames = try! JSONDecoder().decode([LobbyGame].self, from: data)
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [weak self] in
                 self?.homeView.homeTableView.reloadData()
             }
-        }.resume()
+        }
+        task.resume()
         
         if !UserDefaults.standard.bool(forKey: "hasLoggedIn") {
             UserDefaults.standard.set(true, forKey: "hasLoggedIn")
@@ -71,10 +72,12 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     @objc func newGame() {
-        let newGameViewController = GameViewController()
-        gamesList.insert(newGameViewController.game, at: 0)
-        newGameViewController.gameIndex = 0
-        newGameViewController.gamesList = gamesList
+//        let newGameViewController = GameViewController()
+//        gamesList.insert(newGameViewController.game, at: 0)
+//        newGameViewController.gameIndex = 0
+//        newGameViewController.gamesList = gamesList
+//        present(newGameViewController, animated: true, completion: nil)
+        let newGameViewController = NewGameViewController()
         present(newGameViewController, animated: true, completion: nil)
     }
     
