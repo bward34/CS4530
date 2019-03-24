@@ -54,6 +54,7 @@ class NewGameViewController: UIViewController, UITextFieldDelegate {
                     fatalError("no data to work with")
             }
             print(dataString)
+            
         }
         task.resume()
         newGameView.playerNameField.endEditing(true)

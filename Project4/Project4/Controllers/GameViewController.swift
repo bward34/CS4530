@@ -10,14 +10,36 @@ import UIKit
 
 class GameViewController: UIViewController, GameViewDelegate, GameDelegate {
     
-    var gamesList : [Game] = []
-    var game: Game
+    var game : Game
+    var gameId : String?
+    var nameId : String?
+    
     var gameIndex : Int = 0
+    var gamesList : [Game] = []
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         game = Game()
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         game.delegate = self
+        
+        let webURL = URL(string: "http://174.23.159.139:2142/api/games/b3feb43e-a998-4d14-94eb-df12dc41bd33/boards?playerId=7776d3b6-7887-40b2-a9bc-2a4f47dd5e1f")!
+        let task = URLSession.shared.dataTask(with: webURL) { [weak self] (data, response, error) in
+            guard error == nil else {
+                fatalError("URL dataTask failed: \(error!)")
+            }
+            guard let data = data,
+                let dataString = String(bytes: data, encoding: .utf8)
+                else {
+                    fatalError("no data to work with")
+            }
+            print(dataString)
+            self?.game = try! JSONDecoder().decode(Game.self, from: data)
+            DispatchQueue.main.async { [weak self] in
+                self?.gameView.reloadData()
+            }
+        }
+        task.resume()
+        
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -40,13 +62,13 @@ class GameViewController: UIViewController, GameViewDelegate, GameDelegate {
     
     override func viewWillAppear(_ animated: Bool) {
         let documentsDirectory = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
-        do {
-            try gamesList.save(to: documentsDirectory.appendingPathComponent(Constants.gamesList))
-        } catch let error where error is Game.Error {
-            print(error)
-        } catch {
-              print(error)
-        }
+//        do {
+//            try gamesList.save(to: documentsDirectory.appendingPathComponent(Constants.gamesList))
+//        } catch let error where error is Game.Error {
+//            print(error)
+//        } catch {
+//              print(error)
+//        }
         gameView.reloadData()
     }
     
@@ -63,7 +85,7 @@ class GameViewController: UIViewController, GameViewDelegate, GameDelegate {
     
     func gameView(_ gameView: GameView, currentPlayerTokens col: Int, and row: Int) -> String{
         var cell : String
-        switch(game.boards[game.currentPlayer]?[row][col]) {
+        switch(game.boards[Game.Token.playerBoard]?[row][col]) {
         case .water?: cell = ""
             break
         case .hit?: cell = "✅"
@@ -87,7 +109,7 @@ class GameViewController: UIViewController, GameViewDelegate, GameDelegate {
     }
     
     func gameView(_ gameView: GameView, otherPlayerTokens col: Int, and row: Int) -> String{
-        let player : Game.Token = game.currentPlayer == .player1 ? Game.Token.player2 : Game.Token.player1
+        let player : Game.Token = Game.Token.opponentBoard
         var cell : String
         switch game.boards[player]?[row][col] {
         case .water?: cell = ""
@@ -111,26 +133,26 @@ class GameViewController: UIViewController, GameViewDelegate, GameDelegate {
         newSwitchViewController.currentGame = game
         gamesList[gameIndex] = game
         let documentsDirectory = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
-        do {
-            try gamesList.save(to: documentsDirectory.appendingPathComponent(Constants.gamesList))
-        } catch let error where error is Game.Error {
-              print(error)
-        } catch {
-              print(error)
-        }
+//        do {
+//            try gamesList.save(to: documentsDirectory.appendingPathComponent(Constants.gamesList))
+//        } catch let error where error is Game.Error {
+//              print(error)
+//        } catch {
+//              print(error)
+//        }
       present(newSwitchViewController, animated: true, completion: nil)
     }
     
     func gameView(_ gameView: GameView) {
-        gamesList[gameIndex] = game
-        let documentsDirectory = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
-        do {
-            try gamesList.save(to: documentsDirectory.appendingPathComponent(Constants.gamesList))
-        } catch let error where error is Game.Error {
-            print(error)
-        } catch {
-            print(error)
-        }
+//        gamesList[gameIndex] = game
+//        let documentsDirectory = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+//        do {
+//            try gamesList.save(to: documentsDirectory.appendingPathComponent(Constants.gamesList))
+//        } catch let error where error is Game.Error {
+//            print(error)
+//        } catch {
+//            print(error)
+//        }
         dismiss(animated: true, completion: nil)
     }
     

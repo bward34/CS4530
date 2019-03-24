@@ -43,22 +43,22 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
         task.resume()
         
-        if !UserDefaults.standard.bool(forKey: "hasLoggedIn") {
-            UserDefaults.standard.set(true, forKey: "hasLoggedIn")
-            let documentsDirectory = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
-            do {
-                try gamesList.save(to: documentsDirectory.appendingPathComponent(Constants.gamesList))
-            } catch let error where error is Game.Error {
-                  print(error)
-            } catch {
-                print(error)
-            }
-        }
-        else {
-            let documentDirectory = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
-            let jsonData = try! Data(contentsOf: documentDirectory.appendingPathComponent(Constants.gamesList))
-            gamesList = try! JSONDecoder().decode([Game].self, from: jsonData)
-        }
+//        if !UserDefaults.standard.bool(forKey: "hasLoggedIn") {
+//            UserDefaults.standard.set(true, forKey: "hasLoggedIn")
+//            let documentsDirectory = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+//            do {
+//                try gamesList.save(to: documentsDirectory.appendingPathComponent(Constants.gamesList))
+//            } catch let error where error is Game.Error {
+//                  print(error)
+//            } catch {
+//                print(error)
+//            }
+//        }
+//        else {
+//            let documentDirectory = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+//            let jsonData = try! Data(contentsOf: documentDirectory.appendingPathComponent(Constants.gamesList))
+//            gamesList = try! JSONDecoder().decode([Game].self, from: jsonData)
+//        }
         super.viewDidLoad()
         homeView.delegate = self
         homeView.homeTableView.delegate = self
@@ -115,7 +115,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let newGameController = GameViewController()
-        newGameController.game = gamesList[indexPath.row]
+    //    newGameController.game = gamesList[indexPath.row]
         newGameController.gameIndex = indexPath.row
         newGameController.gamesList = gamesList
         present(newGameController, animated: true, completion: nil)

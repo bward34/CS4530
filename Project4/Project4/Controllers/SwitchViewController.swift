@@ -21,19 +21,19 @@ class SwitchViewController: UIViewController {
         
         if currentGame?.winner != Game.Token.none {
             switchView.hitMissLabel.text = "GAME!"
-            let player = currentGame?.winner == Game.Token.player1 ? "Player 1" : "Player 2"
-            switchView.playerLabel.text = "\(player) wins!"
+           // let player = currentGame?.winner == Game.Token.player1 ? "Player 1" : "Player 2"
+            switchView.playerLabel.text = " wins!"
             switchView.backgroundColor = UIColor.green
         }
         else {
-            if currentGame?.currentPlayer == .player1 {
-                switchView.playerLabel.text = "It's Player 1's turn!"
-            }
-            else {
-                switchView.playerLabel.text = "It's Player 2's turn!"
-            }
-            switchView.hitMissLabel.text = currentGame?.hitOrMiss
-            
+//            if currentGame?.currentPlayer == cu {
+//                switchView.playerLabel.text = "It's Player 1's turn!"
+//            }
+//            else {
+//                switchView.playerLabel.text = "It's Player 2's turn!"
+//            }
+//            switchView.hitMissLabel.text = currentGame?.hitOrMiss
+//            
             if(currentGame?.hitOrMiss == "HIT!") {
                 switchView.backgroundColor = UIColor.green
             }
