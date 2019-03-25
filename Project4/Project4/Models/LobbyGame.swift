@@ -34,15 +34,7 @@ class LobbyGame: Codable {
 }
 
 extension Array where Element == LobbyGame {
-//    func save(to url: URL) throws {
-//        guard let jsonData = try? JSONEncoder().encode(self) else {
-//            throw LobbyGame.Error.encoding
-//        }
-//        guard (try? jsonData.write(to: url)) != nil else {
-//            throw LobbyGame.Error.writing
-//        }
-//    }
-    
+
     init(from url: URL) throws {
         let jsonData = try! Data(contentsOf: url)
         self = try JSONDecoder().decode([LobbyGame].self, from: jsonData)

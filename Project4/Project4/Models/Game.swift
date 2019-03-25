@@ -24,11 +24,7 @@ class Game: Decodable {
         case opponentBoard
         case playerBoard
         case water
-        case ship5
-        case ship4
-        case ship3
-        case ship2_2
-        case ship2_1
+        case ship
         case hit
         case miss
         case none
@@ -38,17 +34,17 @@ class Game: Decodable {
     
     private var player1Board : [[Token]] = [[]]
     private var player2Board : [[Token]] = [[]]
-    private var shipCount : [Token : [ Token : Int ]] = [.playerBoard : [:], .opponentBoard : [:]]
+    //private var shipCount : [Token : [ Token : Int ]] = [.playerBoard : [:], .opponentBoard : [:]]
     
-    var shipsSunk : [Token : [ Token : Bool]] = [.playerBoard : [:], .opponentBoard : [:]]
+    //var shipsSunk : [Token : [ Token : Bool]] = [.playerBoard : [:], .opponentBoard : [:]]
     var boards : [Token : [[Token]]] = [.playerBoard : [], .opponentBoard : []]
-    var currentPlayer : Token = .none
-    var winner : Token = .none
-    var hitOrMiss : String = ""
+    //var currentPlayer : Token = .none
+    //var winner : Token = .none
+    //var hitOrMiss : String = ""
     
     init() {
-        currentPlayer = .opponentBoard
-        winner = .none
+        //currentPlayer = .opponentBoard
+        //winner = .none
         
         //initalize board with 10 X 10 of water
         player1Board = [
@@ -80,7 +76,7 @@ class Game: Decodable {
 //                     .player2 : [.ship5 : 5, .ship4 : 4, .ship3 : 3, .ship2_2 : 2, .ship2_1 : 2]]
 //        shipsSunk = [.player1 : [.ship5 : false, .ship4 : false, .ship3 : false, .ship2_2 : false, .ship2_1 : false],
 //                     .player2 : [.ship5 : false, .ship4 : false, .ship3 : false, .ship2_2 : false, .ship2_1 : false]]
-        hitOrMiss = ""
+        //hitOrMiss = ""
     }
     
 //    /**
@@ -294,20 +290,8 @@ class Game: Decodable {
             case "MISS":
                 token = .miss
                 break
-            case "BATTLESHIP":
-                token = .ship5
-                break
-            case "DESTROYER":
-                token = .ship4
-                break
-            case "CARRIER":
-                token = .ship3
-                break
-            case "SUBMARINE":
-                token = .ship2_2
-                break
-            case "CRUISER":
-                token = .ship2_1
+            case "SHIP":
+                token = .ship
                 break
             default:
                 token = .water

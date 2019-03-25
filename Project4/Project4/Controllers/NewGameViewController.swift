@@ -10,6 +10,8 @@ import UIKit
 
 class NewGameViewController: UIViewController, UITextFieldDelegate {
     
+    var guidList: [String : String] = [:]
+    
     var newGameView: NewGameView {
         return view as! NewGameView
     }
@@ -29,12 +31,11 @@ class NewGameViewController: UIViewController, UITextFieldDelegate {
     }
     
     @objc func createGame() {
-        print(newGameView.playerNameField.text!)
         let webURL = URL(string: "http://174.23.159.139:2142/api/lobby")!
         
         var postRequest = URLRequest(url: webURL)
         postRequest.httpMethod = "POST"
-        let dataString: [String: Any] = ["gameName": "Brandon's Game 3", "playerName": newGameView.playerNameField.text!]
+        let dataString: [String: Any] = ["gameName": newGameView.gameNameField.text!, "playerName": newGameView.playerNameField.text!]
         let jsonData: Data
         do {
             jsonData = try JSONSerialization.data(withJSONObject: dataString, options: [])
@@ -54,10 +55,28 @@ class NewGameViewController: UIViewController, UITextFieldDelegate {
                     fatalError("no data to work with")
             }
             print(dataString)
-            
+            if let guidData = try! JSONSerialization.jsonObject(with: data, options: []) as? [String : String] {
+                DispatchQueue.main.async { [weak self] in
+                    self?.guidList.updateValue(guidData["playerId"]!, forKey: guidData["gameId"]!)
+                    self?.saveGuids()
+                    self?.newGameView.playerNameField.endEditing(true)
+                    self?.dismiss(animated: true, completion: nil)
+                }
+            }
         }
         task.resume()
-        newGameView.playerNameField.endEditing(true)
+    }
+    
+    func saveGuids() {
+        let documentsDirectory = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+        do {
+            guard let jsonData = try? JSONEncoder().encode(guidList) else {
+                fatalError("Error when encoding")
+            }
+            guard (try? jsonData.write(to: documentsDirectory.appendingPathComponent(Constants.gamesList))) != nil else {
+                fatalError("Error when writing")
+            }
+        }
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {

@@ -12,6 +12,8 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     var gamesList : [Game] = []
     var lobbyGames : [LobbyGame] = []
+    var guidList : [String: String] = [:]
+    
     func homeView(_ homeView: HomeView) {
     }
     
@@ -24,41 +26,8 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     override func viewDidLoad() {
-        
-        let webURL = URL(string: "http://174.23.159.139:2142/api/lobby")!
-        let task = URLSession.shared.dataTask(with: webURL) { [weak self] (data, response, error) in
-            guard error == nil else {
-                fatalError("URL dataTask failed: \(error!)")
-            }
-            guard let data = data,
-                let dataString = String(bytes: data, encoding: .utf8)
-                else {
-                    fatalError("no data to work with")
-            }
-            print(dataString)
-           self?.lobbyGames = try! JSONDecoder().decode([LobbyGame].self, from: data)
-            DispatchQueue.main.async { [weak self] in
-                self?.homeView.homeTableView.reloadData()
-            }
-        }
-        task.resume()
-        
-//        if !UserDefaults.standard.bool(forKey: "hasLoggedIn") {
-//            UserDefaults.standard.set(true, forKey: "hasLoggedIn")
-//            let documentsDirectory = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
-//            do {
-//                try gamesList.save(to: documentsDirectory.appendingPathComponent(Constants.gamesList))
-//            } catch let error where error is Game.Error {
-//                  print(error)
-//            } catch {
-//                print(error)
-//            }
-//        }
-//        else {
-//            let documentDirectory = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
-//            let jsonData = try! Data(contentsOf: documentDirectory.appendingPathComponent(Constants.gamesList))
-//            gamesList = try! JSONDecoder().decode([Game].self, from: jsonData)
-//        }
+        loadGames()
+        encodDecodeGuids()
         super.viewDidLoad()
         homeView.delegate = self
         homeView.homeTableView.delegate = self
@@ -67,18 +36,59 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         homeView.homeTableView.reloadData()
     }
     
-    override func viewWillAppear(_ animated: Bool) {  
-        homeView.homeTableView.reloadData()
+    override func viewWillAppear(_ animated: Bool) {
+        encodDecodeGuids()
+        loadGames()
     }
     
     @objc func newGame() {
-//        let newGameViewController = GameViewController()
-//        gamesList.insert(newGameViewController.game, at: 0)
-//        newGameViewController.gameIndex = 0
-//        newGameViewController.gamesList = gamesList
-//        present(newGameViewController, animated: true, completion: nil)
         let newGameViewController = NewGameViewController()
+        newGameViewController.guidList = guidList
         present(newGameViewController, animated: true, completion: nil)
+    }
+    
+    func loadGames() {
+        let webURL = URL(string: "http://174.23.159.139:2142/api/lobby")!
+        let task = URLSession.shared.dataTask(with: webURL) { [weak self] (data, response, error) in
+            guard error == nil else {
+                print("URL dataTask failed: \(error!)")
+                return
+            }
+            guard let data = data,
+                let _ = String(bytes: data, encoding: .utf8)
+                else {
+                    fatalError("no data to work with")
+            }
+            self?.lobbyGames = try! JSONDecoder().decode([LobbyGame].self, from: data)
+            DispatchQueue.main.async { [weak self] in
+                self?.homeView.homeTableView.reloadData()
+            }
+        }
+        task.resume()
+    }
+    
+    func encodDecodeGuids() {
+        if !UserDefaults.standard.bool(forKey: "hasLoggedIn") {
+            UserDefaults.standard.set(true, forKey: "hasLoggedIn")
+            let documentsDirectory = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+            do {
+                guard let jsonData = try? JSONEncoder().encode(guidList) else {
+                    throw Game.Error.encoding
+                }
+                guard (try? jsonData.write(to: documentsDirectory.appendingPathComponent(Constants.gamesList))) != nil else {
+                    throw Game.Error.writing
+                }
+            } catch let error where error is Game.Error {
+                print(error)
+            } catch {
+                print(error)
+            }
+        }
+        else {
+            let documentDirectory = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+            let jsonData = try! Data(contentsOf: documentDirectory.appendingPathComponent(Constants.gamesList))
+            guidList = try! JSONDecoder().decode([String : String].self, from: jsonData)
+        }
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -94,42 +104,17 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         cell.textLabel?.text = lobbyGames[indexPath.row].name
         cell.detailTextLabel?.text = lobbyGames[indexPath.row].status
-//        var gameProgress : String = ""
-//        if gamesList[indexPath.row].winner != Game.Token.none {
-//            let winner : String = gamesList[indexPath.row].winner == Game.Token.player1 ? "Player 1" : "Player 2"
-//            gameProgress = "Complete - Winner: \(winner)"
-//            cell.textLabel?.textColor = .green
-//        }
-//        else {
-//            let currentPlayer : String = gamesList[indexPath.row].currentPlayer == Game.Token.player1 ? "P1" : "P2"
-//            gameProgress = "In Progress - Current Player: \(currentPlayer)"
-//            cell.textLabel?.textColor = .red
-//
-//        }
-//        cell.backgroundColor = .white
-//        cell.detailTextLabel?.text = "P1 Ships: \(getShipsNotSunk(shipsSunk: gamesList[indexPath.row].shipsSunk[Game.Token.player1]!)) P2 Ships: \(getShipsNotSunk(shipsSunk: gamesList[indexPath.row].shipsSunk[Game.Token.player2]!))"
-//        cell.detailTextLabel?.font = UIFont(name: "HelveticaNeue", size: 10)
-//        cell.textLabel?.font = UIFont(name: "HelveticaNeue", size: 10)
-//        cell.textLabel?.text = gameProgress
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let newGameController = GameViewController()
-    //    newGameController.game = gamesList[indexPath.row]
-        newGameController.gameIndex = indexPath.row
-        newGameController.gamesList = gamesList
-        present(newGameController, animated: true, completion: nil)
-    }
-    
-    func getShipsNotSunk(shipsSunk : [Game.Token : Bool]) -> Int {
-        var count = 0
-        for(_, sunk) in shipsSunk {
-            if !sunk {
-                count += 1
-            }
+
+        let gameSelected: LobbyGame = lobbyGames[indexPath.row]
+        if guidList[gameSelected.id] != nil {
+            let selectedGameController = GameViewController()
+            selectedGameController.gameId = gameSelected.id
+            selectedGameController.playerId = guidList[gameSelected.id]!
+            selectedGameController.status = gameSelected.status
+            present(selectedGameController, animated: true, completion: nil)
         }
-        return count
     }
-    
-    
 }

@@ -11,35 +11,27 @@ import UIKit
 class GameViewController: UIViewController, GameViewDelegate, GameDelegate {
     
     var game : Game
-    var gameId : String?
-    var nameId : String?
-    
-    var gameIndex : Int = 0
-    var gamesList : [Game] = []
+    var gameId : String
+    var playerId : String
+    var status : String
+    var winner : String
+    var myTurn : Bool
+    var statusTimer : Timer
+    var turnTimer: Timer
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         game = Game()
+        gameId = ""
+        playerId = ""
+        status = ""
+        myTurn = true
+        winner = ""
+        statusTimer = Timer()
+        turnTimer = Timer()
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+        statusTimer = Timer.scheduledTimer(timeInterval: 2.5, target: self, selector: #selector(getGameStatus), userInfo: nil, repeats: true)
+        turnTimer = Timer.scheduledTimer(timeInterval: 2.5, target: self, selector: #selector(getTurnInfo), userInfo: nil, repeats: true)
         game.delegate = self
-        
-        let webURL = URL(string: "http://174.23.159.139:2142/api/games/b3feb43e-a998-4d14-94eb-df12dc41bd33/boards?playerId=7776d3b6-7887-40b2-a9bc-2a4f47dd5e1f")!
-        let task = URLSession.shared.dataTask(with: webURL) { [weak self] (data, response, error) in
-            guard error == nil else {
-                fatalError("URL dataTask failed: \(error!)")
-            }
-            guard let data = data,
-                let dataString = String(bytes: data, encoding: .utf8)
-                else {
-                    fatalError("no data to work with")
-            }
-            print(dataString)
-            self?.game = try! JSONDecoder().decode(Game.self, from: data)
-            DispatchQueue.main.async { [weak self] in
-                self?.gameView.reloadData()
-            }
-        }
-        task.resume()
-        
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -55,20 +47,15 @@ class GameViewController: UIViewController, GameViewDelegate, GameDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        loadGameBoards()
+        getTurnInfo()
+        getGameStatus()
         game.delegate = self
         gameView.dataSource = self
         gameView.reloadData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        let documentsDirectory = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
-//        do {
-//            try gamesList.save(to: documentsDirectory.appendingPathComponent(Constants.gamesList))
-//        } catch let error where error is Game.Error {
-//            print(error)
-//        } catch {
-//              print(error)
-//        }
         gameView.reloadData()
     }
     
@@ -92,15 +79,7 @@ class GameViewController: UIViewController, GameViewDelegate, GameDelegate {
             break
         case .miss?: cell = "❌"
             break
-        case .ship2_1?: cell = "🚤"
-            break
-        case .ship2_2?: cell = "🛥"
-            break
-        case .ship3?: cell = "🛳"
-            break
-        case .ship4?: cell = "🚢"
-            break
-        case .ship5?: cell = "⛴"
+        case .ship?: cell = "⛴"
             break
         default: cell = ""
         }
@@ -125,35 +104,144 @@ class GameViewController: UIViewController, GameViewDelegate, GameDelegate {
     }
     
     func gameView(_ gameView: GameView, cellTouchedAt col: Int, and row: Int) {
-        game.takeTurn(at: col, and: row)
+        
+        if status != "WAITING" && myTurn == true {
+            let webURL = URL(string: "http://174.23.159.139:2142/api/games/\(gameId)")!
+            var postRequest = URLRequest(url: webURL)
+            postRequest.httpMethod = "POST"
+            let dataString: [String: Any] = ["playerId": playerId, "xPos": row, "yPos": col]
+            let jsonData: Data
+            do {
+                jsonData = try JSONSerialization.data(withJSONObject: dataString, options: [])
+                postRequest.httpBody = jsonData
+            } catch {
+                print("Error: can not create json string")
+                return
+            }
+            
+            let task = URLSession.shared.dataTask(with: postRequest) { [weak self] (data, response, error) in
+                guard error == nil else {
+                    fatalError("URL failed: \(error!)")
+                }
+                guard let data = data,
+                    let dataString = String(bytes: data, encoding: .utf8)
+                    else {
+                        fatalError("no data to work with")
+                }
+                print(dataString)
+                if let hitMissInfo = try! JSONSerialization.jsonObject(with: data, options: []) as? [String : Any] {
+                    DispatchQueue.main.async { [weak self] in
+                        let hit = hitMissInfo["hit"] as! Bool
+                        let sunk = hitMissInfo["shipSunk"] as! Int
+                        let newSwitchViewController: SwitchViewController = SwitchViewController()
+                        if sunk != 0 {
+                            newSwitchViewController.hitMiss = "SUNK!"
+                        }
+                        else if !hit {
+                            newSwitchViewController.hitMiss = "MISS!"
+                        }
+                        else {
+                            newSwitchViewController.hitMiss = "HIT!"
+                        }
+                        self?.loadGameBoards()
+                        self?.turnTimer = Timer.scheduledTimer(timeInterval: 2.5, target: self!, selector: #selector(self?.getTurnInfo), userInfo: nil, repeats: true)
+                        self?.present(newSwitchViewController, animated: true, completion: nil)
+                        
+                    }
+                }
+                
+            }
+            task.resume()
+        }
     }
     
     func game(_ game: Game, cellChangedAt col: Int, and row: Int) {
-        let newSwitchViewController: SwitchViewController = SwitchViewController()
-        newSwitchViewController.currentGame = game
-        gamesList[gameIndex] = game
-        let documentsDirectory = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
-//        do {
-//            try gamesList.save(to: documentsDirectory.appendingPathComponent(Constants.gamesList))
-//        } catch let error where error is Game.Error {
-//              print(error)
-//        } catch {
-//              print(error)
-//        }
+      let newSwitchViewController: SwitchViewController = SwitchViewController()
       present(newSwitchViewController, animated: true, completion: nil)
     }
     
     func gameView(_ gameView: GameView) {
-//        gamesList[gameIndex] = game
-//        let documentsDirectory = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
-//        do {
-//            try gamesList.save(to: documentsDirectory.appendingPathComponent(Constants.gamesList))
-//        } catch let error where error is Game.Error {
-//            print(error)
-//        } catch {
-//            print(error)
-//        }
+        turnTimer.invalidate()
+        statusTimer.invalidate()
         dismiss(animated: true, completion: nil)
     }
     
+    func loadGameBoards() {
+        let webURL = URL(string: "http://174.23.159.139:2142/api/games/\(gameId)/boards?playerId=\(playerId)")!
+        let task = URLSession.shared.dataTask(with: webURL) { [weak self] (data, response, error) in
+            guard error == nil else {
+                fatalError("URL dataTask failed: \(error!)")
+            }
+            guard let data = data,
+                let _ = String(bytes: data, encoding: .utf8)
+                else {
+                    fatalError("no data to work with")
+            }
+            self?.game = try! JSONDecoder().decode(Game.self, from: data)
+            DispatchQueue.main.async { [weak self] in
+                self?.gameView.reloadData()
+            }
+        }
+        task.resume()
+    }
+    
+    @objc func getGameStatus() {
+        let webURL = URL(string: "http://174.23.159.139:2142/api/lobby/\(gameId)")!
+        let task = URLSession.shared.dataTask(with: webURL) { [weak self] (data, response, error) in
+            guard error == nil else {
+                fatalError("URL dataTask failed: \(error!)")
+            }
+            guard let data = data,
+                let dataString = String(bytes: data, encoding: .utf8)
+                else {
+                    fatalError("no data to work with")
+            }
+            print(dataString)
+            if let turnInfo = try! JSONSerialization.jsonObject(with: data, options: []) as? [String : Any] {
+                DispatchQueue.main.async { [weak self] in
+                    self?.status = turnInfo["status"] as! String
+                    if self?.status == "PLAYING" {
+                        self?.statusTimer.invalidate()
+                        self?.gameView.reloadData()
+                    }
+                    else {
+                        self?.gameView.infoLabel.text = "Waiting..."
+                    }
+                    self?.gameView.reloadData()
+                }
+            }
+        }
+        task.resume()
+    }
+    
+   @objc func getTurnInfo() {
+        let webURL = URL(string: "http://174.23.159.139:2142/api/games/\(gameId)?playerId=\(playerId)")!
+        let task = URLSession.shared.dataTask(with: webURL) { [weak self] (data, response, error) in
+            guard error == nil else {
+                fatalError("URL dataTask failed: \(error!)")
+            }
+            guard let data = data,
+                let dataString = String(bytes: data, encoding: .utf8)
+                else {
+                    fatalError("no data to work with")
+            }
+            print(dataString)
+            if let turnInfo = try! JSONSerialization.jsonObject(with: data, options: []) as? [String : Any] {
+                DispatchQueue.main.async { [weak self] in
+                    self?.myTurn = turnInfo["isYourTurn"] as! Bool
+                    self?.winner = turnInfo["winner"] as! String
+                    if (self?.myTurn)! {
+                        self?.gameView.infoLabel.text = "Your turn!"
+                        self?.turnTimer.invalidate()
+                        self?.gameView.reloadData()
+                    }
+                    else if !(self?.myTurn)! && self?.status == "PLAYING" {
+                         self?.gameView.infoLabel.text = "Other player's turn!"
+                    }
+                    self?.gameView.reloadData()
+                }
+            }
+        }
+        task.resume()
+    }
 }

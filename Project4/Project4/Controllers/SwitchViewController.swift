@@ -10,7 +10,7 @@ import UIKit
 
 class SwitchViewController: UIViewController {
     
-    var currentGame : Game?
+    var hitMiss : String = ""
     
     var switchView: SwitchView {
         return view as! SwitchView
@@ -18,33 +18,21 @@ class SwitchViewController: UIViewController {
     
     override func loadView()  {
         view = SwitchView()
-        
-        if currentGame?.winner != Game.Token.none {
-            switchView.hitMissLabel.text = "GAME!"
-           // let player = currentGame?.winner == Game.Token.player1 ? "Player 1" : "Player 2"
-            switchView.playerLabel.text = " wins!"
-            switchView.backgroundColor = UIColor.green
+    }
+    
+    override func viewDidLoad() {
+        if hitMiss == "SUNK!" {
+            switchView.hitMissLabel.text = hitMiss
+            switchView.backgroundColor = .blue
+        }
+        else if hitMiss == "HIT!" {
+            switchView.hitMissLabel.text = hitMiss
+            switchView.backgroundColor = .green
         }
         else {
-//            if currentGame?.currentPlayer == cu {
-//                switchView.playerLabel.text = "It's Player 1's turn!"
-//            }
-//            else {
-//                switchView.playerLabel.text = "It's Player 2's turn!"
-//            }
-//            switchView.hitMissLabel.text = currentGame?.hitOrMiss
-//            
-            if(currentGame?.hitOrMiss == "HIT!") {
-                switchView.backgroundColor = UIColor.green
-            }
-            else if currentGame?.hitOrMiss == "MISS!" {
-                 switchView.backgroundColor = UIColor.red
-            }
-            else {
-                switchView.backgroundColor = UIColor.blue
-            }
+            switchView.hitMissLabel.text = hitMiss
+            switchView.backgroundColor = .red
         }
-        
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {

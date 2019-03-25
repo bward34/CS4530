@@ -11,6 +11,8 @@ import UIKit
 class NewGameView: UIView {
     
     var newGameLabel : UILabel
+    var gameNameLabel: UILabel
+    var gameNameField: UITextField
     var playerNameLabel: UILabel
     var playerNameField: UITextField
     var backLabel : UIButton
@@ -18,12 +20,14 @@ class NewGameView: UIView {
     
     override init(frame: CGRect) {
         playerNameLabel = UILabel()
+        gameNameLabel = UILabel()
+        gameNameField = UITextField()
         newGameLabel = UILabel()
         playerNameField = UITextField()
         backLabel = UIButton()
         createGame = UIButton()
         super.init(frame: frame)
-        backgroundColor = .gray
+        backgroundColor = .lightGray
     }
     
     override func draw(_ rect: CGRect) {
@@ -37,6 +41,16 @@ class NewGameView: UIView {
         newGameLabel.textAlignment = NSTextAlignment.center
         newGameLabel.font = UIFont(name: "HelveticaNeue", size: 35)
         newGameLabel.textColor = .white
+        
+        gameNameLabel.frame = CGRect(x: (frame.width / 2.0) - (200.0 / 2.0), y: frame.height * 0.18, width: 200, height: 50)
+        gameNameLabel.text = "Enter a game name:"
+        gameNameLabel.textAlignment = NSTextAlignment.center
+        gameNameLabel.font = UIFont(name: "HelveticaNeue", size: 15)
+        gameNameLabel.textColor = .white
+        
+        
+        gameNameField.frame = CGRect(x: (frame.width / 2.0) - (200.0 / 2.0), y: frame.height * 0.25, width: 200.0, height: 25.0)
+        gameNameField.backgroundColor = UIColor.white
         
         playerNameLabel.frame = CGRect(x: (frame.width / 2.0) - (200.0 / 2.0), y: frame.height * 0.28, width: 200, height: 50)
         playerNameLabel.text = "Enter your name:"
@@ -54,6 +68,8 @@ class NewGameView: UIView {
         
         addSubview(backLabel)
         addSubview(newGameLabel)
+        addSubview(gameNameLabel)
+        addSubview(gameNameField)
         addSubview(playerNameLabel)
         addSubview(playerNameField)
         addSubview(createGame)

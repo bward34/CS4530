@@ -18,6 +18,7 @@ protocol GameViewDelegate {
 class GameView: UIView {
     
     var backLabel : UIButton
+    var infoLabel : UILabel
     
     /**
      The board that the other player is playing on. The is the current users
@@ -34,6 +35,7 @@ class GameView: UIView {
     
     override init(frame: CGRect) {
         backLabel = UIButton()
+        infoLabel = UILabel()
         super.init(frame: frame)
         backLabel.addTarget(self, action: #selector(goHome), for: UIControl.Event.touchUpInside)
         backgroundColor = UIColor.lightGray
@@ -54,6 +56,12 @@ class GameView: UIView {
         backLabel.backgroundColor = .blue
         backLabel.frame = CGRect(x: frame.origin.x + 5.0, y: frame.origin.y + 20.0, width: 75.0, height: 25.0)
         addSubview(backLabel)
+        
+        infoLabel.frame = CGRect(x: frame.midX - 100, y: frame.origin.y + 10.0, width: 200, height: 50)
+        infoLabel.textAlignment = NSTextAlignment.center
+        infoLabel.font = UIFont(name: "HelveticaNeue", size: 15)
+        infoLabel.textColor = .white
+        addSubview(infoLabel)
         
         //Draw grid lines
         let context = UIGraphicsGetCurrentContext()
