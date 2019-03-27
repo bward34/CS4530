@@ -1,41 +1,44 @@
 //
-//  NewGameController.swift
+//  JoinGameViewController.swift
 //  Project4
 //
-//  Created by Brandon Ward on 3/22/19.
+//  Created by Brandon Ward on 3/26/19.
 //  Copyright © 2019 Brandon Ward. All rights reserved.
 //
 
+import Foundation
+
 import UIKit
 
-class NewGameViewController: UIViewController, UITextFieldDelegate {
+class JoinGameViewController: UIViewController, UITextFieldDelegate {
     
     var guidList: [String : String] = [:]
+    var gameId: String = ""
     
-    var newGameView: NewGameView {
-        return view as! NewGameView
+    var joinGameView: JoinGameView {
+        return view as! JoinGameView
     }
     
     override func loadView() {
-        view = NewGameView()
+        view = JoinGameView()
     }
     
     override func viewDidLoad() {
-        newGameView.backLabel.addTarget(self, action: #selector(goHome), for: UIControl.Event.touchUpInside)
-        newGameView.createGame.addTarget(self, action: #selector(createGame), for: UIControl.Event.touchUpInside)
-        newGameView.playerNameField.delegate = self
+        joinGameView.backLabel.addTarget(self, action: #selector(goHome), for: UIControl.Event.touchUpInside)
+        joinGameView.joinGame.addTarget(self, action: #selector(joinGame), for: UIControl.Event.touchUpInside)
+        joinGameView.playerNameField.delegate = self
     }
     
     @objc func goHome(){
         dismiss(animated: true, completion: nil)
     }
     
-    @objc func createGame() {
-        let webURL = URL(string: "http://174.23.159.139:2142/api/lobby")!
+    @objc func joinGame() {
+        let webURL = URL(string: "http://174.23.159.139:2142/api/lobby/\(gameId)")!
         
         var postRequest = URLRequest(url: webURL)
-        postRequest.httpMethod = "POST"
-        let dataString: [String: Any] = ["gameName": newGameView.gameNameField.text!, "playerName": newGameView.playerNameField.text!]
+        postRequest.httpMethod = "PUT"
+        let dataString: [String: Any] = ["playerName": joinGameView.playerNameField.text!, "id" : gameId]
         let jsonData: Data
         do {
             jsonData = try JSONSerialization.data(withJSONObject: dataString, options: [])
@@ -57,14 +60,14 @@ class NewGameViewController: UIViewController, UITextFieldDelegate {
             print(dataString)
             if let guidData = try! JSONSerialization.jsonObject(with: data, options: []) as? [String : String] {
                 DispatchQueue.main.async { [weak self] in
-                    self?.guidList.updateValue(guidData["playerId"]!, forKey: guidData["gameId"]!)
+                    self?.guidList.updateValue(guidData["playerId"]!, forKey: (self?.gameId)!)
                     self?.saveGuids()
-                    self?.newGameView.playerNameField.endEditing(true)
+                    self?.joinGameView.playerNameField.endEditing(true)
                     let selectedGameController = GameViewController()
-                    selectedGameController.gameId = guidData["gameId"]!
+                    selectedGameController.gameId = (self?.gameId)!
                     selectedGameController.playerId = guidData["playerId"]!
                     self?.present(selectedGameController, animated: true, completion: nil)
-
+                    
                 }
             }
         }
@@ -87,4 +90,5 @@ class NewGameViewController: UIViewController, UITextFieldDelegate {
         self.view.endEditing(true)
         return false
     }
+    
 }

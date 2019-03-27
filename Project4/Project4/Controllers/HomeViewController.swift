@@ -10,7 +10,6 @@ import UIKit
 
 class HomeViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, HomeViewDelegate {
     
-    var gamesList : [Game] = []
     var lobbyGames : [LobbyGame] = []
     var guidList : [String: String] = [:]
     
@@ -27,7 +26,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     override func viewDidLoad() {
         loadGames()
-        encodDecodeGuids()
+        decodeGuids()
         super.viewDidLoad()
         homeView.delegate = self
         homeView.homeTableView.delegate = self
@@ -37,7 +36,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        encodDecodeGuids()
+        decodeGuids()
         loadGames()
     }
     
@@ -67,7 +66,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         task.resume()
     }
     
-    func encodDecodeGuids() {
+    func decodeGuids() {
         if !UserDefaults.standard.bool(forKey: "hasLoggedIn") {
             UserDefaults.standard.set(true, forKey: "hasLoggedIn")
             let documentsDirectory = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
@@ -109,12 +108,23 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 
         let gameSelected: LobbyGame = lobbyGames[indexPath.row]
-        if guidList[gameSelected.id] != nil {
+        if guidList[gameSelected.id] != nil && gameSelected.status != "DONE" {
             let selectedGameController = GameViewController()
             selectedGameController.gameId = gameSelected.id
             selectedGameController.playerId = guidList[gameSelected.id]!
             selectedGameController.status = gameSelected.status
             present(selectedGameController, animated: true, completion: nil)
+        }
+        else if gameSelected.status == "WAITING" {
+            let joinGameContoller = JoinGameViewController()
+            joinGameContoller.guidList = guidList
+            joinGameContoller.gameId = gameSelected.id
+            present(joinGameContoller, animated: true, completion: nil)
+        }
+        else {
+            let gameStatsController = GameStatsViewController()
+            gameStatsController.gameId = gameSelected.id
+            present(gameStatsController, animated: true, completion: nil)
         }
     }
 }

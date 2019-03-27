@@ -9,5 +9,5 @@
 import Foundation
 
 enum Constants {
-    static let gamesList : String = "gamesList.json"
+    static let gamesList : String = "guidsList.json"
 }
