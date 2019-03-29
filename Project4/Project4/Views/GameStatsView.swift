@@ -29,52 +29,53 @@ class GameStatsView: UIView {
         status = UILabel()
         missles = UILabel()
         super.init(frame: frame)
-        backgroundColor = .lightGray
+        backgroundColor = .blue
     }
     
     override func draw(_ rect: CGRect) {
         
-        gameDetailLabel.frame = CGRect(x: (frame.width / 2.0) - (200.0 / 2.0), y: frame.height * 0.1, width: 200, height: 50)
+        gameDetailLabel.frame = CGRect(x: (frame.width / 2.0) - (250.0 / 2.0), y: frame.height * 0.1, width: 250, height: 50)
         gameDetailLabel.text = "Game Details"
         gameDetailLabel.textAlignment = NSTextAlignment.center
-        gameDetailLabel.font = UIFont(name: "HelveticaNeue", size: 35)
+        gameDetailLabel.font = UIFont(name: "Futura-CondensedExtraBold", size: 35)
         gameDetailLabel.textColor = .white
         
-        gameName.frame = CGRect(x: (frame.width / 2.0) - (200.0 / 2.0), y: frame.height * 0.24, width: 200, height: 50)
+        gameName.frame = CGRect(x: (frame.width / 2.0) - (250.0 / 2.0), y: frame.height * 0.20, width: 250, height: 50)
         gameName.textAlignment = NSTextAlignment.center
-        gameName.font = UIFont(name: "HelveticaNeue", size: 15)
+        gameName.font = UIFont(name: "Futura-CondensedExtraBold", size: 15)
         gameName.textColor = .white
         
-        idLabel.frame = CGRect(x: (frame.width / 2.0) - (200.0 / 2.0), y: frame.height * 0.26, width: 200, height: 50)
+        idLabel.frame = CGRect(x: (frame.width / 2.0) - (300.0 / 2.0), y: frame.height * 0.28, width: 300, height: 50)
         idLabel.textAlignment = NSTextAlignment.center
-        idLabel.font = UIFont(name: "HelveticaNeue", size: 15)
+        idLabel.font = UIFont(name: "Futura-CondensedExtraBold", size: 12)
         idLabel.textColor = .white
         
-        player1.frame = CGRect(x: (frame.width / 2.0) - (200.0 / 2.0), y: frame.height * 0.28, width: 200, height: 50)
+        player1.frame = CGRect(x: (frame.width / 2.0) - (200.0 / 2.0), y: frame.height * 0.36, width: 200, height: 50)
         player1.textAlignment = NSTextAlignment.center
-        player1.font = UIFont(name: "HelveticaNeue", size: 15)
+        player1.font = UIFont(name: "Futura-CondensedExtraBold", size: 15)
         player1.textColor = .white
         
-        player2.frame = CGRect(x: (frame.width / 2.0) - (200.0 / 2.0), y: frame.height * 0.30, width: 200, height: 50)
+        player2.frame = CGRect(x: (frame.width / 2.0) - (200.0 / 2.0), y: frame.height * 0.44, width: 200, height: 50)
         player2.textAlignment = NSTextAlignment.center
-        player2.font = UIFont(name: "HelveticaNeue", size: 15)
+        player2.font = UIFont(name: "Futura-CondensedExtraBold", size: 15)
         player2.textColor = .white
         
-        winner.frame = CGRect(x: (frame.width / 2.0) - (200.0 / 2.0), y: frame.height * 0.32, width: 200, height: 50)
+        winner.frame = CGRect(x: (frame.width / 2.0) - (200.0 / 2.0), y: frame.height * 0.52, width: 200, height: 50)
         winner.textAlignment = NSTextAlignment.center
-        winner.font = UIFont(name: "HelveticaNeue", size: 15)
+        winner.font = UIFont(name: "Futura-CondensedExtraBold", size: 15)
         winner.textColor = .white
         
-        status.frame = CGRect(x: (frame.width / 2.0) - (200.0 / 2.0), y: frame.height * 0.34, width: 200, height: 50)
+        status.frame = CGRect(x: (frame.width / 2.0) - (200.0 / 2.0), y: frame.height * 0.60, width: 200, height: 50)
         status.textAlignment = NSTextAlignment.center
-        status.font = UIFont(name: "HelveticaNeue", size: 15)
+        status.font = UIFont(name: "Futura-CondensedExtraBold", size: 15)
         status.textColor = .white
         
-        missles.frame = CGRect(x: (frame.width / 2.0) - (200.0 / 2.0), y: frame.height * 0.36, width: 200, height: 50)
+        missles.frame = CGRect(x: (frame.width / 2.0) - (200.0 / 2.0), y: frame.height * 0.68, width: 200, height: 50)
         missles.textAlignment = NSTextAlignment.center
-        missles.font = UIFont(name: "HelveticaNeue", size: 15)
+        missles.font = UIFont(name: "Futura-CondensedExtraBold", size: 15)
         missles.textColor = .white
         
+        addSubview(gameName)
         addSubview(idLabel)
         addSubview(gameDetailLabel)
         addSubview(player1)

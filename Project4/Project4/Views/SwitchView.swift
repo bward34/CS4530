@@ -19,7 +19,7 @@ class SwitchView: UIView {
     override func draw(_ rect: CGRect) {
 
         hitMissLabel.textAlignment = NSTextAlignment.center
-        hitMissLabel.font = UIFont(name: "HelveticaNeue", size: 55)
+        hitMissLabel.font = UIFont(name: "Futura-CondensedExtraBold", size: 55)
         hitMissLabel.textColor = .white
         hitMissLabel.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(hitMissLabel)

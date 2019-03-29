@@ -21,7 +21,7 @@ struct GameStats: Codable {
 class GameStatsViewController: UIViewController {
     
     var gameId : String = ""
-    var gameStats : GameStats?
+    var gameStats : GameStats = GameStats(id: "", name: "", player1: "", player2: "", winner: "", status: "", missilesLaunched: 0)
     
     var gameStatsView: GameStatsView {
         return view as! GameStatsView
@@ -33,14 +33,6 @@ class GameStatsViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         getGameStats()
-        gameStatsView.gameName.text = gameStats?.name
-        gameStatsView.idLabel.text = gameStats?.id
-        gameStatsView.player1.text = gameStats?.player1
-        gameStatsView.player2.text = gameStats?.player2
-        gameStatsView.winner.text = gameStats?.winner
-        gameStatsView.status.text = gameStats?.status
-        gameStatsView.missles.text = "\(String(describing: gameStats?.missilesLaunched))"
-        gameStatsView.reloadData()
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -57,10 +49,31 @@ class GameStatsViewController: UIViewController {
             guard let data = data,
                 let _ = String(bytes: data, encoding: .utf8)
                 else {
-                    fatalError("no data to work with")
+                    print("No data to work with.")
+                    return
+            }
+            guard let response = response as? HTTPURLResponse,
+                (200...299).contains(response.statusCode)
+                else {
+                    print("Network Error")
+                    return
             }
             self?.gameStats = try! JSONDecoder().decode(GameStats.self, from: data)
+            DispatchQueue.main.async { [weak self] in
+                self?.updateLabels()
+            }
         }
         task.resume()
+    }
+    
+    func updateLabels() {
+        gameStatsView.gameName.text = "Game Name: \(gameStats.name)"
+        gameStatsView.idLabel.text = "Game Id: \(gameStats.id)"
+        gameStatsView.player1.text = "Player 1: \(gameStats.player1)"
+        gameStatsView.player2.text = "Player 2: \(gameStats.player2)"
+        gameStatsView.winner.text = "Winner: \(gameStats.winner)"
+        gameStatsView.status.text = "Status: \(gameStats.status)"
+        gameStatsView.missles.text = "Missiles Launched: \(String(gameStats.missilesLaunched))"
+        gameStatsView.reloadData()
     }
 }

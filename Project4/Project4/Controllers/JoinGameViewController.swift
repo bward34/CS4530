@@ -50,12 +50,19 @@ class JoinGameViewController: UIViewController, UITextFieldDelegate {
         
         let task = URLSession.shared.dataTask(with: postRequest) { [weak self] (data, response, error) in
             guard error == nil else {
-                fatalError("UR failed: \(error!)")
+                fatalError("URL failed: \(error!)")
             }
             guard let data = data,
                 let dataString = String(bytes: data, encoding: .utf8)
                 else {
-                    fatalError("no data to work with")
+                    print("No data to work with.")
+                    return
+            }
+            guard let response = response as? HTTPURLResponse,
+                (200...299).contains(response.statusCode)
+                else {
+                    print("Network Error")
+                    return
             }
             print(dataString)
             if let guidData = try! JSONSerialization.jsonObject(with: data, options: []) as? [String : String] {

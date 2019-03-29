@@ -10,8 +10,11 @@ import UIKit
 
 class HomeViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, HomeViewDelegate {
     
+    var filteredGames : [LobbyGame] = []
+    var myGames : [LobbyGame] = []
     var lobbyGames : [LobbyGame] = []
     var guidList : [String: String] = [:]
+    var filter : String = ""
     
     func homeView(_ homeView: HomeView) {
     }
@@ -25,19 +28,23 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     override func viewDidLoad() {
-        loadGames()
         decodeGuids()
         super.viewDidLoad()
         homeView.delegate = self
         homeView.homeTableView.delegate = self
         homeView.homeTableView.dataSource = self
         homeView.newGameButton.addTarget(self, action: #selector(newGame), for: UIControl.Event.touchUpInside)
+        homeView.gameFilter.addTarget(self, action: #selector(filterGames), for: UIControl.Event.valueChanged)
         homeView.homeTableView.reloadData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        homeView.gameFilter.selectedSegmentIndex = 0
         decodeGuids()
-        loadGames()
+        //loadGames(myGame: false, filter: "WAITING")
+     //   loadMyGames(myGame: true)
+        filterGames()
+        
     }
     
     @objc func newGame() {
@@ -46,7 +53,57 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         present(newGameViewController, animated: true, completion: nil)
     }
     
-    func loadGames() {
+    @objc func filterGames() {
+        let filterIndex : Int = homeView.gameFilter.selectedSegmentIndex
+        if filterIndex == 0 {
+            loadGames(myGame: false, filter: "WAITING")
+        }
+        else if filterIndex == 1 {
+            loadGames(myGame: false, filter: "PLAYING")
+        }
+        else if filterIndex == 2 {
+            loadGames(myGame: false, filter: "DONE")
+        }
+        else {
+            loadMyGames(myGame: true)
+        }
+    }
+    
+    func loadGames(myGame: Bool, filter: String) {
+        let webURL = URL(string: "http://174.23.159.139:2142/api/lobby?status=\(filter)")!
+        let task = URLSession.shared.dataTask(with: webURL) { [weak self] (data, response, error) in
+            guard error == nil else {
+                print("URL dataTask failed: \(error!)")
+                return
+            }
+            guard let data = data,
+                let _ = String(bytes: data, encoding: .utf8)
+                else {
+                    print("No data to work with.")
+                    return
+            }
+            guard let response = response as? HTTPURLResponse,
+                (200...299).contains(response.statusCode)
+                else {
+                    print("Network Error")
+                    return
+            }
+            let getIds = try! JSONDecoder().decode([[String : String]].self, from: data)
+            DispatchQueue.main.async { [weak self] in
+                self?.lobbyGames = []
+                if getIds.count == 0 {
+                    self?.homeView.homeTableView.reloadData()
+                    return
+                }
+                for(guid) in getIds {
+                    self?.getGameDetail(guid: guid["id"]!, myGames: myGame)
+                }
+            }
+        }
+        task.resume()
+    }
+    
+    func loadMyGames(myGame: Bool) {
         let webURL = URL(string: "http://174.23.159.139:2142/api/lobby")!
         let task = URLSession.shared.dataTask(with: webURL) { [weak self] (data, response, error) in
             guard error == nil else {
@@ -56,11 +113,56 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
             guard let data = data,
                 let _ = String(bytes: data, encoding: .utf8)
                 else {
-                    fatalError("no data to work with")
+                    print("No data to work with.")
+                    return
             }
-            self?.lobbyGames = try! JSONDecoder().decode([LobbyGame].self, from: data)
+            guard let response = response as? HTTPURLResponse,
+                (200...299).contains(response.statusCode)
+                else {
+                    print("Network Error")
+                    return
+            }
+            let myGames = try! JSONDecoder().decode([[String : String ]].self, from: data)
             DispatchQueue.main.async { [weak self] in
-                self?.homeView.homeTableView.reloadData()
+                self?.lobbyGames = []
+                for (lobbyGame) in myGames {
+                    if self?.guidList[lobbyGame["id"]!] != nil {
+                        self?.getGameDetail(guid: lobbyGame["id"]!, myGames: myGame)
+                    }
+                }
+            }
+        }
+        task.resume()
+    }
+    
+    func getGameDetail(guid : String, myGames: Bool) {
+        let webURL = URL(string: "http://174.23.159.139:2142/api/lobby/\(guid)")!
+        let task = URLSession.shared.dataTask(with: webURL) { [weak self] (data, response, error) in
+            guard error == nil else {
+                print("URL dataTask failed: \(error!)")
+                return
+            }
+            guard let data = data,
+                let _ = String(bytes: data, encoding: .utf8)
+                else {
+                    print("No data to work with.")
+                    return
+            }
+            guard let response = response as? HTTPURLResponse,
+                (200...299).contains(response.statusCode)
+                else {
+                    print("Network Error")
+                    return
+            }
+            let game = try! JSONDecoder().decode(LobbyGame.self, from: data)
+            DispatchQueue.main.async { [weak self] in
+                //if myGames {
+                 //   self?.myGames.append(game)
+                //}
+                //else {
+                    self?.lobbyGames.append(game)
+                    self?.homeView.homeTableView.reloadData()
+                //}
             }
         }
         task.resume()
@@ -112,7 +214,6 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
             let selectedGameController = GameViewController()
             selectedGameController.gameId = gameSelected.id
             selectedGameController.playerId = guidList[gameSelected.id]!
-            selectedGameController.status = gameSelected.status
             present(selectedGameController, animated: true, completion: nil)
         }
         else if gameSelected.status == "WAITING" {

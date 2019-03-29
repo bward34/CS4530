@@ -53,6 +53,7 @@ class GameView: UIView {
         super.draw(rect)
         
         backLabel.setTitle("←HOME", for: .normal)
+        backLabel.titleLabel?.font = UIFont(name: "Futura-CondensedExtraBold", size: 20)
         backLabel.backgroundColor = .blue
         backLabel.frame = CGRect(x: frame.origin.x + 5.0, y: frame.origin.y + 20.0, width: 75.0, height: 25.0)
         addSubview(backLabel)

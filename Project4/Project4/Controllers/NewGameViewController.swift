@@ -52,7 +52,14 @@ class NewGameViewController: UIViewController, UITextFieldDelegate {
             guard let data = data,
                 let dataString = String(bytes: data, encoding: .utf8)
                 else {
-                    fatalError("no data to work with")
+                    print("No data to work with.")
+                    return
+            }
+            guard let response = response as? HTTPURLResponse,
+                (200...299).contains(response.statusCode)
+                else {
+                    print("Network Error")
+                    return
             }
             print(dataString)
             if let guidData = try! JSONSerialization.jsonObject(with: data, options: []) as? [String : String] {

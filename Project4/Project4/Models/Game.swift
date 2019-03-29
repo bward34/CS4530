@@ -65,17 +65,6 @@ class Game: Decodable {
         boards = [.opponentBoard : player2Board, .playerBoard: player1Board]
     }
 
-    /**
-     A function called when the current player takes their turn. Determines
-     a hit or miss by the board dictionary object
-     - parameters:
-        - col: The column which the user takes turn at.
-        - row: The row which the user takes turn at.
-    */
-    func takeTurn(at col: Int, and row: Int) {
-//            delegate?.game(self, cellChangedAt: col, and: row)
-        }
-    
     required init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: GameKeys.self)
         let opponentBoard = try values.decode([GameCordinate].self, forKey: Game.GameKeys.opponentBoard)

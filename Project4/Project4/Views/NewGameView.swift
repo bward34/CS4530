@@ -33,19 +33,20 @@ class NewGameView: UIView {
     override func draw(_ rect: CGRect) {
         
         backLabel.setTitle("←HOME", for: .normal)
+        backLabel.titleLabel?.font = UIFont(name: "Futura-CondensedExtraBold", size: 20)
         backLabel.backgroundColor = .blue
         backLabel.frame = CGRect(x: frame.origin.x + 5.0, y: frame.origin.y + 20.0, width: 75.0, height: 25.0)
         
         newGameLabel.frame = CGRect(x: (frame.width / 2.0) - (200.0 / 2.0), y: frame.height * 0.1, width: 200, height: 50)
         newGameLabel.text = "New Game"
         newGameLabel.textAlignment = NSTextAlignment.center
-        newGameLabel.font = UIFont(name: "HelveticaNeue", size: 35)
+        newGameLabel.font = UIFont(name: "Futura-CondensedExtraBold", size: 35)
         newGameLabel.textColor = .white
         
         gameNameLabel.frame = CGRect(x: (frame.width / 2.0) - (200.0 / 2.0), y: frame.height * 0.18, width: 200, height: 50)
         gameNameLabel.text = "Enter a game name:"
         gameNameLabel.textAlignment = NSTextAlignment.center
-        gameNameLabel.font = UIFont(name: "HelveticaNeue", size: 15)
+        gameNameLabel.font = UIFont(name: "Futura-CondensedExtraBold", size: 15)
         gameNameLabel.textColor = .white
         
         
@@ -55,7 +56,7 @@ class NewGameView: UIView {
         playerNameLabel.frame = CGRect(x: (frame.width / 2.0) - (200.0 / 2.0), y: frame.height * 0.28, width: 200, height: 50)
         playerNameLabel.text = "Enter your name:"
         playerNameLabel.textAlignment = NSTextAlignment.center
-        playerNameLabel.font = UIFont(name: "HelveticaNeue", size: 15)
+        playerNameLabel.font = UIFont(name: "Futura-CondensedExtraBold", size: 15)
         playerNameLabel.textColor = .white
         
 

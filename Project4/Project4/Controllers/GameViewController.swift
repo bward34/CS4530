@@ -13,17 +13,17 @@ class GameViewController: UIViewController, GameViewDelegate, GameDelegate {
     var game : Game
     var gameId : String
     var playerId : String
-    var status : String
+   // var status : String
     var winner : String
     var myTurn : Bool
-    var statusTimer : Timer
-    var turnTimer: Timer
+    var statusTimer : Timer?
+    var turnTimer: Timer?
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         game = Game()
         gameId = ""
         playerId = ""
-        status = ""
+       // status = ""
         myTurn = true
         winner = ""
         statusTimer = Timer()
@@ -51,11 +51,11 @@ class GameViewController: UIViewController, GameViewDelegate, GameDelegate {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        statusTimer = Timer.scheduledTimer(timeInterval: 2, target: self, selector: #selector(getGameStatus), userInfo: nil, repeats: true)
+       // statusTimer = Timer.scheduledTimer(timeInterval: 2, target: self, selector: #selector(getGameStatus), userInfo: nil, repeats: true)
         turnTimer = Timer.scheduledTimer(timeInterval: 2, target: self, selector: #selector(getTurnInfo), userInfo: nil, repeats: true)
         loadGameBoards()
         getTurnInfo()
-        getGameStatus()
+       // getGameStatus()
         gameView.reloadData()
     }
     
@@ -105,7 +105,8 @@ class GameViewController: UIViewController, GameViewDelegate, GameDelegate {
     
     func gameView(_ gameView: GameView, cellTouchedAt col: Int, and row: Int) {
         
-        if status != "WAITING" && myTurn == true {
+        if myTurn == true {
+            myTurn = false
             let webURL = URL(string: "http://174.23.159.139:2142/api/games/\(gameId)")!
             var postRequest = URLRequest(url: webURL)
             postRequest.httpMethod = "POST"
@@ -126,7 +127,14 @@ class GameViewController: UIViewController, GameViewDelegate, GameDelegate {
                 guard let data = data,
                     let dataString = String(bytes: data, encoding: .utf8)
                     else {
-                        fatalError("no data to work with")
+                        print("No data to work with.")
+                        return
+                }
+                guard let response = response as? HTTPURLResponse,
+                    (200...299).contains(response.statusCode)
+                    else {
+                        print("Network Error")
+                        return
                 }
                 print(dataString)
                 if let hitMissInfo = try! JSONSerialization.jsonObject(with: data, options: []) as? [String : Any] {
@@ -146,7 +154,6 @@ class GameViewController: UIViewController, GameViewDelegate, GameDelegate {
                         self?.loadGameBoards()
                         self?.turnTimer = Timer.scheduledTimer(timeInterval: 2, target: self!, selector: #selector(self?.getTurnInfo), userInfo: nil, repeats: true)
                         self?.present(newSwitchViewController, animated: true, completion: nil)
-                        
                     }
                 }
                 
@@ -161,8 +168,14 @@ class GameViewController: UIViewController, GameViewDelegate, GameDelegate {
     }
     
     func gameView(_ gameView: GameView) {
-        turnTimer.invalidate()
-        statusTimer.invalidate()
+        if turnTimer != nil {
+            turnTimer?.invalidate()
+            turnTimer = nil
+        }
+        if statusTimer != nil {
+            statusTimer?.invalidate()
+            statusTimer = nil
+        }
         self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
     }
     
@@ -175,7 +188,14 @@ class GameViewController: UIViewController, GameViewDelegate, GameDelegate {
             guard let data = data,
                 let _ = String(bytes: data, encoding: .utf8)
                 else {
-                    fatalError("no data to work with")
+                    print("No data to work with.")
+                    return
+            }
+            guard let response = response as? HTTPURLResponse,
+                (200...299).contains(response.statusCode)
+                else {
+                    print("Network Error")
+                    return
             }
             self?.game = try! JSONDecoder().decode(Game.self, from: data)
             DispatchQueue.main.async { [weak self] in
@@ -185,44 +205,46 @@ class GameViewController: UIViewController, GameViewDelegate, GameDelegate {
         task.resume()
     }
     
-    @objc func getGameStatus() {
-        let webURL = URL(string: "http://174.23.159.139:2142/api/lobby/\(gameId)")!
-        let task = URLSession.shared.dataTask(with: webURL) { [weak self] (data, response, error) in
-            guard error == nil else {
-                fatalError("URL dataTask failed: \(error!)")
-            }
-            guard let data = data,
-                let dataString = String(bytes: data, encoding: .utf8)
-                
-                else {
-                    //fatalError("no data to work with")
-                    print("No data returned")
-                    return
-            }
-            guard let response = response as! HTTPURLResponse?,
-                (200...299).contains(response.statusCode)
-                else {
-                    print("Network Error")
-                    return
-            }
-            print(dataString)
-            if let turnInfo = try! JSONSerialization.jsonObject(with: data, options: []) as? [String : Any] {
-                DispatchQueue.main.async { [weak self] in
-                    self?.status = turnInfo["status"] as! String
-                    if self?.status == "PLAYING" {
-                        self?.statusTimer.invalidate()
-                        self?.gameView.reloadData()
-                        self?.gameView.backgroundColor = .gray
-                    }
-                    else {
-                        self?.gameView.infoLabel.text = "Waiting..."
-                    }
-                    self?.gameView.reloadData()
-                }
-            }
-        }
-        task.resume()
-    }
+//    @objc func getGameStatus() {
+//        let webURL = URL(string: "http://174.23.159.139:2142/api/lobby/\(gameId)")!
+//        let task = URLSession.shared.dataTask(with: webURL) { [weak self] (data, response, error) in
+//            guard error == nil else {
+//                fatalError("URL dataTask failed: \(error!)")
+//            }
+//            guard let data = data,
+//                let dataString = String(bytes: data, encoding: .utf8)
+//
+//                else {
+//                    print("No data returned")
+//                    return
+//            }
+//            guard let response = response as? HTTPURLResponse,
+//                (200...299).contains(response.statusCode)
+//                else {
+//                    print("Network Error: Game Status")
+//                    return
+//            }
+//            print(dataString)
+//            if let turnInfo = try! JSONSerialization.jsonObject(with: data, options: []) as? [String : Any] {
+//                DispatchQueue.main.async { [weak self] in
+//                    self?.status = turnInfo["status"] as! String
+//                    if self?.status == "PLAYING" {
+//                        if self?.statusTimer != nil {
+//                            self?.statusTimer?.invalidate()
+//                            self?.statusTimer = nil
+//                        }
+//                        self?.gameView.reloadData()
+//                        self?.gameView.backgroundColor = .gray
+//                    }
+//                    else {
+//                        self?.gameView.infoLabel.text = "Waiting..."
+//                    }
+//                    self?.gameView.reloadData()
+//                }
+//            }
+//        }
+//        task.resume()
+//    }
     
    @objc func getTurnInfo() {
         let webURL = URL(string: "http://174.23.159.139:2142/api/games/\(gameId)?playerId=\(playerId)")!
@@ -238,10 +260,10 @@ class GameViewController: UIViewController, GameViewDelegate, GameDelegate {
                     print("No data returned")
                     return
             }
-            guard let response = response as! HTTPURLResponse?,
+            guard let response = response as? HTTPURLResponse,
                 (200...299).contains(response.statusCode)
                 else {
-                    print("Network Error")
+                    print("Network Error: Game turns")
                     return
             }
             print(dataString)
@@ -252,11 +274,14 @@ class GameViewController: UIViewController, GameViewDelegate, GameDelegate {
                     if (self?.myTurn)! {
                         self?.gameView.infoLabel.text = "Your turn!"
                         self?.gameView.backgroundColor = .lightGray
-                        self?.turnTimer.invalidate()
+                        if self?.turnTimer != nil {
+                            self?.turnTimer?.invalidate()
+                            self?.turnTimer = nil
+                        }
                         self?.loadGameBoards()
                         self?.gameView.reloadData()
                     }
-                    else if !(self?.myTurn)! && self?.status == "PLAYING" {
+                    else if !(self?.myTurn)! {
                          self?.gameView.infoLabel.text = "Other player's turn!"
                            self?.gameView.backgroundColor = .gray
                     }
