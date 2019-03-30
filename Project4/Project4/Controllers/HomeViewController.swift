@@ -10,14 +10,22 @@ import UIKit
 
 class HomeViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, HomeViewDelegate {
     
-    var filteredGames : [LobbyGame] = []
-    var myGames : [LobbyGame] = []
+    //Filtered games
+    var doneGames : [LobbyGame] = []
+    var waitingGames : [LobbyGame] = []
+    var playingGames : [LobbyGame] = []
+    
+    //User games
+    var myPlayingGames : [LobbyGame] = []
+    var myWaitGames : [LobbyGame] = []
+    var myDoneGames : [LobbyGame] = []
+    
+    //Displayed Games
     var lobbyGames : [LobbyGame] = []
+    
     var guidList : [String: String] = [:]
     var filter : String = ""
     
-    func homeView(_ homeView: HomeView) {
-    }
     
     var homeView: HomeView {
         return view as! HomeView
@@ -28,48 +36,63 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     override func viewDidLoad() {
+        loadGames(filter: "WAITING")
+        //loadGames(filter: "PLAYING")
+        //loadGames(filter: "DONE")
+        loadMyGames(filter: "MINE")
+        homeView.gameFilter.selectedSegmentIndex = 0
+        lobbyGames = waitingGames
         decodeGuids()
         super.viewDidLoad()
         homeView.delegate = self
         homeView.homeTableView.delegate = self
         homeView.homeTableView.dataSource = self
-        homeView.newGameButton.addTarget(self, action: #selector(newGame), for: UIControl.Event.touchUpInside)
-        homeView.gameFilter.addTarget(self, action: #selector(filterGames), for: UIControl.Event.valueChanged)
         homeView.homeTableView.reloadData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        homeView.gameFilter.selectedSegmentIndex = 0
         decodeGuids()
-        //loadGames(myGame: false, filter: "WAITING")
-     //   loadMyGames(myGame: true)
-        filterGames()
-        
+        if let index = homeView.homeTableView.indexPathForSelectedRow{
+            homeView.homeTableView.deselectRow(at: index, animated: true)
+        }
     }
     
-    @objc func newGame() {
+    func homeView(_ homeView: HomeView, cellIndex: Int) {
+        let filterIndex : Int = cellIndex
+        lobbyGames = []
+        if filterIndex == 0 {
+            if waitingGames.count == 0 {
+                loadGames(filter: "WAITING")
+            }
+            lobbyGames = waitingGames
+        }
+        else if filterIndex == 1 {
+            if playingGames.count == 0 {
+               loadGames(filter: "PLAYING")
+            }
+            lobbyGames = playingGames
+        }
+        else if filterIndex == 2 {
+            if doneGames.count == 0 {
+              loadGames(filter: "DONE")
+            }
+            lobbyGames = doneGames
+        }
+        else {
+            lobbyGames.append(contentsOf: myPlayingGames)
+            lobbyGames.append(contentsOf: myDoneGames)
+            lobbyGames.append(contentsOf: myWaitGames)
+        }
+        homeView.homeTableView.reloadData()
+    }
+    
+    func homeView(_ homeView: HomeView) {
         let newGameViewController = NewGameViewController()
         newGameViewController.guidList = guidList
         present(newGameViewController, animated: true, completion: nil)
     }
     
-    @objc func filterGames() {
-        let filterIndex : Int = homeView.gameFilter.selectedSegmentIndex
-        if filterIndex == 0 {
-            loadGames(myGame: false, filter: "WAITING")
-        }
-        else if filterIndex == 1 {
-            loadGames(myGame: false, filter: "PLAYING")
-        }
-        else if filterIndex == 2 {
-            loadGames(myGame: false, filter: "DONE")
-        }
-        else {
-            loadMyGames(myGame: true)
-        }
-    }
-    
-    func loadGames(myGame: Bool, filter: String) {
+    func loadGames(filter: String) {
         let webURL = URL(string: "http://174.23.159.139:2142/api/lobby?status=\(filter)")!
         let task = URLSession.shared.dataTask(with: webURL) { [weak self] (data, response, error) in
             guard error == nil else {
@@ -89,21 +112,28 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
                     return
             }
             let getIds = try! JSONDecoder().decode([[String : String]].self, from: data)
-            DispatchQueue.main.async { [weak self] in
-                self?.lobbyGames = []
-                if getIds.count == 0 {
-                    self?.homeView.homeTableView.reloadData()
-                    return
-                }
-                for(guid) in getIds {
-                    self?.getGameDetail(guid: guid["id"]!, myGames: myGame)
-                }
+            if filter == "WAITING" {
+                self?.waitingGames = []
+            }
+            else if filter == "PLAYING" {
+                self?.playingGames = []
+            }
+            else if filter == "DONE" {
+                self?.doneGames = []
+            }
+            else {
+                self?.myDoneGames = []
+                self?.myWaitGames = []
+                self?.myPlayingGames = []
+            }
+            for(guid) in getIds {
+                self?.getGameDetail(guid: guid["id"]!, filter: filter)
             }
         }
         task.resume()
     }
     
-    func loadMyGames(myGame: Bool) {
+    func loadMyGames(filter: String) {
         let webURL = URL(string: "http://174.23.159.139:2142/api/lobby")!
         let task = URLSession.shared.dataTask(with: webURL) { [weak self] (data, response, error) in
             guard error == nil else {
@@ -123,19 +153,23 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
                     return
             }
             let myGames = try! JSONDecoder().decode([[String : String ]].self, from: data)
-            DispatchQueue.main.async { [weak self] in
-                self?.lobbyGames = []
-                for (lobbyGame) in myGames {
-                    if self?.guidList[lobbyGame["id"]!] != nil {
-                        self?.getGameDetail(guid: lobbyGame["id"]!, myGames: myGame)
-                    }
+            self?.myPlayingGames = []
+            for (lobbyGame) in myGames {
+                if self?.guidList[lobbyGame["id"]!] != nil {
+                    self?.getGameDetail(guid: lobbyGame["id"]!, filter: filter)
                 }
             }
+           // DispatchQueue.main.async { [weak self] in
+             //   if self?.lobbyGames.count == 0 {
+               //     self?.homeView.homeTableView.reloadData()
+               //     return
+               // }
+            //}
         }
         task.resume()
     }
     
-    func getGameDetail(guid : String, myGames: Bool) {
+    func getGameDetail(guid : String, filter: String) {
         let webURL = URL(string: "http://174.23.159.139:2142/api/lobby/\(guid)")!
         let task = URLSession.shared.dataTask(with: webURL) { [weak self] (data, response, error) in
             guard error == nil else {
@@ -155,13 +189,45 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
                     return
             }
             let game = try! JSONDecoder().decode(LobbyGame.self, from: data)
-            DispatchQueue.main.async { [weak self] in
+            if filter == "WAITING" {
+                self?.waitingGames.append(game)
+            }
+            else if filter == "PLAYING" {
+                self?.playingGames.append(game)
+            }
+            else if filter == "DONE" {
+                self?.doneGames.append(game)
+            }
+            else {
+                if game.status == "PLAYING" {
+                    self?.myPlayingGames.append(game)
+                }
+                else if game.status == "WAITING"{
+                    self?.waitingGames.append(game)
+                }
+                else {
+                self?.myDoneGames.append(game)
+                }
+            }
+          DispatchQueue.main.async { [weak self] in
                 //if myGames {
                  //   self?.myGames.append(game)
                 //}
                 //else {
-                    self?.lobbyGames.append(game)
-                    self?.homeView.homeTableView.reloadData()
+            if self?.homeView.gameFilter.selectedSegmentIndex == 0 && filter == "WAITING" {
+                self?.lobbyGames.append(game)
+            }
+            else if self?.homeView.gameFilter.selectedSegmentIndex == 1 && filter == "PLAYING" {
+                self?.lobbyGames.append(game)
+            }
+            else if self?.homeView.gameFilter.selectedSegmentIndex == 2 && filter == "DONE" {
+                self?.lobbyGames.append(game)
+            }
+            else if self?.homeView.gameFilter.selectedSegmentIndex == 3 && filter == "MINE" {
+                self?.lobbyGames.append(game)
+            }
+            
+                  self?.homeView.homeTableView.reloadData()
                 //}
             }
         }
@@ -203,14 +269,19 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        cell.textLabel?.text = lobbyGames[indexPath.row].name
-        cell.detailTextLabel?.text = lobbyGames[indexPath.row].status
+        let currentPlayer : String = lobbyGames[indexPath.row].missilesLaunched % 2 == 0 ? lobbyGames[indexPath.row].player1 : lobbyGames[indexPath.row].player2
+        let turnInfo : String = lobbyGames[indexPath.row].winner == "IN_PROGRESS" ? "Current Turn: \(currentPlayer)" : "Winner: \(lobbyGames[indexPath.row].winner)"
+        cell.textLabel?.text = "\(lobbyGames[indexPath.row].name) - \(lobbyGames[indexPath.row].status)"
+        cell.textLabel?.font = UIFont(name: "Futura-CondensedExtraBold", size: 15)
+        cell.detailTextLabel?.text = "\(turnInfo)\nMissiles Launched: \(lobbyGames[indexPath.row].missilesLaunched)"
+        cell.detailTextLabel?.numberOfLines = 0
+        cell.detailTextLabel?.textColor = .blue
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 
         let gameSelected: LobbyGame = lobbyGames[indexPath.row]
-        if guidList[gameSelected.id] != nil && gameSelected.status != "DONE" {
+        if guidList[gameSelected.id] != nil {
             let selectedGameController = GameViewController()
             selectedGameController.gameId = gameSelected.id
             selectedGameController.playerId = guidList[gameSelected.id]!
@@ -228,4 +299,5 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
             present(gameStatsController, animated: true, completion: nil)
         }
     }
+    
 }

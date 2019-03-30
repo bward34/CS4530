@@ -9,6 +9,7 @@
 import UIKit
 
 protocol HomeViewDelegate {
+    func homeView(_ homeView: HomeView, cellIndex: Int)
     func homeView(_ homeView: HomeView)
 }
 class HomeView: UIView {
@@ -33,7 +34,11 @@ class HomeView: UIView {
         gameFilter.insertSegment(withTitle: "Playing", at: 1, animated: true)
         gameFilter.insertSegment(withTitle: "Done", at: 2, animated: true)
         gameFilter.insertSegment(withTitle: "My Games", at: 3, animated: true)
+        
         super.init(frame: frame)
+        
+        newGameButton.addTarget(self, action: #selector(newGame), for: UIControl.Event.touchUpInside)
+        gameFilter.addTarget(self, action: #selector(filterGames), for: UIControl.Event.valueChanged)
         homeTableView.register(HomeViewTableCell.self, forCellReuseIdentifier: String(describing: HomeViewTableCell.self))
         homeTableView.translatesAutoresizingMaskIntoConstraints = false
         backgroundColor = UIColor.darkGray
@@ -69,6 +74,16 @@ class HomeView: UIView {
         addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-[newGameButton]-|", options: [], metrics: nil, views: ["newGameButton": newGameButton]))
         addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[gameLabel]-[gameFilter]-[homeTableView]-[newGameButton]-12-|", options: [], metrics: nil, views: ["gameLabel" : gameLabel,"gameFilter" : gameFilter,"homeTableView": homeTableView, "newGameButton" : newGameButton]))
     }
+    
+    
+    @objc func newGame() {
+        delegate.homeView(self)
+    }
+    
+    @objc func filterGames() {
+        delegate.homeView(self, cellIndex: gameFilter.selectedSegmentIndex)
+    }
+    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

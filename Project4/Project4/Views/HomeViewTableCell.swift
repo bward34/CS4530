@@ -15,8 +15,12 @@ class HomeViewTableCell: UITableViewCell {
         }
     }
     
+    override func draw(_ rect: CGRect) {
+        selectionStyle = .gray
+    }
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-    super.init(style: .value1, reuseIdentifier: reuseIdentifier)
+    super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
     }
     
     required init?(coder aDecoder: NSCoder) {
