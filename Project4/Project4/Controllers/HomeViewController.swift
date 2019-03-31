@@ -22,7 +22,8 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     var lobbyGames : [LobbyGame] = []
     
     var guidList : [String: String] = [:]
-    var filter : String = ""
+    var gameCount : Int = 0
+    
     
     var homeView: HomeView {
         return view as! HomeView
@@ -67,7 +68,6 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         else {
             loadMyGames(filter: "MINE")
         }
-        homeView.homeTableView.refreshControl?.endRefreshing()
         homeView.homeTableView.reloadData()
     }
     
@@ -124,6 +124,9 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
                     return
             }
             let getIds = try! JSONDecoder().decode([[String : String]].self, from: data)
+            DispatchQueue.main.async { [weak self] in
+                self?.gameCount = getIds.count
+            }
                 if filter == "WAITING" {
                     self?.waitingGames = []
                 }
@@ -164,11 +167,16 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
                     return
             }
             let myGames = try! JSONDecoder().decode([[String : String ]].self, from: data)
+            var myGameCount : Int = 0
             self?.deviceGames = []
             for (lobbyGame) in myGames {
                 if self?.guidList[lobbyGame["id"]!] != nil {
+                    myGameCount = myGameCount + 1
                     self?.getGameDetail(guid: lobbyGame["id"]!, filter: filter)
                 }
+            }
+            DispatchQueue.main.async { [weak self] in
+              self?.gameCount = myGameCount
             }
         }
         homeView.homeTableView.reloadData()
@@ -209,6 +217,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
                 self?.deviceGames.sort(by: {($0.status, $1.missilesLaunched) > ($1.status, $0.missilesLaunched) })
             }
           DispatchQueue.main.async { [weak self] in
+            //Append games
             if self?.homeView.gameFilter.selectedSegmentIndex == 0 && filter == "WAITING" {
                 self?.lobbyGames.append(game)
             }
@@ -222,6 +231,14 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
                 self?.lobbyGames.append(game)
                 self?.lobbyGames.sort(by: {($0.status, $1.missilesLaunched) > ($1.status, $0.missilesLaunched) })
             }
+            
+            //Stop refreshing
+            if self?.lobbyGames.count == self?.gameCount {
+                    self?.homeView.homeTableView.refreshControl?.endRefreshing()
+            }
+        //    else if self?.lobbyGames.count == self?.guidList.count {
+         //           self?.homeView.homeTableView.refreshControl?.endRefreshing()
+        //    }
             self?.homeView.homeTableView.reloadData()
             }
         }

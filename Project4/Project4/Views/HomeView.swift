@@ -76,9 +76,9 @@ class HomeView: UIView {
         gameFilter.translatesAutoresizingMaskIntoConstraints = false
         
         swipeLabel.frame = CGRect(x: 100, y: 100, width: 100, height: 10)
-        swipeLabel.text = "Swipe down on table to get new games..."
+        swipeLabel.text = "SWIPE DOWN TO REFRESH"
         swipeLabel.textAlignment = NSTextAlignment.center
-        swipeLabel.font = UIFont(name: "Futura-CondensedExtraBold", size: 10)
+        swipeLabel.font = UIFont(name: "AvenirNext-UltraLight", size: 11)
         swipeLabel.textColor = .white
         swipeLabel.translatesAutoresizingMaskIntoConstraints = false
         
