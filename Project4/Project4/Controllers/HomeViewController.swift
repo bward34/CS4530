@@ -16,16 +16,13 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     var playingGames : [LobbyGame] = []
     
     //User games
-    var myPlayingGames : [LobbyGame] = []
-    var myWaitGames : [LobbyGame] = []
-    var myDoneGames : [LobbyGame] = []
+    var deviceGames : [LobbyGame] = []
     
     //Displayed Games
     var lobbyGames : [LobbyGame] = []
     
     var guidList : [String: String] = [:]
     var filter : String = ""
-    
     
     var homeView: HomeView {
         return view as! HomeView
@@ -37,8 +34,6 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     override func viewDidLoad() {
         loadGames(filter: "WAITING")
-        //loadGames(filter: "PLAYING")
-        //loadGames(filter: "DONE")
         loadMyGames(filter: "MINE")
         homeView.gameFilter.selectedSegmentIndex = 0
         lobbyGames = waitingGames
@@ -55,6 +50,25 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         if let index = homeView.homeTableView.indexPathForSelectedRow{
             homeView.homeTableView.deselectRow(at: index, animated: true)
         }
+    }
+    
+    func homeView(_ homeView: HomeView, refreshTable cellIndex: Int) {
+        let filterIndex : Int = cellIndex
+        lobbyGames = []
+        if filterIndex == 0 {
+            loadGames(filter: "WAITING")
+        }
+        else if filterIndex == 1 {
+            loadGames(filter: "PLAYING")
+        }
+        else if filterIndex == 2 {
+            loadGames(filter: "DONE")
+        }
+        else {
+            loadMyGames(filter: "MINE")
+        }
+        homeView.homeTableView.refreshControl?.endRefreshing()
+        homeView.homeTableView.reloadData()
     }
     
     func homeView(_ homeView: HomeView, cellIndex: Int) {
@@ -79,9 +93,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
             lobbyGames = doneGames
         }
         else {
-            lobbyGames.append(contentsOf: myPlayingGames)
-            lobbyGames.append(contentsOf: myDoneGames)
-            lobbyGames.append(contentsOf: myWaitGames)
+            lobbyGames = deviceGames
         }
         homeView.homeTableView.reloadData()
     }
@@ -112,24 +124,23 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
                     return
             }
             let getIds = try! JSONDecoder().decode([[String : String]].self, from: data)
-            if filter == "WAITING" {
-                self?.waitingGames = []
-            }
-            else if filter == "PLAYING" {
-                self?.playingGames = []
-            }
-            else if filter == "DONE" {
-                self?.doneGames = []
-            }
-            else {
-                self?.myDoneGames = []
-                self?.myWaitGames = []
-                self?.myPlayingGames = []
-            }
-            for(guid) in getIds {
-                self?.getGameDetail(guid: guid["id"]!, filter: filter)
-            }
+                if filter == "WAITING" {
+                    self?.waitingGames = []
+                }
+                else if filter == "PLAYING" {
+                    self?.playingGames = []
+                }
+                else if filter == "DONE" {
+                    self?.doneGames = []
+                }
+                else {
+                    self?.deviceGames = []
+                }
+                for(guid) in getIds {
+                    self?.getGameDetail(guid: guid["id"]!, filter: filter)
+                }
         }
+        homeView.homeTableView.reloadData()
         task.resume()
     }
     
@@ -153,19 +164,14 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
                     return
             }
             let myGames = try! JSONDecoder().decode([[String : String ]].self, from: data)
-            self?.myPlayingGames = []
+            self?.deviceGames = []
             for (lobbyGame) in myGames {
                 if self?.guidList[lobbyGame["id"]!] != nil {
                     self?.getGameDetail(guid: lobbyGame["id"]!, filter: filter)
                 }
             }
-           // DispatchQueue.main.async { [weak self] in
-             //   if self?.lobbyGames.count == 0 {
-               //     self?.homeView.homeTableView.reloadData()
-               //     return
-               // }
-            //}
         }
+        homeView.homeTableView.reloadData()
         task.resume()
     }
     
@@ -199,21 +205,10 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
                 self?.doneGames.append(game)
             }
             else {
-                if game.status == "PLAYING" {
-                    self?.myPlayingGames.append(game)
-                }
-                else if game.status == "WAITING"{
-                    self?.waitingGames.append(game)
-                }
-                else {
-                self?.myDoneGames.append(game)
-                }
+                self?.deviceGames.append(game)
+                self?.deviceGames.sort(by: {($0.status, $1.missilesLaunched) > ($1.status, $0.missilesLaunched) })
             }
           DispatchQueue.main.async { [weak self] in
-                //if myGames {
-                 //   self?.myGames.append(game)
-                //}
-                //else {
             if self?.homeView.gameFilter.selectedSegmentIndex == 0 && filter == "WAITING" {
                 self?.lobbyGames.append(game)
             }
@@ -225,10 +220,9 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
             }
             else if self?.homeView.gameFilter.selectedSegmentIndex == 3 && filter == "MINE" {
                 self?.lobbyGames.append(game)
+                self?.lobbyGames.sort(by: {($0.status, $1.missilesLaunched) > ($1.status, $0.missilesLaunched) })
             }
-            
-                  self?.homeView.homeTableView.reloadData()
-                //}
+            self?.homeView.homeTableView.reloadData()
             }
         }
         task.resume()
@@ -259,6 +253,14 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if lobbyGames.count == 0 {
+            tableView.refreshControl?.isUserInteractionEnabled = false
+            tableView.backgroundView = homeView.emptyLabel
+            tableView.separatorStyle = .none
+            return 0
+        }
+        tableView.refreshControl?.isUserInteractionEnabled = true
+        tableView.separatorStyle = .singleLine
         return lobbyGames.count
     }
     

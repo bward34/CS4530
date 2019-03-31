@@ -55,12 +55,15 @@ class GameView: UIView {
         backLabel.setTitle("←HOME", for: .normal)
         backLabel.titleLabel?.font = UIFont(name: "Futura-CondensedExtraBold", size: 20)
         backLabel.backgroundColor = .blue
+        backLabel.layer.cornerRadius = 5
+        backLabel.layer.borderColor = UIColor.white.cgColor
+        backLabel.layer.borderWidth = 1
         backLabel.frame = CGRect(x: frame.origin.x + 5.0, y: frame.origin.y + 20.0, width: 75.0, height: 25.0)
         addSubview(backLabel)
         
         infoLabel.frame = CGRect(x: frame.midX - 100, y: frame.origin.y + 10.0, width: 200, height: 50)
         infoLabel.textAlignment = NSTextAlignment.center
-        infoLabel.font = UIFont(name: "HelveticaNeue", size: 15)
+        infoLabel.font = UIFont(name: "Futura-CondensedExtraBold", size: 15)
         infoLabel.textColor = .white
         addSubview(infoLabel)
         

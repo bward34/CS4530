@@ -17,8 +17,10 @@ class NewGameView: UIView {
     var playerNameField: UITextField
     var backLabel : UIButton
     var createGame : UIButton
+    var stackView : UIStackView
     
     override init(frame: CGRect) {
+        stackView = UIStackView()
         playerNameLabel = UILabel()
         gameNameLabel = UILabel()
         gameNameField = UITextField()
@@ -27,7 +29,7 @@ class NewGameView: UIView {
         backLabel = UIButton()
         createGame = UIButton()
         super.init(frame: frame)
-        backgroundColor = .lightGray
+        backgroundColor = .darkGray
     }
     
     override func draw(_ rect: CGRect) {
@@ -35,45 +37,80 @@ class NewGameView: UIView {
         backLabel.setTitle("←HOME", for: .normal)
         backLabel.titleLabel?.font = UIFont(name: "Futura-CondensedExtraBold", size: 20)
         backLabel.backgroundColor = .blue
+        backLabel.layer.cornerRadius = 5
+        backLabel.layer.borderColor = UIColor.white.cgColor
+        backLabel.layer.borderWidth = 1
         backLabel.frame = CGRect(x: frame.origin.x + 5.0, y: frame.origin.y + 20.0, width: 75.0, height: 25.0)
-        
-        newGameLabel.frame = CGRect(x: (frame.width / 2.0) - (200.0 / 2.0), y: frame.height * 0.1, width: 200, height: 50)
+        addSubview(backLabel)
+
+        newGameLabel.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(newGameLabel)
         newGameLabel.text = "New Game"
         newGameLabel.textAlignment = NSTextAlignment.center
         newGameLabel.font = UIFont(name: "Futura-CondensedExtraBold", size: 35)
         newGameLabel.textColor = .white
-        
-        gameNameLabel.frame = CGRect(x: (frame.width / 2.0) - (200.0 / 2.0), y: frame.height * 0.18, width: 200, height: 50)
+    
+        gameNameLabel.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(gameNameLabel)
         gameNameLabel.text = "Enter a game name:"
-        gameNameLabel.textAlignment = NSTextAlignment.center
         gameNameLabel.font = UIFont(name: "Futura-CondensedExtraBold", size: 15)
         gameNameLabel.textColor = .white
         
-        
-        gameNameField.frame = CGRect(x: (frame.width / 2.0) - (200.0 / 2.0), y: frame.height * 0.25, width: 200.0, height: 25.0)
+        gameNameField.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(gameNameField)
         gameNameField.backgroundColor = UIColor.white
+        gameNameField.layer.cornerRadius = 5
+        gameNameField.returnKeyType = .done
         
-        playerNameLabel.frame = CGRect(x: (frame.width / 2.0) - (200.0 / 2.0), y: frame.height * 0.28, width: 200, height: 50)
+        playerNameLabel.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(playerNameLabel)
         playerNameLabel.text = "Enter your name:"
-        playerNameLabel.textAlignment = NSTextAlignment.center
         playerNameLabel.font = UIFont(name: "Futura-CondensedExtraBold", size: 15)
         playerNameLabel.textColor = .white
         
-
-        playerNameField.frame = CGRect(x: (frame.width / 2.0) - (200.0 / 2.0), y: frame.height * 0.35, width: 200.0, height: 25.0)
-        playerNameField.backgroundColor = UIColor.white
-        
-        createGame.setTitle("Create Game", for: .normal)
-        createGame.backgroundColor = .green
-        createGame.frame = CGRect(x: (frame.width / 2.0) - (175.0 / 2.0), y: frame.height * 0.45, width: 175.0, height: 45.0)
-        
-        addSubview(backLabel)
-        addSubview(newGameLabel)
-        addSubview(gameNameLabel)
-        addSubview(gameNameField)
-        addSubview(playerNameLabel)
+        playerNameField.translatesAutoresizingMaskIntoConstraints = false
         addSubview(playerNameField)
+        playerNameField.backgroundColor = UIColor.white
+        playerNameField.layer.cornerRadius = 5
+        playerNameField.returnKeyType = .done
+        
+        createGame.translatesAutoresizingMaskIntoConstraints = false
         addSubview(createGame)
+        createGame.setTitle("Create Game", for: .normal)
+        createGame.titleLabel?.font = UIFont(name: "Futura-CondensedExtraBold", size: 20)
+        createGame.backgroundColor = .green
+        createGame.layer.cornerRadius = 5
+        createGame.layer.borderColor = UIColor.white.cgColor
+        createGame.layer.borderWidth = 1
+    
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(stackView)
+        stackView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 50).isActive = true
+        stackView.heightAnchor.constraint(equalToConstant: 200).isActive = true
+        stackView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: 12.0).isActive = true
+        stackView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -12.0).isActive = true
+        stackView.alignment = .center
+        stackView.distribution = .fillProportionally
+        stackView.axis = .vertical
+        stackView.spacing = 10.0
+ 
+        stackView.addArrangedSubview(newGameLabel)
+        stackView.addArrangedSubview(gameNameLabel)
+        stackView.addArrangedSubview(gameNameField)
+        stackView.addArrangedSubview(playerNameLabel)
+        stackView.addArrangedSubview(playerNameField)
+        stackView.addArrangedSubview(createGame)
+        
+        let view: [String : Any] = ["newGameLabel" : newGameLabel, "gameNameLabel" : gameNameLabel,
+                                   "gameNameField": gameNameField, "playerNameField" : playerNameField,
+                                   "playerNameLabel" : playerNameLabel, "createGame" : createGame]
+        
+        stackView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-[newGameLabel]-|", options: [], metrics: nil, views: view))
+        stackView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-[gameNameLabel]-|", options: [], metrics: nil, views: view))
+        stackView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-[gameNameField]-|", options: [], metrics: nil, views: view))
+        stackView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-[playerNameLabel]-|", options: [], metrics: nil, views: view))
+        stackView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-[playerNameField]-|", options: [], metrics: nil, views: view))
+        stackView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-(<=\(frame.width * 0.25))-[createGame]-(<=\(frame.width * 0.25))-|", options: [], metrics: nil, views: view))
     }
 
     required init?(coder aDecoder: NSCoder) {
