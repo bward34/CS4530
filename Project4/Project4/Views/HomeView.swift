@@ -18,6 +18,7 @@ class HomeView: UIView {
     var gameLabel : UILabel
     var swipeLabel : UILabel
     var emptyLabel : UILabel
+    var loadingLabel : UILabel
     var gameFilter : UISegmentedControl
     var homeTableView: UITableView
     var newGameButton: UIButton
@@ -34,6 +35,7 @@ class HomeView: UIView {
         newGameButton = UIButton()
         gameLabel = UILabel()
         swipeLabel = UILabel()
+        loadingLabel = UILabel()
         emptyLabel = UILabel()
         gameRefresh = UIRefreshControl()
         gameFilter = UISegmentedControl()
@@ -47,11 +49,18 @@ class HomeView: UIView {
         super.init(frame: frame)
         
         emptyLabel = UILabel(frame:  CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: bounds.size.width, height: bounds.size.height)))
-        emptyLabel.text = "LOADING GAMES..."
+        emptyLabel.text = "No games for this filter."
         emptyLabel.numberOfLines = 0;
         emptyLabel.textAlignment = .center;
         emptyLabel.font = UIFont(name: "Futura-CondensedExtraBold", size: 20)
         emptyLabel.sizeToFit()
+        
+        loadingLabel = UILabel(frame:  CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: bounds.size.width, height: bounds.size.height)))
+        loadingLabel.text = "LOADING GAMES..."
+        loadingLabel.numberOfLines = 0;
+        loadingLabel.textAlignment = .center;
+        loadingLabel.font = UIFont(name: "Futura-CondensedExtraBold", size: 20)
+        loadingLabel.sizeToFit()
         
         newGameButton.addTarget(self, action: #selector(newGame), for: UIControl.Event.touchUpInside)
         gameFilter.addTarget(self, action: #selector(filterGames), for: UIControl.Event.valueChanged)

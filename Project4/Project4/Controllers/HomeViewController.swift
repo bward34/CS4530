@@ -54,6 +54,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func homeView(_ homeView: HomeView, refreshTable cellIndex: Int) {
+        homeView.homeTableView.refreshControl?.endRefreshing()
         let filterIndex : Int = cellIndex
         lobbyGames = []
         if filterIndex == 0 {
@@ -78,11 +79,17 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
             if waitingGames.count == 0 {
                 loadGames(filter: "WAITING")
             }
+            else {
+                homeView.homeTableView.refreshControl?.endRefreshing()
+            }
             lobbyGames = waitingGames
         }
         else if filterIndex == 1 {
             if playingGames.count == 0 {
                loadGames(filter: "PLAYING")
+            }
+            else {
+               homeView.homeTableView.refreshControl?.endRefreshing()
             }
             lobbyGames = playingGames
         }
@@ -90,9 +97,13 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
             if doneGames.count == 0 {
               loadGames(filter: "DONE")
             }
+            else {
+            homeView.homeTableView.refreshControl?.endRefreshing()
+            }
             lobbyGames = doneGames
         }
         else {
+            homeView.homeTableView.refreshControl?.endRefreshing()
             lobbyGames = deviceGames
         }
         homeView.homeTableView.reloadData()
@@ -105,6 +116,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func loadGames(filter: String) {
+        homeView.homeTableView.refreshControl?.beginRefreshing()
         let webURL = URL(string: "http://174.23.159.139:2142/api/lobby?status=\(filter)")!
         let task = URLSession.shared.dataTask(with: webURL) { [weak self] (data, response, error) in
             guard error == nil else {
@@ -126,6 +138,10 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
             let getIds = try! JSONDecoder().decode([[String : String]].self, from: data)
             DispatchQueue.main.async { [weak self] in
                 self?.gameCount = getIds.count
+                if self?.gameCount == 0 {
+                    self?.homeView.homeTableView.refreshControl?.endRefreshing()
+                    self?.homeView.homeTableView.reloadData()
+                }
             }
                 if filter == "WAITING" {
                     self?.waitingGames = []
@@ -148,6 +164,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func loadMyGames(filter: String) {
+        homeView.homeTableView.refreshControl?.beginRefreshing()
         let webURL = URL(string: "http://174.23.159.139:2142/api/lobby")!
         let task = URLSession.shared.dataTask(with: webURL) { [weak self] (data, response, error) in
             guard error == nil else {
@@ -177,6 +194,10 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
             }
             DispatchQueue.main.async { [weak self] in
               self?.gameCount = myGameCount
+              if self?.gameCount == 0 {
+                 self?.homeView.homeTableView.refreshControl?.endRefreshing()
+                 self?.homeView.homeTableView.reloadData()
+              }
             }
         }
         homeView.homeTableView.reloadData()
@@ -231,14 +252,9 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
                 self?.lobbyGames.append(game)
                 self?.lobbyGames.sort(by: {($0.status, $1.missilesLaunched) > ($1.status, $0.missilesLaunched) })
             }
-            
-            //Stop refreshing
             if self?.lobbyGames.count == self?.gameCount {
-                    self?.homeView.homeTableView.refreshControl?.endRefreshing()
+                self?.homeView.homeTableView.refreshControl?.endRefreshing()
             }
-        //    else if self?.lobbyGames.count == self?.guidList.count {
-         //           self?.homeView.homeTableView.refreshControl?.endRefreshing()
-        //    }
             self?.homeView.homeTableView.reloadData()
             }
         }
@@ -271,12 +287,12 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if lobbyGames.count == 0 {
-            tableView.refreshControl?.isUserInteractionEnabled = false
             tableView.backgroundView = homeView.emptyLabel
             tableView.separatorStyle = .none
             return 0
         }
         tableView.refreshControl?.isUserInteractionEnabled = true
+        tableView.backgroundView = .none
         tableView.separatorStyle = .singleLine
         return lobbyGames.count
     }

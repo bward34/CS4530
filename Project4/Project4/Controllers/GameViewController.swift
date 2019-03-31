@@ -99,7 +99,7 @@ class GameViewController: UIViewController, GameViewDelegate, GameDelegate {
     
     func gameView(_ gameView: GameView, cellTouchedAt col: Int, and row: Int) {
         
-        if myTurn == true && winner == "IN_PROGRESS" {
+        if myTurn == true && winner == "IN_PROGRESS" && game.boards[Game.Token.opponentBoard]?[row][col] == .water {
             myTurn = false
             let webURL = URL(string: "http://174.23.159.139:2142/api/games/\(gameId)")!
             var postRequest = URLRequest(url: webURL)
@@ -237,7 +237,7 @@ class GameViewController: UIViewController, GameViewDelegate, GameDelegate {
                     }
                     else if !(self?.myTurn)! {
                          self?.gameView.infoLabel.text = "Other player's turn!"
-                           self?.gameView.backgroundColor = .gray
+                           self?.gameView.backgroundColor = .darkGray
                     }
                     self?.gameView.reloadData()
                 }
