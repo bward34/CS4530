@@ -29,7 +29,6 @@ class GameViewController: UIViewController, GameViewDelegate, GameDelegate {
         winner = ""
         turnTimer = Timer()
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-        turnTimer = Timer.scheduledTimer(timeInterval: 2, target: self, selector: #selector(getTurnInfo), userInfo: nil, repeats: true)
         game.delegate = self
     }
     
@@ -48,6 +47,14 @@ class GameViewController: UIViewController, GameViewDelegate, GameDelegate {
         super.viewDidLoad()
         game.delegate = self
         gameView.dataSource = self
+        if winner == "IN_PROGRESS" || winner == "WAITING" {
+            turnTimer = Timer.scheduledTimer(timeInterval: 2, target: self, selector: #selector(getTurnInfo), userInfo: nil, repeats: true)
+        }
+        else {
+                gameView.infoLabel.text = "\(winner) won!"
+                gameView.backgroundColor = UIColor(red: 0.6078, green: 0.2627, blue: 0.949, alpha: 1.0)
+               // gameView.reloadData()
+        }
         gameView.reloadData()
     }
     
@@ -200,53 +207,54 @@ class GameViewController: UIViewController, GameViewDelegate, GameDelegate {
     }
     
    @objc func getTurnInfo() {
-        let webURL = URL(string: "http://174.23.151.160:2142/api/games/\(gameId)?playerId=\(playerId)")!
-        let task = URLSession.shared.dataTask(with: webURL) { [weak self] (data, response, error) in
-            guard error == nil else {
-                fatalError("URL dataTask failed: \(error!)")
-            }
-            guard let data = data,
-                let dataString = String(bytes: data, encoding: .utf8)
-                
-                else {
-                    print("No data returned")
-                    return
-            }
-            guard let response = response as? HTTPURLResponse,
-                (200...299).contains(response.statusCode)
-                else {
-                    print("Network Error: Game turns")
-                    return
-            }
-            print(dataString)
-            if let turnInfo = try! JSONSerialization.jsonObject(with: data, options: []) as? [String : Any] {
-                DispatchQueue.main.async { [weak self] in
-                    self?.myTurn = turnInfo["isYourTurn"] as! Bool
-                    self?.winner = turnInfo["winner"] as! String
-                    if(self?.winner != "IN_PROGRESS") {
-                        if self?.turnTimer != nil {
-                        self?.turnTimer?.invalidate()
-                        self?.turnTimer = nil
+    if winner == "IN_PROGRESS" || winner == "WAITING" {
+            let webURL = URL(string: "http://174.23.151.160:2142/api/games/\(gameId)?playerId=\(playerId)")!
+            let task = URLSession.shared.dataTask(with: webURL) { [weak self] (data, response, error) in
+                guard error == nil else {
+                    fatalError("URL dataTask failed: \(error!)")
+                }
+                guard let data = data,
+                    let dataString = String(bytes: data, encoding: .utf8)
+                    
+                    else {
+                        print("No data returned")
+                        return
+                }
+                guard let response = response as? HTTPURLResponse,
+                    (200...299).contains(response.statusCode)
+                    else {
+                        print("Network Error: Game turns")
+                        return
+                }
+                print(dataString)
+                if let turnInfo = try! JSONSerialization.jsonObject(with: data, options: []) as? [String : Any] {
+                    DispatchQueue.main.async { [weak self] in
+                        self?.myTurn = turnInfo["isYourTurn"] as! Bool
+                        self?.winner = turnInfo["winner"] as! String
+                        if(self?.winner != "IN_PROGRESS") {
+                            if self?.turnTimer != nil {
+                            self?.turnTimer?.invalidate()
+                            self?.turnTimer = nil
+                            }
+                            self?.gameView.infoLabel.text = "\(self?.winner ?? "") won!"
+                            self?.gameView.backgroundColor = UIColor(red: 0.6078, green: 0.2627, blue: 0.949, alpha: 1.0)
                         }
-                        let switchViewController : SwitchViewController = SwitchViewController()
-                        switchViewController.hitMiss = "\(self?.winner ?? "") WINS!"
-                        self?.present(switchViewController, animated: true, completion: nil)
-                    }
-                    else if (self?.myTurn)! {
-                        self?.gameView.infoLabel.text = "Your turn!"
-                        self?.gameView.backgroundColor = .lightGray
-                        self?.turnTimer?.invalidate()
-                        self?.loadGameBoards()
+                        else if (self?.myTurn)! {
+                            self?.gameView.infoLabel.text = "Your turn!"
+                            self?.gameView.backgroundColor = .lightGray
+                            self?.turnTimer?.invalidate()
+                            self?.loadGameBoards()
+                            self?.gameView.reloadData()
+                        }
+                        else if !(self?.myTurn)! {
+                             self?.gameView.infoLabel.text = "Other player's turn!"
+                               self?.gameView.backgroundColor = .darkGray
+                        }
                         self?.gameView.reloadData()
                     }
-                    else if !(self?.myTurn)! {
-                         self?.gameView.infoLabel.text = "Other player's turn!"
-                           self?.gameView.backgroundColor = .darkGray
-                    }
-                    self?.gameView.reloadData()
                 }
             }
+            task.resume()
         }
-        task.resume()
     }
 }

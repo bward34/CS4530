@@ -10,8 +10,8 @@ import Foundation
 
 import UIKit
 
-class JoinGameViewController: UIViewController, UITextFieldDelegate {
-    
+class JoinGameViewController: UIViewController, JoinGameViewDelegate, UITextFieldDelegate {
+ 
     var guidList: [String : String] = [:]
     var gameId: String = ""
     
@@ -28,16 +28,15 @@ class JoinGameViewController: UIViewController, UITextFieldDelegate {
     }
     
     override func viewDidLoad() {
-        joinGameView.backLabel.addTarget(self, action: #selector(goHome), for: UIControl.Event.touchUpInside)
-        joinGameView.joinGame.addTarget(self, action: #selector(joinGame), for: UIControl.Event.touchUpInside)
         joinGameView.playerNameField.delegate = self
+        joinGameView.delegate = self
     }
     
-    @objc func goHome(){
+    func joinGameView(_ joinGameView: JoinGameView) {
         dismiss(animated: true, completion: nil)
     }
     
-    @objc func joinGame() {
+    func joinGameView(joinGame joinGameView: JoinGameView) {
         let webURL = URL(string: "http://174.23.151.160:2142/api/lobby/\(gameId)")!
         
         var postRequest = URLRequest(url: webURL)
@@ -77,6 +76,7 @@ class JoinGameViewController: UIViewController, UITextFieldDelegate {
                     let selectedGameController = GameViewController()
                     selectedGameController.gameId = (self?.gameId)!
                     selectedGameController.playerId = guidData["playerId"]!
+                    selectedGameController.winner = "IN_PROGRESS"
                     self?.present(selectedGameController, animated: true, completion: nil)
                     
                 }
@@ -96,10 +96,4 @@ class JoinGameViewController: UIViewController, UITextFieldDelegate {
             }
         }
     }
-    
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        self.view.endEditing(true)
-        return false
-    }
-    
 }

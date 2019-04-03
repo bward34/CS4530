@@ -8,6 +8,11 @@
 
 import UIKit
 
+protocol NewGameViewDelegate {
+  func newGameView(_ newGameView: NewGameView)
+  func newGameView(createGame newGameView: NewGameView)
+    
+}
 class NewGameView: UIView {
     
     var newGameLabel : UILabel
@@ -18,6 +23,7 @@ class NewGameView: UIView {
     var backLabel : UIButton
     var createGame : UIButton
     var stackView : UIStackView
+    var delegate : NewGameViewDelegate?
     
     override init(frame: CGRect) {
         stackView = UIStackView()
@@ -30,6 +36,8 @@ class NewGameView: UIView {
         createGame = UIButton()
         super.init(frame: frame)
         backgroundColor = .darkGray
+        backLabel.addTarget(self, action: #selector(goHome), for: UIControl.Event.touchUpInside)
+        createGame.addTarget(self, action: #selector(createNewGame), for: UIControl.Event.touchUpInside)
     }
     
     override func draw(_ rect: CGRect) {
@@ -61,6 +69,7 @@ class NewGameView: UIView {
         gameNameField.backgroundColor = UIColor.white
         gameNameField.layer.cornerRadius = 5
         gameNameField.returnKeyType = .done
+        gameNameField.addTarget(self, action: #selector(closeKeyBoard), for: .editingDidEndOnExit)
         
         playerNameLabel.translatesAutoresizingMaskIntoConstraints = false
         addSubview(playerNameLabel)
@@ -73,6 +82,7 @@ class NewGameView: UIView {
         playerNameField.backgroundColor = UIColor.white
         playerNameField.layer.cornerRadius = 5
         playerNameField.returnKeyType = .done
+        playerNameField.addTarget(self, action: #selector(closeKeyBoard), for: .editingDidEndOnExit)
         
         createGame.translatesAutoresizingMaskIntoConstraints = false
         addSubview(createGame)
@@ -112,7 +122,21 @@ class NewGameView: UIView {
         stackView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-[playerNameField]-|", options: [], metrics: nil, views: view))
         stackView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-(<=\(frame.width * 0.25))-[createGame]-(<=\(frame.width * 0.25))-|", options: [], metrics: nil, views: view))
     }
-
+    
+    @objc func closeKeyBoard(sender: Any) {
+        if let textField = sender as? UITextField {
+            textField.resignFirstResponder()
+        }
+    }
+    
+    @objc func goHome() {
+        delegate?.newGameView(self)
+    }
+    
+    @objc func createNewGame() {
+        delegate?.newGameView(createGame: self)
+    }
+    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

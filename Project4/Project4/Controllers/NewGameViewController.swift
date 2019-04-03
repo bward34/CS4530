@@ -8,7 +8,7 @@
 
 import UIKit
 
-class NewGameViewController: UIViewController, UITextFieldDelegate {
+class NewGameViewController: UIViewController, NewGameViewDelegate, UITextFieldDelegate {
     
     var guidList: [String : String] = [:]
     
@@ -21,16 +21,15 @@ class NewGameViewController: UIViewController, UITextFieldDelegate {
     }
     
     override func viewDidLoad() {
-        newGameView.backLabel.addTarget(self, action: #selector(goHome), for: UIControl.Event.touchUpInside)
-        newGameView.createGame.addTarget(self, action: #selector(createGame), for: UIControl.Event.touchUpInside)
+        newGameView.delegate = self
         newGameView.playerNameField.delegate = self
     }
     
-    @objc func goHome(){
+    func newGameView(_ newGameView: NewGameView) {
         dismiss(animated: true, completion: nil)
     }
     
-    @objc func createGame() {
+    func newGameView(createGame newGameView: NewGameView) {
         let webURL = URL(string: "http://174.23.151.160:2142/api/lobby")!
         
         var postRequest = URLRequest(url: webURL)
@@ -70,6 +69,7 @@ class NewGameViewController: UIViewController, UITextFieldDelegate {
                     let selectedGameController = GameViewController()
                     selectedGameController.gameId = guidData["gameId"]!
                     selectedGameController.playerId = guidData["playerId"]!
+                    selectedGameController.winner = "WAITING"
                     self?.present(selectedGameController, animated: true, completion: nil)
 
                 }
@@ -88,10 +88,5 @@ class NewGameViewController: UIViewController, UITextFieldDelegate {
                 fatalError("Error when writing")
             }
         }
-    }
-    
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        self.view.endEditing(true)
-        return false
     }
 }

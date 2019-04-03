@@ -319,6 +319,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         if guidList[gameSelected.id] != nil {
             let selectedGameController = GameViewController()
             selectedGameController.gameId = gameSelected.id
+            selectedGameController.winner = gameSelected.winner
             selectedGameController.playerId = guidList[gameSelected.id]!
             present(selectedGameController, animated: true, completion: nil)
         }

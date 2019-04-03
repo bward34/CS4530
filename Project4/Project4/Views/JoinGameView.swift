@@ -8,6 +8,11 @@
 
 import UIKit
 
+protocol JoinGameViewDelegate {
+    func joinGameView(_ joinGameView: JoinGameView)
+    func joinGameView(joinGame joinGameView: JoinGameView)
+}
+
 class JoinGameView: UIView {
     
     var joinGameLabel : UILabel
@@ -16,6 +21,7 @@ class JoinGameView: UIView {
     var backLabel : UIButton
     var joinGame : UIButton
     var stackView : UIStackView
+    var delegate : JoinGameViewDelegate?
     
     override init(frame: CGRect) {
         stackView = UIStackView()
@@ -26,6 +32,8 @@ class JoinGameView: UIView {
         joinGame = UIButton()
         super.init(frame: frame)
         backgroundColor = .darkGray
+        backLabel.addTarget(self, action: #selector(goHome), for: UIControl.Event.touchUpInside)
+        joinGame.addTarget(self, action: #selector(joinAGame), for: UIControl.Event.touchUpInside)
     }
     
     override func draw(_ rect: CGRect) {
@@ -57,6 +65,7 @@ class JoinGameView: UIView {
         playerNameField.backgroundColor = UIColor.white
         playerNameField.layer.cornerRadius = 5
         playerNameField.returnKeyType = .done
+        playerNameField.addTarget(self, action: #selector(closeKeyBoard), for: .editingDidEndOnExit)
         
         joinGame.translatesAutoresizingMaskIntoConstraints = false
         addSubview(joinGame)
@@ -70,7 +79,7 @@ class JoinGameView: UIView {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(stackView)
         stackView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 50).isActive = true
-        stackView.heightAnchor.constraint(equalToConstant: 200).isActive = true
+        stackView.heightAnchor.constraint(equalToConstant: 220).isActive = true
         stackView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: 12.0).isActive = true
         stackView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -12.0).isActive = true
         stackView.alignment = .center
@@ -91,6 +100,21 @@ class JoinGameView: UIView {
         stackView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-[playerNameField]-|", options: [], metrics: nil, views: view))
         stackView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-(<=\(frame.width * 0.25))-[joinGame]-(<=\(frame.width * 0.25))-|", options: [], metrics: nil, views: view))
     }
+    
+    @objc func closeKeyBoard(sender: Any) {
+        if let textField = sender as? UITextField {
+            textField.resignFirstResponder()
+        }
+    }
+    
+    @objc func goHome() {
+        delegate?.joinGameView(self)
+    }
+    
+    @objc func joinAGame() {
+        delegate?.joinGameView(joinGame: self)
+    }
+    
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
