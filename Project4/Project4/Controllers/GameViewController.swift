@@ -238,6 +238,7 @@ class GameViewController: UIViewController, GameViewDelegate, GameDelegate {
                             }
                             self?.gameView.infoLabel.text = "\(self?.winner ?? "") won!"
                             self?.gameView.backgroundColor = UIColor(red: 0.6078, green: 0.2627, blue: 0.949, alpha: 1.0)
+                            self?.loadGameBoards()
                         }
                         else if (self?.myTurn)! {
                             self?.gameView.infoLabel.text = "Your turn!"
