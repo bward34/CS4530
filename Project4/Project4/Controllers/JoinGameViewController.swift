@@ -15,6 +15,10 @@ class JoinGameViewController: UIViewController, UITextFieldDelegate {
     var guidList: [String : String] = [:]
     var gameId: String = ""
     
+    deinit {
+        print("")
+    }
+    
     var joinGameView: JoinGameView {
         return view as! JoinGameView
     }
@@ -34,7 +38,7 @@ class JoinGameViewController: UIViewController, UITextFieldDelegate {
     }
     
     @objc func joinGame() {
-        let webURL = URL(string: "http://174.23.159.139:2142/api/lobby/\(gameId)")!
+        let webURL = URL(string: "http://174.23.151.160:2142/api/lobby/\(gameId)")!
         
         var postRequest = URLRequest(url: webURL)
         postRequest.httpMethod = "PUT"

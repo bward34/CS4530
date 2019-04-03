@@ -15,7 +15,11 @@ class GameViewController: UIViewController, GameViewDelegate, GameDelegate {
     var playerId : String
     var winner : String
     var myTurn : Bool
-    var turnTimer: Timer?
+    var turnTimer: Timer? {
+        didSet {
+            oldValue?.invalidate()
+        }
+    }
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         game = Game()
@@ -101,7 +105,7 @@ class GameViewController: UIViewController, GameViewDelegate, GameDelegate {
         
         if myTurn == true && winner == "IN_PROGRESS" && game.boards[Game.Token.opponentBoard]?[row][col] == .water {
             myTurn = false
-            let webURL = URL(string: "http://174.23.159.139:2142/api/games/\(gameId)")!
+            let webURL = URL(string: "http://174.23.151.160:2142/api/games/\(gameId)")!
             var postRequest = URLRequest(url: webURL)
             postRequest.httpMethod = "POST"
             let dataString: [String: Any] = ["playerId": playerId, "xPos": col, "yPos": row]
@@ -170,7 +174,7 @@ class GameViewController: UIViewController, GameViewDelegate, GameDelegate {
     }
     
     func loadGameBoards() {
-        let webURL = URL(string: "http://174.23.159.139:2142/api/games/\(gameId)/boards?playerId=\(playerId)")!
+        let webURL = URL(string: "http://174.23.151.160:2142/api/games/\(gameId)/boards?playerId=\(playerId)")!
         let task = URLSession.shared.dataTask(with: webURL) { [weak self] (data, response, error) in
             guard error == nil else {
                 fatalError("URL dataTask failed: \(error!)")
@@ -196,7 +200,7 @@ class GameViewController: UIViewController, GameViewDelegate, GameDelegate {
     }
     
    @objc func getTurnInfo() {
-        let webURL = URL(string: "http://174.23.159.139:2142/api/games/\(gameId)?playerId=\(playerId)")!
+        let webURL = URL(string: "http://174.23.151.160:2142/api/games/\(gameId)?playerId=\(playerId)")!
         let task = URLSession.shared.dataTask(with: webURL) { [weak self] (data, response, error) in
             guard error == nil else {
                 fatalError("URL dataTask failed: \(error!)")

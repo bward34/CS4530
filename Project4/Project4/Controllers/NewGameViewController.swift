@@ -31,7 +31,7 @@ class NewGameViewController: UIViewController, UITextFieldDelegate {
     }
     
     @objc func createGame() {
-        let webURL = URL(string: "http://174.23.159.139:2142/api/lobby")!
+        let webURL = URL(string: "http://174.23.151.160:2142/api/lobby")!
         
         var postRequest = URLRequest(url: webURL)
         postRequest.httpMethod = "POST"

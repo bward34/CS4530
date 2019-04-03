@@ -117,7 +117,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func loadGames(filter: String) {
         homeView.homeTableView.refreshControl?.beginRefreshing()
-        let webURL = URL(string: "http://174.23.159.139:2142/api/lobby?status=\(filter)")!
+        let webURL = URL(string: "http://174.23.151.160:2142/api/lobby?status=\(filter)")!
         let task = URLSession.shared.dataTask(with: webURL) { [weak self] (data, response, error) in
             guard error == nil else {
                 print("URL dataTask failed: \(error!)")
@@ -165,7 +165,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func loadMyGames(filter: String) {
         homeView.homeTableView.refreshControl?.beginRefreshing()
-        let webURL = URL(string: "http://174.23.159.139:2142/api/lobby")!
+        let webURL = URL(string: "http://174.23.151.160:2142/api/lobby")!
         let task = URLSession.shared.dataTask(with: webURL) { [weak self] (data, response, error) in
             guard error == nil else {
                 print("URL dataTask failed: \(error!)")
@@ -205,7 +205,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func getGameDetail(guid : String, filter: String) {
-        let webURL = URL(string: "http://174.23.159.139:2142/api/lobby/\(guid)")!
+        let webURL = URL(string: "http://174.23.151.160:2142/api/lobby/\(guid)")!
         let task = URLSession.shared.dataTask(with: webURL) { [weak self] (data, response, error) in
             guard error == nil else {
                 print("URL dataTask failed: \(error!)")

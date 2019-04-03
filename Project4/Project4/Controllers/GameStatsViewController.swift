@@ -40,7 +40,7 @@ class GameStatsViewController: UIViewController {
     }
     
     func getGameStats() {
-        let webURL = URL(string: "http://174.23.159.139:2142/api/lobby/\(gameId)")!
+        let webURL = URL(string: "http://174.23.151.160:2142/api/lobby/\(gameId)")!
         let task = URLSession.shared.dataTask(with: webURL) { [weak self] (data, response, error) in
             guard error == nil else {
                 print("URL dataTask failed: \(error!)")
