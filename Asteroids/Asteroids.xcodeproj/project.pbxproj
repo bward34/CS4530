@@ -62,12 +62,36 @@
 				5418F2262256D32800BCDFD1 /* Assets.xcassets */,
 				5418F2282256D32800BCDFD1 /* LaunchScreen.storyboard */,
 				5418F22B2256D32800BCDFD1 /* Info.plist */,
-				5418F2312256D35700BCDFD1 /* GameView.swift */,
-				5418F2352256D48500BCDFD1 /* ShipView.swift */,
-				5418F2332256D37100BCDFD1 /* GameViewController.swift */,
-				5418F2372256DF8800BCDFD1 /* Asteroids.swift */,
+				54EC9C452259389E005E5E30 /* Models */,
+				54EC9C4422593897005E5E30 /* Views */,
+				54EC9C4122593853005E5E30 /* Controllers */,
 			);
 			path = Asteroids;
+			sourceTree = "<group>";
+		};
+		54EC9C4122593853005E5E30 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				5418F2332256D37100BCDFD1 /* GameViewController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		54EC9C4422593897005E5E30 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				5418F2352256D48500BCDFD1 /* ShipView.swift */,
+				5418F2312256D35700BCDFD1 /* GameView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		54EC9C452259389E005E5E30 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				5418F2372256DF8800BCDFD1 /* Asteroids.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
