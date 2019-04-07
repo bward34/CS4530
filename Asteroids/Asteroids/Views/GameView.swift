@@ -14,23 +14,62 @@ class GameView : UIView {
     var rotateRightButton : UIButton
     var accelerateButton : UIButton
     
+    var scoreLabel : UILabel
+    var livesLabel : UILabel
+    
     var ship: ShipView
     
     override init(frame: CGRect) {
         rotateLeftButton = UIButton()
         rotateRightButton = UIButton()
         accelerateButton = UIButton()
+        scoreLabel = UILabel()
+        livesLabel = UILabel()
         ship = ShipView()
         super.init(frame : frame)
-        backgroundColor = .gray
+        backgroundColor = .black
     }
     
     override func draw(_ rect: CGRect) {
         ship.frame = CGRect(x: frame.midX, y: frame.midY, width: 30.0, height: 30.0)
-        
-        accelerateButton.frame = CGRect(x: frame.width, y: frame.height, width: 30.0, height: 30.0)
-        accelerateButton.setTitle("Acclerate", for: .normal)
         addSubview(ship)
+        
+        scoreLabel.translatesAutoresizingMaskIntoConstraints = false
+        scoreLabel.text = "0000"
+        scoreLabel.textColor = .white
+        addSubview(scoreLabel)
+        
+        livesLabel.translatesAutoresizingMaskIntoConstraints = false
+        livesLabel.text = "AAA"
+        livesLabel.textColor = .white
+        addSubview(livesLabel)
+        
+        accelerateButton.translatesAutoresizingMaskIntoConstraints = false
+        accelerateButton.setTitle("Acclerate", for: .normal)
+        addSubview(accelerateButton)
+        
+        rotateLeftButton.translatesAutoresizingMaskIntoConstraints = false
+        rotateLeftButton.setTitle("LEFT", for: .normal)
+        addSubview(rotateLeftButton)
+        
+        rotateRightButton.translatesAutoresizingMaskIntoConstraints = false
+        rotateRightButton.setTitle("RIGHT", for: .normal)
+        addSubview(rotateRightButton)
+        
+        scoreLabel.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 20).isActive = true
+        scoreLabel.leftAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leftAnchor, constant: 20).isActive = true
+        
+        livesLabel.topAnchor.constraint(equalTo: scoreLabel.topAnchor, constant: -20).isActive = true
+        livesLabel.leftAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leftAnchor, constant: 20).isActive = true
+        
+        rotateLeftButton.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor, constant: -20).isActive = true
+        rotateLeftButton.leftAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leftAnchor, constant: 20).isActive = true
+        
+        rotateRightButton.bottomAnchor.constraint(equalTo: rotateLeftButton.bottomAnchor).isActive = true
+        rotateRightButton.leftAnchor.constraint(equalTo: rotateLeftButton.leftAnchor, constant: 60).isActive = true
+        
+        accelerateButton.bottomAnchor.constraint(equalTo: rotateLeftButton.bottomAnchor).isActive = true
+        accelerateButton.rightAnchor.constraint(equalTo: self.safeAreaLayoutGuide.rightAnchor, constant: -20).isActive = true
     }
     
     func reloadData() {

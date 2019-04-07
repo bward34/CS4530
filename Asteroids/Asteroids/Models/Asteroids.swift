@@ -11,9 +11,13 @@ import UIKit
 
 class Asteriods {
     
-    var frame : CGRect
+    var frame : CGRect?
+    
     
     init() {
-        frame = CGRect()
+    }
+    
+    func updateFrame(newFrame : CGRect) {
+        frame = newFrame
     }
 }

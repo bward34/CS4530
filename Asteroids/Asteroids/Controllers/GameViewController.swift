@@ -27,10 +27,15 @@ class GameViewController : UIViewController {
     
     override func viewDidLoad() {
         gameView.reloadData()
+        self.setNeedsStatusBarAppearanceUpdate()
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        asteriods.frame = gameView.frame
+        asteriods.updateFrame(newFrame: gameView.frame)
+    }
+    
+    override var preferredStatusBarStyle : UIStatusBarStyle {
+        return .lightContent
     }
     
     required init?(coder aDecoder: NSCoder) {
