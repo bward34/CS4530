@@ -51,8 +51,6 @@ class HighScoreView : UIView {
         addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-[highScoreTable]-|", options: [], metrics: nil, views: view))
         addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-(<=\(frame.width * 0.25))-[homeButton]-(<=\(frame.width * 0.25))-|", options: [], metrics: nil, views: view))
         addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[highScoreLabel]-[highScoreTable]-[homeButton]-12-|", options: [], metrics: nil, views: view))
-        
-        
     }
     
     @objc func goHome() {

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5408D584225FE5F0000FAA09 /* LargeAsteroidView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5408D583225FE5F0000FAA09 /* LargeAsteroidView.swift */; };
 		5418F2202256D32600BCDFD1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5418F21F2256D32600BCDFD1 /* AppDelegate.swift */; };
 		5418F2272256D32800BCDFD1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5418F2262256D32800BCDFD1 /* Assets.xcassets */; };
 		5418F22A2256D32800BCDFD1 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5418F2282256D32800BCDFD1 /* LaunchScreen.storyboard */; };
@@ -23,6 +24,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5408D583225FE5F0000FAA09 /* LargeAsteroidView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LargeAsteroidView.swift; sourceTree = "<group>"; };
 		5418F21C2256D32600BCDFD1 /* Asteroids.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Asteroids.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5418F21F2256D32600BCDFD1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5418F2262256D32800BCDFD1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -94,11 +96,12 @@
 		54EC9C4422593897005E5E30 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				5418F2352256D48500BCDFD1 /* ShipView.swift */,
 				5418F2312256D35700BCDFD1 /* GameView.swift */,
 				54EC9C4622593945005E5E30 /* HomeView.swift */,
 				54EC9C4A225939C6005E5E30 /* HighScoreView.swift */,
 				54EC9C5022595015005E5E30 /* HighScoreViewTableCell.swift */,
+				5418F2352256D48500BCDFD1 /* ShipView.swift */,
+				5408D583225FE5F0000FAA09 /* LargeAsteroidView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -185,6 +188,7 @@
 				5418F2382256DF8800BCDFD1 /* Asteroids.swift in Sources */,
 				5418F2362256D48500BCDFD1 /* ShipView.swift in Sources */,
 				54EC9C5122595015005E5E30 /* HighScoreViewTableCell.swift in Sources */,
+				5408D584225FE5F0000FAA09 /* LargeAsteroidView.swift in Sources */,
 				5418F2322256D35700BCDFD1 /* GameView.swift in Sources */,
 				54EC9C4722593945005E5E30 /* HomeView.swift in Sources */,
 				54EC9C5322595641005E5E30 /* HighScore.swift in Sources */,

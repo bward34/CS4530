@@ -13,14 +13,25 @@ class ShipView : UIView {
     
     override init(frame: CGRect) {
         super.init(frame : .zero)
-        backgroundColor = UIColor(hue: 0.3194, saturation: 1, brightness: 1, alpha: 1.0)
     }
     
     override func draw(_ rect: CGRect) {
-//        let context = UIGraphicsGetCurrentContext()
-//        let ship = CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height)
-//        context?.setFillColor(UIColor.blue.cgColor)
-//        context?.addRect(ship)
+        
+        let drawPath : UIBezierPath = UIBezierPath()
+        drawPath.move(to: CGPoint(x: rect.origin.x + rect.width / 2, y: rect.origin.y))
+        drawPath.addLine(to: CGPoint(x: rect.origin.x, y: rect.height))
+        drawPath.lineWidth = 2.0
+        drawPath.move(to: CGPoint(x: rect.origin.x + rect.width / 2, y: rect.origin.y))
+        drawPath.addLine(to: CGPoint(x: rect.width, y: rect.height))
+        drawPath.lineWidth = 2.0
+        drawPath.move(to: CGPoint(x: rect.origin.x + rect.width / 2, y: rect.height - 8))
+        drawPath.addLine(to: CGPoint(x: rect.width, y: rect.height))
+        drawPath.move(to: CGPoint(x: rect.origin.x + rect.width / 2, y: rect.height - 8))
+        drawPath.addLine(to: CGPoint(x: rect.origin.x, y: rect.height))
+        drawPath.lineWidth = 2.0
+        drawPath.lineCapStyle = .round
+        UIColor(hue: 0.3194, saturation: 1, brightness: 1, alpha: 1.0).setStroke()
+        drawPath.stroke()
     }
     
     required init?(coder aDecoder: NSCoder) {
