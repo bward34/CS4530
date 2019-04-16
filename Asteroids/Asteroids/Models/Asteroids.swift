@@ -44,14 +44,18 @@ class Asteriods {
     }
     
     func gameLoop(elapsedTime : TimeInterval) {
+        
         if thruster {
-            ship.accleration = (x: cos(ship.currAngle) * 20.0, y: sin(ship.currAngle) * 20.0)
+            ship.accleration = (x: sin(ship.currAngle) * 35.0, y: -cos(ship.currAngle) * 35.0)
+            ship.velocity.x += ship.accleration.x * CGFloat(elapsedTime)
+            ship.velocity.y += ship.accleration.y * CGFloat(elapsedTime)
         }
         else {
-            ship.accleration = (x: 0.0, y: 0.0)
+            ship.accleration = (x: -ship.velocity.x * 0.3, y: -ship.velocity.y * 0.3)
+            ship.velocity.x -= ship.accleration.x * CGFloat(elapsedTime)
+            ship.velocity.y -= ship.accleration.y * CGFloat(elapsedTime)
         }
-        ship.velocity.x += ship.accleration.x * CGFloat(elapsedTime)
-        ship.velocity.y += ship.accleration.y * CGFloat(elapsedTime)
+
         ship.currPos.x += ship.velocity.x * CGFloat(elapsedTime)
         ship.currPos.y += ship.velocity.y * CGFloat(elapsedTime)
     }

@@ -15,6 +15,8 @@
 		5418F2342256D37100BCDFD1 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5418F2332256D37100BCDFD1 /* GameViewController.swift */; };
 		5418F2362256D48500BCDFD1 /* ShipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5418F2352256D48500BCDFD1 /* ShipView.swift */; };
 		5418F2382256DF8800BCDFD1 /* Asteroids.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5418F2372256DF8800BCDFD1 /* Asteroids.swift */; };
+		54BCCF662265553D001B5EE1 /* MediumAsteroidView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54BCCF652265553D001B5EE1 /* MediumAsteroidView.swift */; };
+		54BCCF68226558E4001B5EE1 /* SmallAsteroidView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54BCCF67226558E4001B5EE1 /* SmallAsteroidView.swift */; };
 		54EC9C4722593945005E5E30 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54EC9C4622593945005E5E30 /* HomeView.swift */; };
 		54EC9C4922593985005E5E30 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54EC9C4822593985005E5E30 /* HomeViewController.swift */; };
 		54EC9C4B225939C6005E5E30 /* HighScoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54EC9C4A225939C6005E5E30 /* HighScoreView.swift */; };
@@ -34,6 +36,8 @@
 		5418F2332256D37100BCDFD1 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 		5418F2352256D48500BCDFD1 /* ShipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShipView.swift; sourceTree = "<group>"; };
 		5418F2372256DF8800BCDFD1 /* Asteroids.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Asteroids.swift; sourceTree = "<group>"; };
+		54BCCF652265553D001B5EE1 /* MediumAsteroidView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediumAsteroidView.swift; sourceTree = "<group>"; };
+		54BCCF67226558E4001B5EE1 /* SmallAsteroidView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmallAsteroidView.swift; sourceTree = "<group>"; };
 		54EC9C4622593945005E5E30 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		54EC9C4822593985005E5E30 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		54EC9C4A225939C6005E5E30 /* HighScoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HighScoreView.swift; sourceTree = "<group>"; };
@@ -102,6 +106,8 @@
 				54EC9C5022595015005E5E30 /* HighScoreViewTableCell.swift */,
 				5418F2352256D48500BCDFD1 /* ShipView.swift */,
 				5408D583225FE5F0000FAA09 /* LargeAsteroidView.swift */,
+				54BCCF652265553D001B5EE1 /* MediumAsteroidView.swift */,
+				54BCCF67226558E4001B5EE1 /* SmallAsteroidView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -185,6 +191,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				54BCCF662265553D001B5EE1 /* MediumAsteroidView.swift in Sources */,
 				5418F2382256DF8800BCDFD1 /* Asteroids.swift in Sources */,
 				5418F2362256D48500BCDFD1 /* ShipView.swift in Sources */,
 				54EC9C5122595015005E5E30 /* HighScoreViewTableCell.swift in Sources */,
@@ -195,6 +202,7 @@
 				5418F2342256D37100BCDFD1 /* GameViewController.swift in Sources */,
 				54EC9C4B225939C6005E5E30 /* HighScoreView.swift in Sources */,
 				54EC9C4922593985005E5E30 /* HomeViewController.swift in Sources */,
+				54BCCF68226558E4001B5EE1 /* SmallAsteroidView.swift in Sources */,
 				5418F2202256D32600BCDFD1 /* AppDelegate.swift in Sources */,
 				54EC9C4D225939EB005E5E30 /* HighScoreViewController.swift in Sources */,
 			);

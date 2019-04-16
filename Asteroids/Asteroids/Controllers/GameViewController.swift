@@ -71,6 +71,7 @@ class GameViewController : UIViewController, GameViewDelegate {
     
     @objc func updateGameView() {
         gameView.updateDisplay()
+        gameView.reloadData()
     }
     
     required init?(coder aDecoder: NSCoder) {
