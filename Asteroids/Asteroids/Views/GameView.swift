@@ -69,28 +69,34 @@ class GameView : UIView {
         
         scoreLabel.translatesAutoresizingMaskIntoConstraints = false
         scoreLabel.text = "0000"
+        scoreLabel.font = UIFont(name: "Future-Earth", size: 12)
         scoreLabel.textColor = .white
         addSubview(scoreLabel)
         
         livesLabel.translatesAutoresizingMaskIntoConstraints = false
         livesLabel.text = "AAA"
+        livesLabel.font = UIFont(name: "Future-Earth", size: 12)
         livesLabel.textColor = .white
         addSubview(livesLabel)
         
         accelerateButton.translatesAutoresizingMaskIntoConstraints = false
         accelerateButton.setTitle("Acclerate", for: .normal)
+        accelerateButton.titleLabel?.font = UIFont(name: "Future-Earth", size: 12)
         addSubview(accelerateButton)
         
         rotateLeftButton.translatesAutoresizingMaskIntoConstraints = false
         rotateLeftButton.setTitle("LEFT", for: .normal)
+        rotateLeftButton.titleLabel?.font = UIFont(name: "Future-Earth", size: 12)
         addSubview(rotateLeftButton)
         
         rotateRightButton.translatesAutoresizingMaskIntoConstraints = false
         rotateRightButton.setTitle("RIGHT", for: .normal)
+        rotateRightButton.titleLabel?.font = UIFont(name: "Future-Earth", size: 12)
         addSubview(rotateRightButton)
         
         homeButton.translatesAutoresizingMaskIntoConstraints = false
         homeButton.setTitle("HOME", for: .normal)
+        homeButton.titleLabel?.font = UIFont(name: "Future-Earth", size: 12)
         addSubview(homeButton)
         
         homeButton.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 20).isActive = true

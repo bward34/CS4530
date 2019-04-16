@@ -26,6 +26,9 @@ class HighScoreViewController : UIViewController, HighScoreViewDelegate, UITable
     
     override func viewDidLoad() {
         highScoreView.delegate = self
+        highScoreView.highScoreTableView.backgroundColor = .clear
+        highScoreView.highScoreTableView.isOpaque = false
+        highScoreView.highScoreTableView.separatorColor = UIColor(hue: 0.3194, saturation: 1, brightness: 1, alpha: 1.0)
     }
     
     func goBackHome(_ highScoreView: HighScoreView) {
@@ -50,7 +53,6 @@ class HighScoreViewController : UIViewController, HighScoreViewDelegate, UITable
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         //probably not needed?
     }
-    
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

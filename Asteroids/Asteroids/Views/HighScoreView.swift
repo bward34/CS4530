@@ -25,6 +25,12 @@ class HighScoreView : UIView {
         highScoreTableView = UITableView()
         homeButton = UIButton()
         super.init(frame: frame)
+        
+        let backgroundImage = UIImageView(frame: UIScreen.main.bounds)
+        backgroundImage.image = UIImage(named: "stars.jpg")
+        backgroundImage.contentMode = UIView.ContentMode.scaleAspectFill
+        insertSubview(backgroundImage, at: 0)
+        
         highScoreTableView.register(HighScoreViewTableCell.self, forCellReuseIdentifier: String(describing: HighScoreViewTableCell.self))
         highScoreTableView.translatesAutoresizingMaskIntoConstraints = false
         homeButton.addTarget(self, action: #selector(goHome), for: UIControl.Event.touchUpInside)
@@ -34,10 +40,15 @@ class HighScoreView : UIView {
         
         highScoreLabel.text = "High Scores"
         highScoreLabel.textAlignment = NSTextAlignment.center
+        highScoreLabel.font = UIFont(name: "Future-Earth", size: 25)
+        highScoreLabel.textColor = .white
         highScoreLabel.translatesAutoresizingMaskIntoConstraints = false
         
         homeButton.setTitle("Home", for: .normal)
+        homeButton.titleLabel?.font = UIFont(name: "Future-Earth", size: 12)
         homeButton.translatesAutoresizingMaskIntoConstraints = false
+        homeButton.backgroundColor = .red
+        homeButton.layer.cornerRadius = 5
         
         addSubview(highScoreLabel)
         addSubview(highScoreTableView)
