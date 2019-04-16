@@ -13,6 +13,8 @@ class ShipView : UIView {
     
     override init(frame: CGRect) {
         super.init(frame : .zero)
+        backgroundColor = UIColor.clear
+        isOpaque = false
     }
     
     override func draw(_ rect: CGRect) {

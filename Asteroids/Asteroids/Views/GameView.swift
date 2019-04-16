@@ -9,6 +9,7 @@
 import UIKit
 
 protocol GameViewDelegate {
+    func homePushed(_ gameView : GameView)
     func accleratePushed(_ gameView : GameView)
     func acclerateRealeased(_ gameView : GameView)
     func rotatePushed(_ gameView : GameView, sender : Any)
@@ -20,6 +21,7 @@ class GameView : UIView {
     var rotateLeftButton : UIButton
     var rotateRightButton : UIButton
     var accelerateButton : UIButton
+    var homeButton : UIButton
     
     var scoreLabel : UILabel
     var livesLabel : UILabel
@@ -37,6 +39,7 @@ class GameView : UIView {
         rotateLeftButton = UIButton()
         rotateRightButton = UIButton()
         accelerateButton = UIButton()
+        homeButton = UIButton()
         scoreLabel = UILabel()
         livesLabel = UILabel()
         ship = ShipView()
@@ -45,11 +48,17 @@ class GameView : UIView {
         smallAsteroid = SmallAsteroidView()
         currAngle = 0
         super.init(frame : frame)
-        backgroundColor = .black
+        
+        let backgroundImage = UIImageView(frame: UIScreen.main.bounds)
+        backgroundImage.image = UIImage(named: "stars.jpg")
+        backgroundImage.contentMode = UIView.ContentMode.scaleAspectFill
+        insertSubview(backgroundImage, at: 0)
+        
         accelerateButton.addTarget(self, action: #selector(accelerate), for: UIControl.Event.touchDown)
-         accelerateButton.addTarget(self, action: #selector(acclerateEnd), for: UIControl.Event.touchUpInside)
+        accelerateButton.addTarget(self, action: #selector(acclerateEnd), for: UIControl.Event.touchUpInside)
         rotateLeftButton.addTarget(self, action: #selector(rotateShip), for: UIControl.Event.allEvents)
         rotateRightButton.addTarget(self, action: #selector(rotateShip), for: UIControl.Event.allEvents)
+        homeButton.addTarget(self, action: #selector(goHome), for: UIControl.Event.touchUpInside)
         
         addSubview(largeAsteroid)
         addSubview(mediumAsteroid)
@@ -80,6 +89,13 @@ class GameView : UIView {
         rotateRightButton.setTitle("RIGHT", for: .normal)
         addSubview(rotateRightButton)
         
+        homeButton.translatesAutoresizingMaskIntoConstraints = false
+        homeButton.setTitle("HOME", for: .normal)
+        addSubview(homeButton)
+        
+        homeButton.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 20).isActive = true
+        homeButton.rightAnchor.constraint(equalTo: self.safeAreaLayoutGuide.rightAnchor, constant: -20).isActive = true
+        
         scoreLabel.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 20).isActive = true
         scoreLabel.leftAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leftAnchor, constant: 20).isActive = true
         
@@ -98,7 +114,7 @@ class GameView : UIView {
     
     override func draw(_ rect: CGRect) {
         largeAsteroid.frame =  CGRect(x: frame.midX * 0.24, y: frame.midY * 0.23, width: 120.0, height: 120.0)
-        mediumAsteroid.frame =  CGRect(x: frame.midX * 0.24, y: frame.midY * 0.66, width: 80.0, height: 80.0)
+        mediumAsteroid.frame =  CGRect(x: frame.midX * 0.24, y: frame.midY * 0.8, width: 80.0, height: 80.0)
         smallAsteroid.frame =  CGRect(x: frame.midX * 0.24, y: frame.midY * 1.25, width: 40.0, height: 40.0)
     }
     
@@ -113,6 +129,10 @@ class GameView : UIView {
             ship.bounds = CGRect(x: 0.0, y: 0.0, width: 30.0, height: 30.0)
             ship.transform = CGAffineTransform(rotationAngle: (currAngle - (2.0 * .pi) / 180.0))
         }
+    }
+    
+    @objc func goHome() {
+        delegate?.homePushed(self)
     }
     
     @objc func accelerate() {

@@ -12,6 +12,8 @@ class LargeAsteroidView : UIView {
     
     override init(frame: CGRect) {
         super.init(frame: .zero)
+        backgroundColor = UIColor.clear
+        isOpaque = false
     }
     
     override func draw(_ rect: CGRect) {
@@ -39,7 +41,8 @@ class LargeAsteroidView : UIView {
         drawPath.addLine(to: CGPoint(x: rect.origin.x + rect.width * 0.05, y: rect.origin.y + 20))
         drawPath.lineWidth = 3.0
         drawPath.lineCapStyle = .round
-        UIColor(hue: 0.0917, saturation: 1, brightness: 0.7, alpha: 1.0).setStroke()
+        UIColor(hue: 0.1, saturation: 1, brightness: 1, alpha: 1.0) .setStroke()
+      //  UIColor(hue: 0.0917, saturation: 1, brightness: 0.7, alpha: 1.0).setStroke()
         drawPath.stroke()
         
     }

@@ -44,6 +44,10 @@ class GameViewController : UIViewController, GameViewDelegate {
         return .lightContent
     }
     
+    func homePushed(_ gameView: GameView) {
+        dismiss(animated: true, completion: nil)
+    }
+    
     func accleratePushed(_ gameView: GameView) {
       asteriods.updateThruster(thrusterOn: true)
     }

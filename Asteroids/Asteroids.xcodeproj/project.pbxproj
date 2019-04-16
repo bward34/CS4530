@@ -17,6 +17,9 @@
 		5418F2382256DF8800BCDFD1 /* Asteroids.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5418F2372256DF8800BCDFD1 /* Asteroids.swift */; };
 		54BCCF662265553D001B5EE1 /* MediumAsteroidView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54BCCF652265553D001B5EE1 /* MediumAsteroidView.swift */; };
 		54BCCF68226558E4001B5EE1 /* SmallAsteroidView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54BCCF67226558E4001B5EE1 /* SmallAsteroidView.swift */; };
+		54BCCF7222656F35001B5EE1 /* galaxy.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 54BCCF7122656F34001B5EE1 /* galaxy.jpeg */; };
+		54BCCF74226578DF001B5EE1 /* stars.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 54BCCF73226578DF001B5EE1 /* stars.jpg */; };
+		54BCCF7822658806001B5EE1 /* Future-Earth.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 54BCCF7722658805001B5EE1 /* Future-Earth.ttf */; };
 		54EC9C4722593945005E5E30 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54EC9C4622593945005E5E30 /* HomeView.swift */; };
 		54EC9C4922593985005E5E30 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54EC9C4822593985005E5E30 /* HomeViewController.swift */; };
 		54EC9C4B225939C6005E5E30 /* HighScoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54EC9C4A225939C6005E5E30 /* HighScoreView.swift */; };
@@ -38,6 +41,9 @@
 		5418F2372256DF8800BCDFD1 /* Asteroids.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Asteroids.swift; sourceTree = "<group>"; };
 		54BCCF652265553D001B5EE1 /* MediumAsteroidView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediumAsteroidView.swift; sourceTree = "<group>"; };
 		54BCCF67226558E4001B5EE1 /* SmallAsteroidView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmallAsteroidView.swift; sourceTree = "<group>"; };
+		54BCCF7122656F34001B5EE1 /* galaxy.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = galaxy.jpeg; sourceTree = "<group>"; };
+		54BCCF73226578DF001B5EE1 /* stars.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = stars.jpg; sourceTree = "<group>"; };
+		54BCCF7722658805001B5EE1 /* Future-Earth.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Future-Earth.ttf"; sourceTree = "<group>"; };
 		54EC9C4622593945005E5E30 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		54EC9C4822593985005E5E30 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		54EC9C4A225939C6005E5E30 /* HighScoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HighScoreView.swift; sourceTree = "<group>"; };
@@ -80,11 +86,30 @@
 				5418F2262256D32800BCDFD1 /* Assets.xcassets */,
 				5418F2282256D32800BCDFD1 /* LaunchScreen.storyboard */,
 				5418F22B2256D32800BCDFD1 /* Info.plist */,
+				54BCCF7922658817001B5EE1 /* Fonts */,
+				54BCCF6A22656C14001B5EE1 /* Images */,
 				54EC9C452259389E005E5E30 /* Models */,
 				54EC9C4422593897005E5E30 /* Views */,
 				54EC9C4122593853005E5E30 /* Controllers */,
 			);
 			path = Asteroids;
+			sourceTree = "<group>";
+		};
+		54BCCF6A22656C14001B5EE1 /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				54BCCF73226578DF001B5EE1 /* stars.jpg */,
+				54BCCF7122656F34001B5EE1 /* galaxy.jpeg */,
+			);
+			path = Images;
+			sourceTree = "<group>";
+		};
+		54BCCF7922658817001B5EE1 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				54BCCF7722658805001B5EE1 /* Future-Earth.ttf */,
+			);
+			path = Fonts;
 			sourceTree = "<group>";
 		};
 		54EC9C4122593853005E5E30 /* Controllers */ = {
@@ -179,6 +204,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				54BCCF7222656F35001B5EE1 /* galaxy.jpeg in Resources */,
+				54BCCF7822658806001B5EE1 /* Future-Earth.ttf in Resources */,
+				54BCCF74226578DF001B5EE1 /* stars.jpg in Resources */,
 				5418F22A2256D32800BCDFD1 /* LaunchScreen.storyboard in Resources */,
 				5418F2272256D32800BCDFD1 /* Assets.xcassets in Resources */,
 			);
