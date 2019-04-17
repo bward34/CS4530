@@ -14,6 +14,7 @@ protocol GameViewDelegate {
     func acclerateRealeased(_ gameView : GameView)
     func rotatePushed(_ gameView : GameView, sender : Any)
     func getFrame(_ gameView : GameView) -> (x: CGFloat, y: CGFloat)
+    func updateFrame(_ gameView: GameView, newPoint : CGPoint)
 }
 
 class GameView : UIView {
@@ -74,8 +75,8 @@ class GameView : UIView {
         addSubview(scoreLabel)
         
         livesLabel.translatesAutoresizingMaskIntoConstraints = false
-        livesLabel.text = "AAA"
-        livesLabel.font = UIFont(name: "Future-Earth", size: 12)
+        livesLabel.text = "▲▲▲"
+        livesLabel.font = UIFont(name: "Future-Earth", size: 18)
         livesLabel.textColor = .white
         addSubview(livesLabel)
         
@@ -105,14 +106,14 @@ class GameView : UIView {
         scoreLabel.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 20).isActive = true
         scoreLabel.leftAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leftAnchor, constant: 20).isActive = true
         
-        livesLabel.topAnchor.constraint(equalTo: scoreLabel.topAnchor, constant: 25).isActive = true
+        livesLabel.topAnchor.constraint(equalTo: scoreLabel.topAnchor, constant: 15).isActive = true
         livesLabel.leftAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leftAnchor, constant: 20).isActive = true
         
         rotateLeftButton.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor, constant: -20).isActive = true
         rotateLeftButton.leftAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leftAnchor, constant: 20).isActive = true
         
         rotateRightButton.bottomAnchor.constraint(equalTo: rotateLeftButton.bottomAnchor).isActive = true
-        rotateRightButton.leftAnchor.constraint(equalTo: rotateLeftButton.leftAnchor, constant: 60).isActive = true
+        rotateRightButton.leftAnchor.constraint(equalTo: rotateLeftButton.leftAnchor, constant: 70).isActive = true
         
         accelerateButton.bottomAnchor.constraint(equalTo: rotateLeftButton.bottomAnchor).isActive = true
         accelerateButton.rightAnchor.constraint(equalTo: self.safeAreaLayoutGuide.rightAnchor, constant: -20).isActive = true

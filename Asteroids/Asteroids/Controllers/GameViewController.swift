@@ -60,6 +60,13 @@ class GameViewController : UIViewController, GameViewDelegate {
          return asteriods.ship.currPos
     }
     
+   // func getAsteroidPos(_ gameView : GameView)
+    
+    func updateFrame(_ gameView: GameView, newPoint: CGPoint) {
+        asteriods.ship.currPos.x = newPoint.x
+        asteriods.ship.currPos.y = newPoint.y
+    }
+    
     func rotatePushed(_ gameView: GameView, sender: Any) {
         if let button = sender as? UIButton {
             if button == gameView.rotateLeftButton {
