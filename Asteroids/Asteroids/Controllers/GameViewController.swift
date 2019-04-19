@@ -9,7 +9,7 @@
 import UIKit
 
 class GameViewController : UIViewController, GameViewDelegate {
-    
+
     var asteriods : Asteriods
     
     var gameViewTimer : Timer
@@ -56,11 +56,26 @@ class GameViewController : UIViewController, GameViewDelegate {
       asteriods.updateThruster(thrusterOn: false)
     }
     
+    func firePushed(_ gameView: GameView) {
+      asteriods.updateLaser(laserOn: true)
+    }
+    
+    func fireReleased(_ gameView: GameView) {
+      asteriods.updateLaser(laserOn: false)
+    }
+    
+    
     func getFrame(_ gameView: GameView) -> (x: CGFloat, y: CGFloat) {
          return asteriods.ship.currPos
     }
     
-   // func getAsteroidPos(_ gameView : GameView)
+    func getAsteroidInfo(_ gameView: GameView) -> [Int : [(x: CGFloat, y: CGFloat)]] {
+        return asteriods.asteroidTuple()
+    }
+    
+    func getLaserInfo(_ gameView: GameView) -> [((x: CGFloat, y: CGFloat), CGFloat)] {
+        return asteriods.laserInfo()
+    }
     
     func updateFrame(_ gameView: GameView, newPoint: CGPoint) {
         asteriods.ship.currPos.x = newPoint.x
