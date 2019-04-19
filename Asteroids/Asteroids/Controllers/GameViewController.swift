@@ -64,13 +64,12 @@ class GameViewController : UIViewController, GameViewDelegate {
       asteriods.updateLaser(laserOn: false)
     }
     
-    
-    func getFrame(_ gameView: GameView) -> (x: CGFloat, y: CGFloat) {
-         return asteriods.ship.currPos
+    func getFrame(_ gameView: GameView) -> ((x: CGFloat, y: CGFloat), CGFloat) {
+         return (asteriods.ship.currPos, asteriods.ship.currAngle)
     }
     
     func getAsteroidInfo(_ gameView: GameView) -> [Int : [(x: CGFloat, y: CGFloat)]] {
-        return asteriods.asteroidTuple()
+        return asteriods.asteroidInfo()
     }
     
     func getLaserInfo(_ gameView: GameView) -> [((x: CGFloat, y: CGFloat), CGFloat)] {
@@ -85,12 +84,29 @@ class GameViewController : UIViewController, GameViewDelegate {
     func rotatePushed(_ gameView: GameView, sender: Any) {
         if let button = sender as? UIButton {
             if button == gameView.rotateLeftButton {
-                    gameView.currAngle -= (2.0 * .pi) / 180.0
-                    self.asteriods.ship.currAngle = gameView.currAngle
+//                    gameView.currAngle -= (2.0 * .pi) / 180.0
+//                    self.asteriods.ship.currAngle = gameView.currAngle
+                asteriods.updateLeftRotate(rotate: true)
             }
             else if button == gameView.rotateRightButton {
-                    gameView.currAngle += (2.0 * .pi) / 180.0
-                    self.asteriods.ship.currAngle = gameView.currAngle
+//                    gameView.currAngle += (2.0 * .pi) / 180.0
+//                    self.asteriods.ship.currAngle = gameView.currAngle
+                asteriods.updateRightRotate(rotate: true)
+            }
+        }
+    }
+    
+    func rotatePushedEnd(_ gameView: GameView, sender: Any) {
+        if let button = sender as? UIButton {
+            if button == gameView.rotateLeftButton {
+                //                    gameView.currAngle -= (2.0 * .pi) / 180.0
+                //                    self.asteriods.ship.currAngle = gameView.currAngle
+                asteriods.updateLeftRotate(rotate: false)
+            }
+            else if button == gameView.rotateRightButton {
+                //                    gameView.currAngle += (2.0 * .pi) / 180.0
+                //                    self.asteriods.ship.currAngle = gameView.currAngle
+                asteriods.updateRightRotate(rotate: false)
             }
         }
     }

@@ -15,7 +15,8 @@ protocol GameViewDelegate {
     func firePushed(_ gameView : GameView)
     func fireReleased(_ gameView : GameView)
     func rotatePushed(_ gameView : GameView, sender : Any)
-    func getFrame(_ gameView : GameView) -> (x: CGFloat, y: CGFloat)
+    func rotatePushedEnd(_ gameView : GameView, sender : Any)
+    func getFrame(_ gameView : GameView) -> ((x: CGFloat, y: CGFloat), CGFloat)
     func getAsteroidInfo(_ gameView : GameView) -> [Int : [(x: CGFloat, y: CGFloat)]]
     func getLaserInfo(_ gameView : GameView) -> [((x: CGFloat, y: CGFloat), CGFloat)]
     func updateFrame(_ gameView: GameView, newPoint : CGPoint)
@@ -35,7 +36,6 @@ class GameView : UIView {
     var delegate : GameViewDelegate?
     
     var ship: ShipView
-    var currAngle : CGFloat
     var asteroidViews : [ Int : [Any]]
     var laserViews : [LaserView]
     
@@ -53,7 +53,6 @@ class GameView : UIView {
         scoreLabel = UILabel()
         livesLabel = UILabel()
         ship = ShipView()
-        currAngle = 0
         super.init(frame : frame)
         
         let backgroundImage = UIImageView(frame: UIScreen.main.bounds)
@@ -63,8 +62,10 @@ class GameView : UIView {
         
         accelerateButton.addTarget(self, action: #selector(accelerate), for: UIControl.Event.touchDown)
         accelerateButton.addTarget(self, action: #selector(acclerateEnd), for: UIControl.Event.touchUpInside)
-        rotateLeftButton.addTarget(self, action: #selector(rotateShip), for: UIControl.Event.allEvents)
-        rotateRightButton.addTarget(self, action: #selector(rotateShip), for: UIControl.Event.allEvents)
+        rotateLeftButton.addTarget(self, action: #selector(rotateShip), for: UIControl.Event.touchDown)
+        rotateLeftButton.addTarget(self, action: #selector(rotateShipEnd), for: UIControl.Event.touchUpInside)
+        rotateRightButton.addTarget(self, action: #selector(rotateShip), for: UIControl.Event.touchDown)
+        rotateRightButton.addTarget(self, action: #selector(rotateShipEnd), for: UIControl.Event.touchUpInside)
         laserButton.addTarget(self, action: #selector(fire), for: UIControl.Event.touchDown)
         laserButton.addTarget(self, action: #selector(fireEnd), for: UIControl.Event.touchUpInside)
         homeButton.addTarget(self, action: #selector(goHome), for: UIControl.Event.touchUpInside)
@@ -141,10 +142,10 @@ class GameView : UIView {
     }
     
     func updateDisplay() {
-        if let frame : (x: CGFloat, y: CGFloat) = delegate?.getFrame(self) {
-            ship.center = CGPoint(x: frame.x, y: frame.y)
+        if let frame : ((x: CGFloat, y: CGFloat), CGFloat) = delegate?.getFrame(self) {
+            ship.center = CGPoint(x: frame.0.x, y: frame.0.y)
             ship.bounds = CGRect(x: 0.0, y: 0.0, width: 30.0, height: 30.0)
-            ship.transform = CGAffineTransform(rotationAngle: (currAngle - (2.0 * .pi) / 180.0))
+            ship.transform = CGAffineTransform(rotationAngle: (frame.1 - (2.0 * .pi) / 180.0))
         }
         for item in laserViews {
             item.removeFromSuperview()
@@ -172,7 +173,6 @@ class GameView : UIView {
                                 largeAsteroid.center = CGPoint(x: list[i].x, y: list[i].y)
                                 largeAsteroid.bounds = CGRect.init(x: 0.0, y: 0.0, width: 120.0, height: 120.0)
                                 addSubview(largeAsteroid)
-                                sendSubviewToBack(largeAsteroid)
                                 asteroidViews[key]?.append(largeAsteroid)
                             }
                             else {
@@ -249,6 +249,10 @@ class GameView : UIView {
     
     @objc func rotateShip(sender : Any) {
         delegate?.rotatePushed(self, sender: sender)
+    }
+    
+    @objc func rotateShipEnd(sender : Any) {
+        delegate?.rotatePushedEnd(self, sender: sender)
     }
     
     required init?(coder aDecoder: NSCoder) {

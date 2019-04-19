@@ -45,6 +45,8 @@ class Asteriods {
     var oldTime : Date
     var thruster : Bool
     var fire : Bool
+    var rotateLeft : Bool
+    var rotateRight : Bool
     var asteroids : [AsteriodSize : [Asteroid]]
     var lasers : [Laser]
     var fireCount : Int
@@ -64,6 +66,8 @@ class Asteriods {
                      AsteriodSize.Small: []]
         thruster = false
         fire = false
+        rotateLeft = false
+        rotateRight = false
         ship = Ship(accleration: (x: 0.0, y: 0.0), velocity: (x: 0.0, y: 0.0), currPos : (x: 0.0, y: 0.0), currAngle: 0.0)
         gameLoop = Timer.scheduledTimer(withTimeInterval: 1 / 60, repeats: true, block: { gameLoop in
             self.updateGameState()
@@ -82,14 +86,21 @@ class Asteriods {
     }
     
     func positionShip(elapsedTime : TimeInterval) {
+        if rotateLeft {
+            ship.currAngle -= (2.0 * .pi) / 180.0
+        }
+        
+        if rotateRight {
+           ship.currAngle += (2.0 * .pi) / 180.0
+        }
         
         if thruster {
-            ship.accleration = (x: sin(ship.currAngle) * 35.0, y: -cos(ship.currAngle) * 35.0)
+            ship.accleration = (x: sin(ship.currAngle) * 40.0, y: -cos(ship.currAngle) * 40.0)
             ship.velocity.x += ship.accleration.x * CGFloat(elapsedTime)
             ship.velocity.y += ship.accleration.y * CGFloat(elapsedTime)
         }
         else {
-            ship.accleration = (x: -ship.velocity.x * 0.5, y: -ship.velocity.y * 0.5)
+            ship.accleration = (x: -ship.velocity.x * 1.3, y: -ship.velocity.y * 1.3)
             ship.velocity.x -= ship.accleration.x * CGFloat(elapsedTime)
             ship.velocity.y -= ship.accleration.y * CGFloat(elapsedTime)
         }
@@ -153,6 +164,19 @@ class Asteriods {
         for i in 0 ..< lasers.count {
             lasers[i].currPos.x += lasers[i].velocity.x
             lasers[i].currPos.y += lasers[i].velocity.y
+            if lasers[i].currPos.x < 0 {
+                lasers[i].currPos.x = frame.maxX
+            }
+            else if lasers[i].currPos.x > frame.maxX {
+                lasers[i].currPos.x = 0
+            }
+            
+            if lasers[i].currPos.y < 0 {
+                lasers[i].currPos.y = frame.maxY
+            }
+            else if lasers[i].currPos.y > frame.maxY {
+                lasers[i].currPos.y = 0
+            }
         }
         
     }
@@ -165,7 +189,7 @@ class Asteriods {
         }
     }
     
-    func asteroidTuple() -> [Int : [(x: CGFloat, y: CGFloat)]] {
+    func asteroidInfo() -> [Int : [(x: CGFloat, y: CGFloat)]] {
         var data : [Int : [(x: CGFloat, y: CGFloat)]] = [:]
         for (key, list) in asteroids {
             var type : Int = 0
@@ -216,5 +240,13 @@ class Asteriods {
     
     func updateLaser(laserOn : Bool) {
         fire = laserOn
+    }
+    
+    func updateLeftRotate(rotate : Bool) {
+        rotateLeft = rotate
+    }
+    
+    func updateRightRotate(rotate : Bool) {
+        rotateRight = rotate
     }
 }
