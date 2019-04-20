@@ -50,6 +50,8 @@ class Asteriods : Codable {
     var fireCount : Int
     var lives : Int
     var score : Int
+    var frameWidth : Float
+    var frameHeight : Float
     
     enum AsteroidKeys : CodingKey {
         case ship
@@ -63,6 +65,8 @@ class Asteriods : Codable {
     init() {
         fireCount = 0
         frame = CGRect()
+        frameWidth = 0.0
+        frameHeight = 0.0
         gameLoop = Timer()
         oldTime = Date()
         lives = 3
@@ -299,6 +303,8 @@ class Asteriods : Codable {
         frame = newFrame
         ship.currPosX = Float(frame.midX)
         ship.currPosY = Float(frame.midY)
+        frameWidth = Float(frame.width)
+        frameHeight = Float(frame.height)
         
         for (key, list) in asteroids {
             for i in 0 ..< list.count {
@@ -343,6 +349,9 @@ class Asteriods : Codable {
         asteroids = try values.decode([Int : [Asteroid]].self, forKey: AsteroidKeys.asteroids)
         score = try values.decode(Int.self, forKey: AsteroidKeys.score)
         lives = try values.decode(Int.self, forKey: AsteroidKeys.lives)
+        frameHeight = try values.decode(Float.self, forKey: AsteroidKeys.frameHeight)
+        frameWidth = try values.decode(Float.self, forKey: AsteroidKeys.frameWidth)
+        //frame = CGRect(x: 0.0, y: 0.0, width: CGFloat(frameWidth), height: CGFloat(frameHeight))
         frame = CGRect()
         gameLoop = Timer()
         oldTime = Date()
@@ -360,6 +369,8 @@ class Asteriods : Codable {
         try container.encode(score, forKey: AsteroidKeys.score)
         try container.encode(lives, forKey: AsteroidKeys.lives)
         try container.encode(asteroids, forKey: AsteroidKeys.asteroids)
+        try container.encode(frameWidth, forKey: AsteroidKeys.frameWidth)
+        try container.encode(frameHeight, forKey: AsteroidKeys.frameHeight)
     }
     
     enum Error: Swift.Error {

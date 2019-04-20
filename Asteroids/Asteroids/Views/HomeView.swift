@@ -19,7 +19,6 @@ class HomeView : UIView {
     
     var titleLable : UILabel
     var newGameButton : UIButton
-    var resumeGameButton : UIButton
     var highScoreButton : UIButton
     
     var stackView : UIStackView
@@ -27,7 +26,6 @@ class HomeView : UIView {
     override init(frame: CGRect) {
         titleLable = UILabel()
         newGameButton = UIButton()
-        resumeGameButton = UIButton()
         highScoreButton = UIButton()
         stackView = UIStackView()
         super.init(frame: frame)
@@ -51,17 +49,9 @@ class HomeView : UIView {
         
         newGameButton.translatesAutoresizingMaskIntoConstraints = false
         addSubview(newGameButton)
-        newGameButton.setTitle("New Game", for: .normal)
         newGameButton.titleLabel?.font = UIFont(name: "Future-Earth", size: 12)
         newGameButton.backgroundColor = .red
         newGameButton.layer.cornerRadius = 5
-        
-        resumeGameButton.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(newGameButton)
-        resumeGameButton.setTitle("Resume Game", for: .normal)
-        resumeGameButton.titleLabel?.font = UIFont(name: "Future-Earth", size: 12)
-        resumeGameButton.backgroundColor = .red
-        resumeGameButton.layer.cornerRadius = 5
         
         highScoreButton.translatesAutoresizingMaskIntoConstraints = false
         addSubview(highScoreButton)
@@ -73,27 +63,24 @@ class HomeView : UIView {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(stackView)
         stackView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 50).isActive = true
-        stackView.heightAnchor.constraint(equalToConstant: 250).isActive = true
+        stackView.heightAnchor.constraint(equalToConstant: 200).isActive = true
         stackView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: 12.0).isActive = true
         stackView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -12.0).isActive = true
         stackView.alignment = .center
         stackView.distribution = .fillProportionally
         stackView.axis = .vertical
-        stackView.spacing = 25.0
+        stackView.spacing = 30.0
         
         stackView.addArrangedSubview(titleLable)
         stackView.addArrangedSubview(newGameButton)
-        stackView.addArrangedSubview(resumeGameButton)
         stackView.addArrangedSubview(highScoreButton)
         
         let view : [String : Any] = ["titleLabel" : titleLable,
                                      "newGameButton" : newGameButton,
-                                     "resumeGameButton" : resumeGameButton,
                                      "highScoreButton" : highScoreButton]
         
         stackView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-[titleLabel]-|", options: [], metrics: nil, views: view))
         stackView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-(<=\(frame.width * 0.25))-[newGameButton]-(<=\(frame.width * 0.25))-|", options: [], metrics: nil, views: view))
-        stackView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-(<=\(frame.width * 0.25))-[resumeGameButton]-(<=\(frame.width * 0.25))-|", options: [], metrics: nil, views: view))
         stackView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-(<=\(frame.width * 0.25))-[highScoreButton]-(<=\(frame.width * 0.25))-|", options: [], metrics: nil, views: view))
         
     }

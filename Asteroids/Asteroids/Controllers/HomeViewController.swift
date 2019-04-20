@@ -27,16 +27,10 @@ class HomeViewController : UIViewController, HomeViewDelegate {
         
         if !UserDefaults.standard.bool(forKey: "hasLoggedIn") {
             UserDefaults.standard.set(true, forKey: "hasLoggedIn")
-//            let documentsDirectory = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
-//            do {
-//                try game?.save(to: documentsDirectory.appendingPathComponent(Constants.gamesList))
-//            } catch let error where error is Asteriods.Error {
-//                print(error)
-//            } catch {
-//                print(error)
-//            }
+            homeView.newGameButton.setTitle("New Game", for: .normal)
         }
         else {
+            homeView.newGameButton.setTitle("Resume Game", for: .normal)
             let documentDirectory = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
             let jsonData = try! Data(contentsOf: documentDirectory.appendingPathComponent(Constants.gamesList))
             game = try! JSONDecoder().decode(Asteriods.self, from: jsonData)
