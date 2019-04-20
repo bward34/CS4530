@@ -25,8 +25,7 @@ class HomeViewController : UIViewController, HomeViewDelegate {
     
     override func viewDidLoad() {
         
-        if !UserDefaults.standard.bool(forKey: "hasLoggedIn") {
-            UserDefaults.standard.set(true, forKey: "hasLoggedIn")
+        if !UserDefaults.standard.bool(forKey: "gameCreated") {
             homeView.newGameButton.setTitle("New Game", for: .normal)
         }
         else {

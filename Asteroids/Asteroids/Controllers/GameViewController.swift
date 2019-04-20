@@ -89,6 +89,10 @@ class GameViewController : UIViewController, GameViewDelegate {
         return asteriods.lives
     }
     
+    func getScore(_ gaveView: GameView) -> Int {
+        return asteriods.score
+    }
+    
     func updateFrame(_ gameView: GameView, newPoint: CGPoint) {
         asteriods.ship.currPosX = Float(newPoint.x)
         asteriods.ship.currPosY = Float(newPoint.y)
@@ -118,7 +122,12 @@ class GameViewController : UIViewController, GameViewDelegate {
     
     @objc func updateGameView() {
         gameView.updateDisplay()
-        gameView.reloadData()
+        if asteriods.lives == 0 {
+            gameViewTimer.invalidate()
+            let gameOverController : GameOverViewController = GameOverViewController()
+            present(gameOverController, animated: true, completion: nil)
+        }
+        //gameView.reloadData()
     }
     
     required init?(coder aDecoder: NSCoder) {

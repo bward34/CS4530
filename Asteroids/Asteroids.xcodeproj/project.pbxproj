@@ -17,6 +17,8 @@
 		5418F2382256DF8800BCDFD1 /* Asteroids.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5418F2372256DF8800BCDFD1 /* Asteroids.swift */; };
 		545AC5F122692C7D00626533 /* LaserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545AC5F022692C7D00626533 /* LaserView.swift */; };
 		545AC5F4226A9D6700626533 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545AC5F3226A9D6700626533 /* Constants.swift */; };
+		545AC5F6226BA59800626533 /* GameOverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545AC5F5226BA59700626533 /* GameOverView.swift */; };
+		545AC5F8226BA5F400626533 /* GameOverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545AC5F7226BA5F400626533 /* GameOverViewController.swift */; };
 		54BCCF662265553D001B5EE1 /* MediumAsteroidView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54BCCF652265553D001B5EE1 /* MediumAsteroidView.swift */; };
 		54BCCF68226558E4001B5EE1 /* SmallAsteroidView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54BCCF67226558E4001B5EE1 /* SmallAsteroidView.swift */; };
 		54BCCF7222656F35001B5EE1 /* galaxy.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 54BCCF7122656F34001B5EE1 /* galaxy.jpeg */; };
@@ -43,6 +45,8 @@
 		5418F2372256DF8800BCDFD1 /* Asteroids.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Asteroids.swift; sourceTree = "<group>"; };
 		545AC5F022692C7D00626533 /* LaserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaserView.swift; sourceTree = "<group>"; };
 		545AC5F3226A9D6700626533 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		545AC5F5226BA59700626533 /* GameOverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameOverView.swift; sourceTree = "<group>"; };
+		545AC5F7226BA5F400626533 /* GameOverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameOverViewController.swift; sourceTree = "<group>"; };
 		54BCCF652265553D001B5EE1 /* MediumAsteroidView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediumAsteroidView.swift; sourceTree = "<group>"; };
 		54BCCF67226558E4001B5EE1 /* SmallAsteroidView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmallAsteroidView.swift; sourceTree = "<group>"; };
 		54BCCF7122656F34001B5EE1 /* galaxy.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = galaxy.jpeg; sourceTree = "<group>"; };
@@ -128,9 +132,10 @@
 		54EC9C4122593853005E5E30 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				545AC5F7226BA5F400626533 /* GameOverViewController.swift */,
 				5418F2332256D37100BCDFD1 /* GameViewController.swift */,
-				54EC9C4822593985005E5E30 /* HomeViewController.swift */,
 				54EC9C4C225939EB005E5E30 /* HighScoreViewController.swift */,
+				54EC9C4822593985005E5E30 /* HomeViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -138,15 +143,16 @@
 		54EC9C4422593897005E5E30 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				545AC5F5226BA59700626533 /* GameOverView.swift */,
 				5418F2312256D35700BCDFD1 /* GameView.swift */,
 				54EC9C4622593945005E5E30 /* HomeView.swift */,
 				54EC9C4A225939C6005E5E30 /* HighScoreView.swift */,
 				54EC9C5022595015005E5E30 /* HighScoreViewTableCell.swift */,
-				5418F2352256D48500BCDFD1 /* ShipView.swift */,
 				5408D583225FE5F0000FAA09 /* LargeAsteroidView.swift */,
-				54BCCF652265553D001B5EE1 /* MediumAsteroidView.swift */,
-				54BCCF67226558E4001B5EE1 /* SmallAsteroidView.swift */,
 				545AC5F022692C7D00626533 /* LaserView.swift */,
+				54BCCF652265553D001B5EE1 /* MediumAsteroidView.swift */,
+				5418F2352256D48500BCDFD1 /* ShipView.swift */,
+				54BCCF67226558E4001B5EE1 /* SmallAsteroidView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -238,8 +244,10 @@
 				5418F2362256D48500BCDFD1 /* ShipView.swift in Sources */,
 				54EC9C5122595015005E5E30 /* HighScoreViewTableCell.swift in Sources */,
 				5408D584225FE5F0000FAA09 /* LargeAsteroidView.swift in Sources */,
+				545AC5F6226BA59800626533 /* GameOverView.swift in Sources */,
 				5418F2322256D35700BCDFD1 /* GameView.swift in Sources */,
 				54EC9C4722593945005E5E30 /* HomeView.swift in Sources */,
+				545AC5F8226BA5F400626533 /* GameOverViewController.swift in Sources */,
 				545AC5F4226A9D6700626533 /* Constants.swift in Sources */,
 				545AC5F122692C7D00626533 /* LaserView.swift in Sources */,
 				54EC9C5322595641005E5E30 /* HighScore.swift in Sources */,
