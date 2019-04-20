@@ -27,8 +27,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationDidEnterBackground(_ application: UIApplication) {
-        // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
-        // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+        if var topController = UIApplication.shared.keyWindow?.rootViewController {
+            while let presentedViewController = topController.presentedViewController {
+                topController = presentedViewController
+            }
+            
+            if type(of: topController) == GameViewController.self {
+                let documentsDirectory = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+                do {
+                    try (topController as! GameViewController).asteriods.save(to: documentsDirectory.appendingPathComponent(Constants.gamesList))
+                } catch let error where error is Asteriods.Error {
+                    print(error)
+                } catch {
+                    print(error)
+                }
+            }
+        }
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {

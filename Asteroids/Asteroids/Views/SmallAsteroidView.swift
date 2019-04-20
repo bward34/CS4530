@@ -40,7 +40,6 @@ class SmallAsteroidView : UIView {
         drawPath.lineWidth = 3.0
         drawPath.lineCapStyle = .round
         UIColor(hue: 0.1, saturation: 1, brightness: 1, alpha: 1.0) .setStroke()
-       // UIColor(hue: 0.0917, saturation: 1, brightness: 0.7, alpha: 1.0).setStroke()
         drawPath.stroke()
         
     }
