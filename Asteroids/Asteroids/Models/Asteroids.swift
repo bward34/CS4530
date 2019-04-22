@@ -52,6 +52,12 @@ class Asteriods : Codable {
     var score : Int
     var asteroidCount : Int
     var shipRespwanedDate : Date
+    var shipNeedsRespwan : Bool
+    var gameInProgresss : Bool
+    var gameComplete : Bool
+    var largeEmpty : Bool
+    var mediumEmpty : Bool
+    var smallEmpty : Bool
     
     enum AsteroidKeys : CodingKey {
         case ship
@@ -60,10 +66,15 @@ class Asteriods : Codable {
         case lives
         case score
         case frame
+        case gameProgress
+        case gameComplete
+        case smallEmpty
+        case largeEmpty
+        case mediumEmpty
     }
     
     init() {
-        asteroidCount = 4
+        asteroidCount = 0
         fireCount = 0
         frame = CGRect()
         gameLoop = Timer()
@@ -77,6 +88,12 @@ class Asteriods : Codable {
         rotateLeft = false
         rotateRight = false
         shipRespwanedDate = Date()
+        shipNeedsRespwan = false
+        gameComplete = false
+        gameInProgresss = false
+        largeEmpty = false
+        mediumEmpty = false
+        smallEmpty = false
         ship = Ship(acclerationX: 0.0, acclerationY: 0.0, velocityX: 0.0, velocityY: 0.0, currPosX: 0.0, currPosY: 0.0, currAngle: 0.0)
     }
     
@@ -102,13 +119,13 @@ class Asteriods : Codable {
             for (size, list) in asteroids {
                 let objectRadius : Double
                 if size == 1{
-                    objectRadius = 45.0
+                    objectRadius = 37.5
                 }
                 else if size == 2 {
-                    objectRadius = 25.0
+                    objectRadius = 17.5
                 }
                 else {
-                    objectRadius = 12.5
+                    objectRadius = 10.0
                 }
                 for i in 0 ..< list.count {
                     for (index, item) in lasers.enumerated() {
@@ -123,19 +140,32 @@ class Asteriods : Codable {
                     }
                     let xDiffShip : Double = Double(ship.currPosX - list[i].currPosX)
                     let yDiffShip : Double = Double(ship.currPosY - list[i].currPosY)
-                    let radiusShip : Double = Double(objectRadius + 12.5)
+                    let radiusShip : Double = Double(objectRadius + 10.0)
                     if pow(xDiffShip, 2) + pow(yDiffShip, 2) <=  pow(radiusShip, 2) && (ship.currPosX != 0.0 && ship.currPosY != 0.0) {
                         print("Ship Colided \(Date())")
-                        gameLoop.invalidate()
-                    }
+                        let currentDate : Date = Date()
+                        let elapsed : TimeInterval = currentDate.timeIntervalSince(shipRespwanedDate)
+                        if elapsed > 3 {
+                            respawnShip()
+                        }
+                        else {
+                            shipNeedsRespwan = false
+                        }
                 }
+            }
         }
     }
     
     func respawnShip() {
         lives -= 1
         if lives != 0 {
-            
+            ship.currPosX = Float(frame.midX)
+            ship.currPosY = Float(frame.midY)
+            shipRespwanedDate = Date()
+            shipNeedsRespwan = true
+        }
+        else {
+            gameLoop.invalidate()
         }
         
     }
@@ -155,6 +185,9 @@ class Asteriods : Codable {
                 asteroids[2]?.append(newAsteroid)
                 count += 1
             }
+            if asteroids[size]?.count == 0 {
+                largeEmpty = true
+            }
             score += 100
         }
         else if size == 2 {
@@ -171,32 +204,42 @@ class Asteriods : Codable {
                 asteroids[3]?.append(newAsteroid)
                 count += 1
             }
+            if asteroids[size]?.count == 0 {
+                mediumEmpty = true
+            }
             score += 150
         }
         else {
           asteroids[size]?.remove(at: index)
+            if asteroids[size]?.count == 0 {
+                smallEmpty = true
+            }
             score += 200
+        }
+        if largeEmpty && smallEmpty && mediumEmpty {
+            asteroidCount += 1
+            addAsteroids()
         }
     }
     
     func positionShip(elapsedTime : TimeInterval) {
         if rotateLeft {
-            ship.currAngle -= (4.0 * .pi) / 180.0
+            ship.currAngle -= (3.0 * .pi) / 180.0
         }
         
         if rotateRight {
-           ship.currAngle += (4.0 * .pi) / 180.0
+           ship.currAngle += (3.0 * .pi) / 180.0
         }
         
         if thruster {
-            ship.acclerationX =  sin(ship.currAngle) * 95.0
-            ship.acclerationY =  -cos(ship.currAngle) * 95.0
+            ship.acclerationX =  sin(ship.currAngle) * 350.0
+            ship.acclerationY =  -cos(ship.currAngle) * 350.0
             ship.velocityX += ship.acclerationX * Float(elapsedTime)
             ship.velocityY += ship.acclerationY * Float(elapsedTime)
         }
         else {
-            ship.acclerationX =  -ship.velocityX * 2.0
-            ship.acclerationY =  -ship.velocityY * 2.0
+            ship.acclerationX =  -ship.velocityX * 3.0
+            ship.acclerationY =  -ship.velocityY * 3.0
             ship.velocityX -= ship.acclerationX * Float(elapsedTime)
             ship.velocityY -= ship.acclerationY * Float(elapsedTime)
         }
@@ -278,7 +321,7 @@ class Asteriods : Codable {
     func updateLasers() {
         if fire && fireCount >= 15 {
             let currDate : Date = Date()
-            lasers.append(Laser(accleration: (x: 0.0, y: 0.0), currPos: (x: ship.currPosX, y: ship.currPosY), velocity: (x: sin(ship.currAngle) * 3.0, y: -cos(ship.currAngle) * 3.0), currAngle: ship.currAngle, timeSpawned: currDate))
+            lasers.append(Laser(accleration: (x: 0.0, y: 0.0), currPos: (x: ship.currPosX, y: ship.currPosY), velocity: (x: sin(ship.currAngle) * 1.5, y: -cos(ship.currAngle) * 1.5), currAngle: ship.currAngle, timeSpawned: currDate))
             fireCount = 0
         }
     }
@@ -303,9 +346,34 @@ class Asteriods : Codable {
         return data
     }
     
+    func addAsteroids() {
+        
+        largeEmpty = false
+        mediumEmpty = false
+        smallEmpty = false
+        
+        let angleOne : Float = Float.random(in: 0.0...180.0)
+        let angleTwo : Float = Float.random(in: 0.0...180.0)
+        let angleThree : Float = Float.random(in: 0.0...180.0)
+        let angleFour : Float = Float.random(in: 0.0...180.0)
+        
+        asteroids[1]?.append(Asteroid(velocityX: cos(angleOne) * 0.5, velocityY: sin(angleOne) * 0.5, currPosX: 0.0, currPosY: 0.0, currAngle: angleOne))
+        asteroids[1]?.append(Asteroid(velocityX: cos(angleTwo) * 0.5, velocityY: sin(angleTwo) * 0.5, currPosX: Float(frame.midX), currPosY: 0.0, currAngle: angleTwo))
+        asteroids[1]?.append(Asteroid(velocityX: cos(angleThree) * 0.5, velocityY: sin(angleThree) * 0.5, currPosX: 0.0, currPosY: Float(frame.height), currAngle: angleThree))
+        asteroids[1]?.append(Asteroid(velocityX: cos(angleFour) * 0.5, velocityY: sin(angleFour) * 0.5, currPosX: Float(frame.midX), currPosY: Float(frame.height), currAngle: angleFour))
+        
+        for _ in 0 ..< asteroidCount {
+            let angle : Float = Float.random(in: 0.0...180.0)
+            let randIndex : Int = Int.random(in: 0...3)
+            let posArray : [CGFloat] = [frame.height * 0.33, frame.height * 0.5, frame.height * 0.66, frame.height]
+            asteroids[1]?.append(Asteroid(velocityX: cos(angle) * 0.5, velocityY: sin(angle) * 0.5, currPosX: 0.0, currPosY: Float(posArray[randIndex]), currAngle: angle))
+        }
+        
+    }
+    
     func updateFrame(newFrame : CGRect) {
-        if !UserDefaults.standard.bool(forKey: "gameCreated") {
-            UserDefaults.standard.set(true, forKey: "gameCreated")
+        if !gameInProgresss {
+            gameInProgresss = true
             frame = newFrame
             ship.currPosX = Float(frame.midX)
             ship.currPosY = Float(frame.midY)
@@ -315,10 +383,11 @@ class Asteriods : Codable {
             let angleThree : Float = Float.random(in: 0.0...180.0)
             let angleFour : Float = Float.random(in: 0.0...180.0)
             
-            asteroids[1]?.append(Asteroid(velocityX: cos(angleOne) * 0.8, velocityY: sin(angleOne) * 0.8, currPosX: 0.0, currPosY: 0.0, currAngle: angleOne))
-            asteroids[1]?.append(Asteroid(velocityX: cos(angleTwo) * 0.8, velocityY: sin(angleTwo) * 0.8, currPosX: Float(frame.midX), currPosY: 0.0, currAngle: angleTwo))
-            asteroids[1]?.append(Asteroid(velocityX: cos(angleThree) * 0.8, velocityY: sin(angleThree) * 0.8, currPosX: 0.0, currPosY: Float(frame.height), currAngle: angleThree))
-            asteroids[1]?.append(Asteroid(velocityX: cos(angleFour) * 0.8, velocityY: sin(angleFour) * 0.8, currPosX: Float(frame.midX), currPosY: Float(frame.height), currAngle: angleFour))
+            asteroids[1]?.append(Asteroid(velocityX: cos(angleOne) * 0.5, velocityY: sin(angleOne) * 0.5, currPosX: 0.0, currPosY: 0.0, currAngle: angleOne))
+            asteroids[1]?.append(Asteroid(velocityX: cos(angleTwo) * 0.5, velocityY: sin(angleTwo) * 0.5, currPosX: Float(frame.midX), currPosY: 0.0, currAngle: angleTwo))
+            asteroids[1]?.append(Asteroid(velocityX: cos(angleThree) * 0.5, velocityY: sin(angleThree) * 0.5, currPosX: 0.0, currPosY: Float(frame.height), currAngle: angleThree))
+            asteroids[1]?.append(Asteroid(velocityX: cos(angleFour) * 0.5, velocityY: sin(angleFour) * 0.5, currPosX: Float(frame.midX), currPosY: Float(frame.height), currAngle: angleFour))
+            
         }
     }
     
@@ -357,6 +426,11 @@ class Asteriods : Codable {
         lives = try values.decode(Int.self, forKey: AsteroidKeys.lives)
         frame = try values.decode(CGRect.self, forKey: AsteroidKeys.frame)
         asteroidCount = try values.decode(Int.self, forKey: AsteroidKeys.asteroidCount)
+        gameInProgresss = try values.decode(Bool.self, forKey: AsteroidKeys.gameProgress)
+        gameComplete = try values.decode(Bool.self, forKey: AsteroidKeys.gameComplete)
+        largeEmpty = try values.decode(Bool.self, forKey: AsteroidKeys.largeEmpty)
+        mediumEmpty = try values.decode(Bool.self, forKey: AsteroidKeys.mediumEmpty)
+        smallEmpty = try values.decode(Bool.self, forKey: AsteroidKeys.smallEmpty)
         gameLoop = Timer()
         oldTime = Date()
         shipRespwanedDate = Date()
@@ -366,6 +440,7 @@ class Asteriods : Codable {
         rotateRight = false
         lasers = []
         fireCount = 0
+        shipNeedsRespwan = false
     }
 
     func encode(to encoder: Encoder) throws {
@@ -376,6 +451,11 @@ class Asteriods : Codable {
         try container.encode(asteroids, forKey: AsteroidKeys.asteroids)
         try container.encode(frame, forKey: AsteroidKeys.frame)
         try container.encode(asteroidCount, forKey: AsteroidKeys.asteroidCount)
+        try container.encode(gameInProgresss, forKey: AsteroidKeys.gameProgress)
+        try container.encode(gameComplete, forKey: AsteroidKeys.gameComplete)
+        try container.encode(gameComplete, forKey: AsteroidKeys.largeEmpty)
+        try container.encode(gameComplete, forKey: AsteroidKeys.mediumEmpty)
+        try container.encode(gameComplete, forKey: AsteroidKeys.smallEmpty)
     }
     
     enum Error: Swift.Error {

@@ -123,11 +123,19 @@ class GameViewController : UIViewController, GameViewDelegate {
     @objc func updateGameView() {
         gameView.updateDisplay()
         if asteriods.lives == 0 {
+            asteriods.gameComplete = true
             gameViewTimer.invalidate()
+            let documentsDirectory = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+            do {
+                try asteriods.save(to: documentsDirectory.appendingPathComponent(Constants.gamesList))
+            } catch let error where error is Asteriods.Error {
+                print(error)
+            } catch {
+                print(error)
+            }
             let gameOverController : GameOverViewController = GameOverViewController()
             present(gameOverController, animated: true, completion: nil)
         }
-        //gameView.reloadData()
     }
     
     required init?(coder aDecoder: NSCoder) {

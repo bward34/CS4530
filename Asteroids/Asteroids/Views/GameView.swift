@@ -147,14 +147,14 @@ class GameView : UIView {
         }
         if let numLives : Int = delegate?.getNumLives(self) {
             var liveIcon : String = ""
-//            for _ in 0 ..< numLives {
-//                liveIcon += "▲"
-//            }
+            for _ in 0 ..< numLives {
+                liveIcon += "▲"
+            }
              livesLabel.text = liveIcon
         }
         if let frame : ((x: CGFloat, y: CGFloat), CGFloat) = delegate?.getFrame(self) {
             ship.center = CGPoint(x: frame.0.x, y: frame.0.y)
-            ship.bounds = CGRect(x: 0.0, y: 0.0, width: 25.0, height: 25.0)
+            ship.bounds = CGRect(x: 0.0, y: 0.0, width: 20.0, height: 20.0)
             ship.transform = CGAffineTransform(rotationAngle: (frame.1 - (2.0 * .pi) / 180.0))
         }
         for item in laserViews {
@@ -173,9 +173,13 @@ class GameView : UIView {
         }
         if let dict : [Int : [(x: CGFloat, y: CGFloat)]] = delegate?.getAsteroidInfo(self) {
             for (key, list) in dict {
-                    if key == 1 {
+                if list.count == 0 && asteroidViews[key]?.count == 1 {
+                    (asteroidViews[key]?[0] as AnyObject).removeFromSuperview()
+                     asteroidViews[key]?.remove(at: 0)
+                }
+                else if key == 1 {
                         for i in 0 ..< list.count {
-                            if asteroidViews[key]!.count >= 0 && list.count < asteroidViews[key]!.count {
+                            if list.count < asteroidViews[key]!.count {
                                 (asteroidViews[key]?[i] as AnyObject).removeFromSuperview()
                                 asteroidViews[key]?.remove(at: i)
                                 
@@ -183,42 +187,42 @@ class GameView : UIView {
                             else if list.count != asteroidViews[key]?.count {
                                 let largeAsteroid = LargeAsteroidView()
                                 largeAsteroid.center = CGPoint(x: list[i].x, y: list[i].y)
-                                largeAsteroid.bounds = CGRect.init(x: 0.0, y: 0.0, width: 90.0, height: 90.0)
+                                largeAsteroid.bounds = CGRect.init(x: 0.0, y: 0.0, width: 75.0, height: 75.0)
                                 addSubview(largeAsteroid)
                                 asteroidViews[key]?.append(largeAsteroid)
                             }
                             else {
                                 let updateLarge : LargeAsteroidView = asteroidViews[key]?[i] as! LargeAsteroidView
                                 updateLarge.center = CGPoint(x: list[i].x, y: list[i].y)
-                                updateLarge.bounds = CGRect.init(x: 0.0, y: 0.0, width: 90.0, height: 90.0)
+                                updateLarge.bounds = CGRect.init(x: 0.0, y: 0.0, width: 75.0, height: 75.0)
                                 asteroidViews[key]?[i] = updateLarge
                             }
                         }
                     }
-                    if key == 2 {
+                   else if key == 2 {
                         for i in 0 ..< list.count {
-                            if asteroidViews[key]!.count >= 0 && list.count < asteroidViews[key]!.count {
+                            if list.count < asteroidViews[key]!.count {
                                 (asteroidViews[key]?[i] as AnyObject).removeFromSuperview()
                                 asteroidViews[key]?.remove(at: i)
                             }
                             else if list.count != asteroidViews[key]?.count {
                                 let mediumAsteroid = MediumAsteroidView()
                                 mediumAsteroid.center = CGPoint(x: list[i].x, y: list[i].y)
-                                mediumAsteroid.bounds = CGRect.init(x: 0.0, y: 0.0, width: 50.0, height: 50.0)
+                                mediumAsteroid.bounds = CGRect.init(x: 0.0, y: 0.0, width: 35.0, height: 35.0)
                                 addSubview(mediumAsteroid)
                                 asteroidViews[key]?.append(mediumAsteroid)
                             }
                             else {
                                 let updateMedium : MediumAsteroidView = asteroidViews[key]?[i] as! MediumAsteroidView
                                 updateMedium.center = CGPoint(x: list[i].x, y: list[i].y)
-                                updateMedium.bounds = CGRect.init(x: 0.0, y: 0.0, width: 50.0, height: 50.0)
+                                updateMedium.bounds = CGRect.init(x: 0.0, y: 0.0, width: 35.0, height: 35.0)
                                 asteroidViews[key]?[i] = updateMedium
                             }
                         }
                     }
-                    if key == 3 {
+                    else if key == 3 {
                         for i in 0 ..< list.count {
-                            if asteroidViews[key]!.count >= 0 && list.count < asteroidViews[key]!.count {
+                            if list.count < asteroidViews[key]!.count {
                                 (asteroidViews[key]?[i] as AnyObject).removeFromSuperview()
                                 asteroidViews[key]?.remove(at: i)
                             }
@@ -232,7 +236,7 @@ class GameView : UIView {
                             else {
                                 let updateSmall : SmallAsteroidView = asteroidViews[key]?[i] as! SmallAsteroidView
                                 updateSmall.center = CGPoint(x: list[i].x, y: list[i].y)
-                                updateSmall.bounds = CGRect.init(x: 0.0, y: 0.0, width: 25.0, height: 25.0)
+                                updateSmall.bounds = CGRect.init(x: 0.0, y: 0.0, width: 20.0, height: 20.0)
                                 asteroidViews[key]?[i] = updateSmall
                             }
                         }

@@ -24,17 +24,11 @@ class HomeViewController : UIViewController, HomeViewDelegate {
     }
     
     override func viewDidLoad() {
-        
-        if !UserDefaults.standard.bool(forKey: "gameCreated") {
-            homeView.newGameButton.setTitle("New Game", for: .normal)
-        }
-        else {
-            homeView.newGameButton.setTitle("Resume Game", for: .normal)
-            let documentDirectory = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
-            let jsonData = try! Data(contentsOf: documentDirectory.appendingPathComponent(Constants.gamesList))
-            game = try! JSONDecoder().decode(Asteriods.self, from: jsonData)
-        }
         homeView.delegate = self
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        checkGameState()
     }
     
     func showNewGame(_ homeView: HomeView) {
@@ -42,12 +36,40 @@ class HomeViewController : UIViewController, HomeViewDelegate {
         if game != nil {
             newGameViewController.asteriods = game!
         }
+        else {
+            newGameViewController.asteriods = Asteriods()
+        }
         present(newGameViewController, animated: true, completion: nil)
     }
     
     func showHighScore(_ homeView: HomeView) {
         let highScoreViewController = HighScoreViewController()
         present(highScoreViewController, animated: true, completion: nil)
+    }
+    
+    func checkGameState() {
+        if !UserDefaults.standard.bool(forKey: "hasLoggedIn") {
+            UserDefaults.standard.set(true, forKey: "hasLoggedIn")
+        }
+        else {
+            let documentDirectory = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+            let jsonData = try! Data(contentsOf: documentDirectory.appendingPathComponent(Constants.gamesList))
+            game = try! JSONDecoder().decode(Asteriods.self, from: jsonData)
+        }
+        
+        if game != nil {
+            if game!.gameComplete {
+                homeView.newGameButton.setTitle("New Game", for: .normal)
+                game = Asteriods()
+            }
+            else {
+              homeView.newGameButton.setTitle("Resume Game", for: .normal)
+            }
+        }
+        else {
+            homeView.newGameButton.setTitle("New Game", for: .normal)
+            game = Asteriods()
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {

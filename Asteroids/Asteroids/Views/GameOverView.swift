@@ -8,7 +8,13 @@
 
 import UIKit
 
+protocol GameOverViewDelegate {
+    func goHome(_ gameOverView : GameOverView)
+}
+
 class GameOverView : UIView {
+    
+    var delegate : GameOverViewDelegate?
     
     var gameOverLabel : UILabel
     var goHomeButton : UIButton
@@ -67,7 +73,7 @@ class GameOverView : UIView {
     }
     
     @objc func goHome() {
-        
+        delegate?.goHome(self)
     }
     
     required init?(coder aDecoder: NSCoder) {
