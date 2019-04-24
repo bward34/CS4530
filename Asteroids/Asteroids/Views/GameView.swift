@@ -38,11 +38,13 @@ class GameView : UIView {
     var delegate : GameViewDelegate?
     
     var ship: ShipView
-    //var asteroidViews : [ Int : [Any]]
+    
     var largeViews : [LargeAsteroidView]
     var mediumViews : [MediumAsteroidView]
     var smallViews : [SmallAsteroidView]
     var laserViews : [LaserView]
+    
+    var showThruster : Bool
     
     override init(frame: CGRect) {
         largeViews = []
@@ -57,7 +59,7 @@ class GameView : UIView {
         scoreLabel = UILabel()
         livesLabel = UILabel()
         ship = ShipView()
-        
+        showThruster = false
         super.init(frame : frame)
         
         accelerateButton.addTarget(self, action: #selector(accelerate), for: UIControl.Event.touchDown)
@@ -71,6 +73,7 @@ class GameView : UIView {
         homeButton.addTarget(self, action: #selector(goHome), for: UIControl.Event.touchUpInside)
 
         ship.contentMode = .redraw
+        ship.shipExhaust.isHidden = true
         addSubview(ship)
         
         scoreLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -148,11 +151,6 @@ class GameView : UIView {
             addSubview(smallView)
             smallView.isHidden = true
             smallViews.append(smallView)
-            
-            let backgroundImage = UIImageView(frame: UIScreen.main.bounds)
-            backgroundImage.image = UIImage(named: "stars.jpg")
-            backgroundImage.contentMode = UIView.ContentMode.scaleAspectFill
-            insertSubview(backgroundImage, at: 0)
         }
         
         for _ in 0 ..< 200 {
@@ -162,6 +160,10 @@ class GameView : UIView {
             laserView.isHidden = true
             laserViews.append(laserView)
         }
+        let backgroundImage = UIImageView(frame: UIScreen.main.bounds)
+        backgroundImage.image = UIImage(named: "stars.jpg")
+        backgroundImage.contentMode = UIView.ContentMode.scaleAspectFill
+        insertSubview(backgroundImage, at: 0)
     }
     
     override func draw(_ rect: CGRect) {
@@ -187,6 +189,21 @@ class GameView : UIView {
             ship.center = CGPoint(x: frame.0.x, y: frame.0.y)
             ship.bounds = CGRect(x: 0.0, y: 0.0, width: 20.0, height: 20.0)
             ship.transform = CGAffineTransform(rotationAngle: (frame.1 - (2.0 * .pi) / 180.0))
+        }
+        if showThruster {
+            ship.shipExhaust.isHidden = false
+            let rand : Int = Int.random(in: 0...1)
+            if rand == 0 {
+                ship.shipExhaust.lineExhaust.isHidden = false
+                ship.shipExhaust.triangleExhaust.isHidden = true
+            }
+            else {
+                ship.shipExhaust.lineExhaust.isHidden = true
+                ship.shipExhaust.triangleExhaust.isHidden = false
+            }
+        }
+        else {
+            ship.shipExhaust.isHidden = true
         }
         for item in laserViews {
             item.isHidden = true
@@ -259,10 +276,12 @@ class GameView : UIView {
     
     @objc func accelerate() {
         delegate?.accleratePushed(self)
+        showThruster = true
     }
     
     @objc func acclerateEnd() {
         delegate?.acclerateRealeased(self)
+        showThruster = false
     }
     
     @objc func rotateShip(sender : Any) {

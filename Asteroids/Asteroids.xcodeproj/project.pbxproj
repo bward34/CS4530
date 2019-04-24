@@ -15,6 +15,9 @@
 		5418F2342256D37100BCDFD1 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5418F2332256D37100BCDFD1 /* GameViewController.swift */; };
 		5418F2362256D48500BCDFD1 /* ShipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5418F2352256D48500BCDFD1 /* ShipView.swift */; };
 		5418F2382256DF8800BCDFD1 /* Asteroids.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5418F2372256DF8800BCDFD1 /* Asteroids.swift */; };
+		542BA40522702BBD00728C45 /* ShipExhaustView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542BA40422702BBD00728C45 /* ShipExhaustView.swift */; };
+		542BA40822702D6200728C45 /* ShipExhaustLineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542BA40722702D6200728C45 /* ShipExhaustLineView.swift */; };
+		542BA40A22702DAC00728C45 /* ShipExhaustTriangleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542BA40922702DAC00728C45 /* ShipExhaustTriangleView.swift */; };
 		545AC5F122692C7D00626533 /* LaserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545AC5F022692C7D00626533 /* LaserView.swift */; };
 		545AC5F4226A9D6700626533 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545AC5F3226A9D6700626533 /* Constants.swift */; };
 		545AC5F6226BA59800626533 /* GameOverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545AC5F5226BA59700626533 /* GameOverView.swift */; };
@@ -43,6 +46,9 @@
 		5418F2332256D37100BCDFD1 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 		5418F2352256D48500BCDFD1 /* ShipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShipView.swift; sourceTree = "<group>"; };
 		5418F2372256DF8800BCDFD1 /* Asteroids.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Asteroids.swift; sourceTree = "<group>"; };
+		542BA40422702BBD00728C45 /* ShipExhaustView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShipExhaustView.swift; sourceTree = "<group>"; };
+		542BA40722702D6200728C45 /* ShipExhaustLineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShipExhaustLineView.swift; sourceTree = "<group>"; };
+		542BA40922702DAC00728C45 /* ShipExhaustTriangleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShipExhaustTriangleView.swift; sourceTree = "<group>"; };
 		545AC5F022692C7D00626533 /* LaserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaserView.swift; sourceTree = "<group>"; };
 		545AC5F3226A9D6700626533 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		545AC5F5226BA59700626533 /* GameOverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameOverView.swift; sourceTree = "<group>"; };
@@ -104,6 +110,16 @@
 			path = Asteroids;
 			sourceTree = "<group>";
 		};
+		542BA40622702D1E00728C45 /* ShipExhaust */ = {
+			isa = PBXGroup;
+			children = (
+				542BA40422702BBD00728C45 /* ShipExhaustView.swift */,
+				542BA40722702D6200728C45 /* ShipExhaustLineView.swift */,
+				542BA40922702DAC00728C45 /* ShipExhaustTriangleView.swift */,
+			);
+			path = ShipExhaust;
+			sourceTree = "<group>";
+		};
 		545AC5F2226A9CE200626533 /* Constants */ = {
 			isa = PBXGroup;
 			children = (
@@ -143,6 +159,7 @@
 		54EC9C4422593897005E5E30 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				542BA40622702D1E00728C45 /* ShipExhaust */,
 				545AC5F5226BA59700626533 /* GameOverView.swift */,
 				5418F2312256D35700BCDFD1 /* GameView.swift */,
 				54EC9C4622593945005E5E30 /* HomeView.swift */,
@@ -246,16 +263,19 @@
 				5408D584225FE5F0000FAA09 /* LargeAsteroidView.swift in Sources */,
 				545AC5F6226BA59800626533 /* GameOverView.swift in Sources */,
 				5418F2322256D35700BCDFD1 /* GameView.swift in Sources */,
+				542BA40A22702DAC00728C45 /* ShipExhaustTriangleView.swift in Sources */,
 				54EC9C4722593945005E5E30 /* HomeView.swift in Sources */,
 				545AC5F8226BA5F400626533 /* GameOverViewController.swift in Sources */,
 				545AC5F4226A9D6700626533 /* Constants.swift in Sources */,
 				545AC5F122692C7D00626533 /* LaserView.swift in Sources */,
 				54EC9C5322595641005E5E30 /* HighScore.swift in Sources */,
 				5418F2342256D37100BCDFD1 /* GameViewController.swift in Sources */,
+				542BA40822702D6200728C45 /* ShipExhaustLineView.swift in Sources */,
 				54EC9C4B225939C6005E5E30 /* HighScoreView.swift in Sources */,
 				54EC9C4922593985005E5E30 /* HomeViewController.swift in Sources */,
 				54BCCF68226558E4001B5EE1 /* SmallAsteroidView.swift in Sources */,
 				5418F2202256D32600BCDFD1 /* AppDelegate.swift in Sources */,
+				542BA40522702BBD00728C45 /* ShipExhaustView.swift in Sources */,
 				54EC9C4D225939EB005E5E30 /* HighScoreViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

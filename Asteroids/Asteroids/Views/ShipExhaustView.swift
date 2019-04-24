@@ -1,19 +1,16 @@
 //
-//  ShipView.swift
+//  ShipExhaustView.swift
 //  Asteroids
 //
-//  Created by Brandon Ward on 4/4/19.
+//  Created by Brandon Ward on 4/23/19.
 //  Copyright © 2019 Brandon Ward. All rights reserved.
 //
 
 import UIKit
 
-class ShipView : UIView {
+class ShipExhaustView : UIView {
     
-    var shipExhaust : ShipExhaustView
-
     override init(frame: CGRect) {
-        shipExhaust = ShipExhaustView()
         super.init(frame : .zero)
         backgroundColor = UIColor.clear
         isOpaque = false
@@ -36,13 +33,10 @@ class ShipView : UIView {
         drawPath.lineCapStyle = .round
         UIColor(hue: 0.3194, saturation: 1, brightness: 1, alpha: 1.0).setStroke()
         drawPath.stroke()
-        
-        shipExhaust.bounds = CGRect(x: 0.0, y: 0.0, width: 15.0, height: 5.0)
-        shipExhaust.center = CGPoint(x: rect.width / 2, y: rect.height - 4)
-        addSubview(shipExhaust)
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
+
