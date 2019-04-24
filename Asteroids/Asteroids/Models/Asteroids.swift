@@ -51,6 +51,7 @@ class Asteriods : Codable {
     var fireCount : Int
     var lives : Int
     var score : Int
+    var lastShipPoint : (x: Float, y: Float)
     var asteroidCount : Int
     var listEmptyCount : Int
     var shipRespwanedDate : Date
@@ -92,6 +93,7 @@ class Asteriods : Codable {
         shipNeedsRespwan = false
         gameComplete = false
         gameInProgresss = false
+        lastShipPoint = (x: 0.0, y: 0.0)
         ship = Ship(acclerationX: 0.0, acclerationY: 0.0, velocityX: 0.0, velocityY: 0.0, currPosX: 0.0, currPosY: 0.0, currAngle: 0.0)
     }
     
@@ -109,6 +111,8 @@ class Asteriods : Codable {
         self.positionAsteroids(elapsedTime: elapsed)
         self.updateLasers()
         self.positionLaserPoints(elapsedTime: elapsed)
+        if shipNeedsRespwan {
+        }
         self.detectCollision()
         self.fireCount = self.fireCount + 1
     }
@@ -143,7 +147,8 @@ class Asteriods : Codable {
                             print("Ship Colided \(Date())")
                             let currentDate : Date = Date()
                             let elapsed : TimeInterval = currentDate.timeIntervalSince(shipRespwanedDate)
-                            if elapsed > 3 {
+                            if elapsed > 5 {
+                                lastShipPoint = (x: ship.currPosX, y: ship.currPosY)
                                 respawnShip()
                             }
                             else {
@@ -151,6 +156,11 @@ class Asteriods : Codable {
                             }
                     }
             }
+                let currentDate : Date = Date()
+                let elapsed : TimeInterval = currentDate.timeIntervalSince(shipRespwanedDate)
+                if elapsed > 2 {
+                    shipNeedsRespwan = false
+                }
         }
     }
     
@@ -325,7 +335,7 @@ class Asteriods : Codable {
         }
         
     }
-    
+
     func updateLasers() {
         if fire && fireCount >= 15 {
             let currDate : Date = Date()
@@ -443,6 +453,7 @@ class Asteriods : Codable {
         rotateRight = false
         lasers = []
         fireCount = 0
+        lastShipPoint = (x: 0.0, y: 0.0)
         shipNeedsRespwan = false
     }
 

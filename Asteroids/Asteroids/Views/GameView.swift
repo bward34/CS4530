@@ -21,7 +21,9 @@ protocol GameViewDelegate {
     func getLaserInfo(_ gameView : GameView) -> [((x: CGFloat, y: CGFloat), CGFloat)]
     func updateFrame(_ gameView: GameView, newPoint : CGPoint)
     func getNumLives(_ gameView: GameView) -> Int
-    func getScore(_ gaveView: GameView) -> Int
+    func getScore(_ gameView: GameView) -> Int
+    func doesShipNeedRespawn(_ gameView : GameView) -> Bool
+    func getFragInfo(_ gameView : GameView) -> (x: CGFloat, y: CGFloat)
 }
 
 class GameView : UIView {
@@ -34,10 +36,14 @@ class GameView : UIView {
     
     var scoreLabel : UILabel
     var livesLabel : UILabel
+    var copyRightLabel : UILabel
     
     var delegate : GameViewDelegate?
     
     var ship: ShipView
+    var yellowExplosion : YellowExplosionView
+    var redExplosion : RedExplosionView
+    var orangeExplosion : OrangeExplosionView
     
     var largeViews : [LargeAsteroidView]
     var mediumViews : [MediumAsteroidView]
@@ -58,7 +64,11 @@ class GameView : UIView {
         homeButton = UIButton()
         scoreLabel = UILabel()
         livesLabel = UILabel()
+        copyRightLabel = UILabel()
         ship = ShipView()
+        yellowExplosion = YellowExplosionView()
+        redExplosion = RedExplosionView()
+        orangeExplosion = OrangeExplosionView()
         showThruster = false
         super.init(frame : frame)
         
@@ -112,6 +122,13 @@ class GameView : UIView {
         homeButton.titleLabel?.font = UIFont(name: "Future-Earth", size: 12)
         addSubview(homeButton)
         
+        copyRightLabel.translatesAutoresizingMaskIntoConstraints = false
+        copyRightLabel.font = UIFont(name: "Future-Earth", size: 6)
+        copyRightLabel.text = "©2019 Brandon Ward"
+        copyRightLabel.textColor = .white
+        bringSubviewToFront(copyRightLabel)
+        addSubview(copyRightLabel)
+        
         homeButton.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 20).isActive = true
         homeButton.rightAnchor.constraint(equalTo: self.safeAreaLayoutGuide.rightAnchor, constant: -20).isActive = true
         
@@ -132,6 +149,19 @@ class GameView : UIView {
         
         laserButton.bottomAnchor.constraint(equalTo: rotateLeftButton.bottomAnchor).isActive = true
         laserButton.leftAnchor.constraint(equalTo: rotateLeftButton.leftAnchor, constant: 80).isActive = true
+        
+        copyRightLabel.bottomAnchor.constraint(equalTo: rotateLeftButton.bottomAnchor).isActive = true
+        copyRightLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+        
+        yellowExplosion.bounds = CGRect(x: 0.0, y: 0.0, width: 45.0, height: 45.0)
+        yellowExplosion.isHidden = true
+        addSubview(yellowExplosion)
+        orangeExplosion.bounds = CGRect(x: 0.0, y: 0.0, width: 25.0, height: 25.0)
+        orangeExplosion.isHidden = true
+        addSubview(orangeExplosion)
+        redExplosion.bounds = CGRect(x: 0.0, y: 0.0, width: 15.0, height: 15.0)
+        redExplosion.isHidden = true
+        addSubview(redExplosion)
         
         for _ in 0 ..< 100 {
             let largeView : LargeAsteroidView = LargeAsteroidView()
@@ -160,6 +190,7 @@ class GameView : UIView {
             laserView.isHidden = true
             laserViews.append(laserView)
         }
+        
         let backgroundImage = UIImageView(frame: UIScreen.main.bounds)
         backgroundImage.image = UIImage(named: "stars.jpg")
         backgroundImage.contentMode = UIView.ContentMode.scaleAspectFill
@@ -186,10 +217,42 @@ class GameView : UIView {
              livesLabel.text = liveIcon
         }
         if let frame : ((x: CGFloat, y: CGFloat), CGFloat) = delegate?.getFrame(self) {
-            ship.center = CGPoint(x: frame.0.x, y: frame.0.y)
-            ship.bounds = CGRect(x: 0.0, y: 0.0, width: 20.0, height: 20.0)
-            ship.transform = CGAffineTransform(rotationAngle: (frame.1 - (2.0 * .pi) / 180.0))
+                ship.center = CGPoint(x: frame.0.x, y: frame.0.y)
+                ship.bounds = CGRect(x: 0.0, y: 0.0, width: 20.0, height: 20.0)
+                ship.transform = CGAffineTransform(rotationAngle: (frame.1 - (2.0 * .pi) / 180.0))
         }
+        if let shipNeedsRespawn : Bool = delegate?.doesShipNeedRespawn(self) {
+            if !shipNeedsRespawn {
+                ship.isHidden = false
+                yellowExplosion.isHidden = true
+                orangeExplosion.isHidden = true
+                redExplosion.isHidden = true
+            }
+            else {
+                ship.isHidden = true
+                if let explosionInfo : (x: CGFloat, y: CGFloat) = delegate?.getFragInfo(self) {
+                    yellowExplosion.center = CGPoint(x: explosionInfo.x, y: explosionInfo.y)
+                    orangeExplosion.center = CGPoint(x: explosionInfo.x, y: explosionInfo.y)
+                    redExplosion.center = CGPoint(x: explosionInfo.x, y: explosionInfo.y)
+                    let rand : Int = Int.random(in: 0...2)
+                    if rand == 0 {
+                        yellowExplosion.isHidden = false
+                        orangeExplosion.isHidden = true
+                        redExplosion.isHidden = true
+                    }
+                    else if rand == 2 {
+                        yellowExplosion.isHidden = true
+                        orangeExplosion.isHidden = false
+                        redExplosion.isHidden = true
+                    } else {
+                        yellowExplosion.isHidden = true
+                        orangeExplosion.isHidden = true
+                        redExplosion.isHidden = false
+                    }
+                }
+            }
+        }
+        
         if showThruster {
             ship.shipExhaust.isHidden = false
             let rand : Int = Int.random(in: 0...1)

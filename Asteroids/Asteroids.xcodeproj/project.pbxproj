@@ -27,6 +27,9 @@
 		54BCCF7222656F35001B5EE1 /* galaxy.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 54BCCF7122656F34001B5EE1 /* galaxy.jpeg */; };
 		54BCCF74226578DF001B5EE1 /* stars.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 54BCCF73226578DF001B5EE1 /* stars.jpg */; };
 		54BCCF7822658806001B5EE1 /* Future-Earth.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 54BCCF7722658805001B5EE1 /* Future-Earth.ttf */; };
+		54D28B572270EF5500BA2989 /* YellowExplosionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D28B562270EF5500BA2989 /* YellowExplosionView.swift */; };
+		54D28B592271111E00BA2989 /* RedExplosionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D28B582271111E00BA2989 /* RedExplosionView.swift */; };
+		54D28B5B2271118700BA2989 /* OrangeExplosionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D28B5A2271118700BA2989 /* OrangeExplosionView.swift */; };
 		54EC9C4722593945005E5E30 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54EC9C4622593945005E5E30 /* HomeView.swift */; };
 		54EC9C4922593985005E5E30 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54EC9C4822593985005E5E30 /* HomeViewController.swift */; };
 		54EC9C4B225939C6005E5E30 /* HighScoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54EC9C4A225939C6005E5E30 /* HighScoreView.swift */; };
@@ -58,6 +61,9 @@
 		54BCCF7122656F34001B5EE1 /* galaxy.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = galaxy.jpeg; sourceTree = "<group>"; };
 		54BCCF73226578DF001B5EE1 /* stars.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = stars.jpg; sourceTree = "<group>"; };
 		54BCCF7722658805001B5EE1 /* Future-Earth.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Future-Earth.ttf"; sourceTree = "<group>"; };
+		54D28B562270EF5500BA2989 /* YellowExplosionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YellowExplosionView.swift; sourceTree = "<group>"; };
+		54D28B582271111E00BA2989 /* RedExplosionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedExplosionView.swift; sourceTree = "<group>"; };
+		54D28B5A2271118700BA2989 /* OrangeExplosionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrangeExplosionView.swift; sourceTree = "<group>"; };
 		54EC9C4622593945005E5E30 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		54EC9C4822593985005E5E30 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		54EC9C4A225939C6005E5E30 /* HighScoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HighScoreView.swift; sourceTree = "<group>"; };
@@ -145,6 +151,16 @@
 			path = Fonts;
 			sourceTree = "<group>";
 		};
+		54D28B552270EEDF00BA2989 /* ShipExplosion */ = {
+			isa = PBXGroup;
+			children = (
+				54D28B562270EF5500BA2989 /* YellowExplosionView.swift */,
+				54D28B582271111E00BA2989 /* RedExplosionView.swift */,
+				54D28B5A2271118700BA2989 /* OrangeExplosionView.swift */,
+			);
+			path = ShipExplosion;
+			sourceTree = "<group>";
+		};
 		54EC9C4122593853005E5E30 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -159,6 +175,7 @@
 		54EC9C4422593897005E5E30 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				54D28B552270EEDF00BA2989 /* ShipExplosion */,
 				542BA40622702D1E00728C45 /* ShipExhaust */,
 				545AC5F5226BA59700626533 /* GameOverView.swift */,
 				5418F2312256D35700BCDFD1 /* GameView.swift */,
@@ -260,10 +277,13 @@
 				5418F2382256DF8800BCDFD1 /* Asteroids.swift in Sources */,
 				5418F2362256D48500BCDFD1 /* ShipView.swift in Sources */,
 				54EC9C5122595015005E5E30 /* HighScoreViewTableCell.swift in Sources */,
+				54D28B5B2271118700BA2989 /* OrangeExplosionView.swift in Sources */,
 				5408D584225FE5F0000FAA09 /* LargeAsteroidView.swift in Sources */,
 				545AC5F6226BA59800626533 /* GameOverView.swift in Sources */,
 				5418F2322256D35700BCDFD1 /* GameView.swift in Sources */,
+				54D28B592271111E00BA2989 /* RedExplosionView.swift in Sources */,
 				542BA40A22702DAC00728C45 /* ShipExhaustTriangleView.swift in Sources */,
+				54D28B572270EF5500BA2989 /* YellowExplosionView.swift in Sources */,
 				54EC9C4722593945005E5E30 /* HomeView.swift in Sources */,
 				545AC5F8226BA5F400626533 /* GameOverViewController.swift in Sources */,
 				545AC5F4226A9D6700626533 /* Constants.swift in Sources */,

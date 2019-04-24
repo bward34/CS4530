@@ -95,6 +95,15 @@ class GameViewController : UIViewController, GameViewDelegate {
         return asteriods.score
     }
     
+    func doesShipNeedRespawn(_ gameView: GameView) -> Bool {
+        return asteriods.shipNeedsRespwan
+    }
+    
+    func getFragInfo(_ gameView: GameView) -> (x: CGFloat, y: CGFloat) {
+        return (x: CGFloat(asteriods.lastShipPoint.x), y: CGFloat(asteriods.lastShipPoint.y))
+    }
+    
+    
     func updateFrame(_ gameView: GameView, newPoint: CGPoint) {
         asteriods.ship.currPosX = Float(newPoint.x)
         asteriods.ship.currPosY = Float(newPoint.y)
