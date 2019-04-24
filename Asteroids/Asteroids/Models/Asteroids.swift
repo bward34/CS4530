@@ -25,6 +25,7 @@ struct Asteroid : Codable {
     var currPosX : Float
     var currPosY : Float
     var currAngle : Float
+    var rotateDirection : Int
 }
 
 struct Laser {
@@ -172,9 +173,10 @@ class Asteriods : Codable {
             asteroids[size]?.remove(at: index)
             var count : Int = 0
             while count < 2 {
-                var newAsteroid : Asteroid = Asteroid(velocityX: 0.0, velocityY: 0.0, currPosX: 0.0, currPosY: 0.0, currAngle: 0.0)
+                var newAsteroid : Asteroid = Asteroid(velocityX: 0.0, velocityY: 0.0, currPosX: 0.0, currPosY: 0.0, currAngle: 0.0, rotateDirection: 0)
                 newAsteroid.currPosX = asteroid.currPosX
                 newAsteroid.currPosY = asteroid.currPosY
+                newAsteroid.rotateDirection = Int.random(in: 0...1)
                 let angle : Float = Float.random(in: 0.0...180.0)
                 newAsteroid.currAngle = angle
                 newAsteroid.velocityX = cos(angle)
@@ -191,9 +193,10 @@ class Asteriods : Codable {
             asteroids[size]?.remove(at: index)
             var count : Int = 0
             while count < 2 {
-                var newAsteroid : Asteroid = Asteroid(velocityX: 0.0, velocityY: 0.0, currPosX: 0.0, currPosY: 0.0, currAngle: 0.0)
+                var newAsteroid : Asteroid = Asteroid(velocityX: 0.0, velocityY: 0.0, currPosX: 0.0, currPosY: 0.0, currAngle: 0.0, rotateDirection: 0)
                 newAsteroid.currPosX = asteroid.currPosX
                 newAsteroid.currPosY = asteroid.currPosY
+                newAsteroid.rotateDirection = Int.random(in: 0...1)
                 let angle : Float = Float.random(in: 0.0...180.0)
                 newAsteroid.currAngle = angle
                 newAsteroid.velocityX = cos(angle)
@@ -264,6 +267,12 @@ class Asteriods : Codable {
     func positionAsteroids(elapsedTime : TimeInterval) {
         for (key, list) in asteroids {
             for i in 0 ..< list.count {
+                if asteroids[key]![i].rotateDirection == 1 {
+                    asteroids[key]?[i].currAngle -= (0.5 * .pi) / 180.0
+                }
+                else {
+                    asteroids[key]?[i].currAngle += (0.9 * .pi) / 180.0
+                }
                 let yVeloc = asteroids[key]?[i].velocityY
                 let xVeloc = asteroids[key]?[i].velocityX
                 asteroids[key]?[i].currPosX += xVeloc!
@@ -325,12 +334,12 @@ class Asteriods : Codable {
         }
     }
     
-    func asteroidInfo() -> [Int : [(x: CGFloat, y: CGFloat)]] {
-        var data : [Int : [(x: CGFloat, y: CGFloat)]] = [:]
+    func asteroidInfo() -> [Int : [((x: CGFloat, y: CGFloat), CGFloat)]] {
+        var data : [Int : [((x: CGFloat, y: CGFloat), CGFloat)]] = [:]
         for (key, list) in asteroids {
-            var addSizes : [(x: CGFloat, y: CGFloat)] = []
+            var addSizes : [((x: CGFloat, y: CGFloat), CGFloat)] = []
               for asteroid in list {
-                addSizes.append((x: CGFloat(asteroid.currPosX), y: CGFloat(asteroid.currPosY)))
+                addSizes.append(((x: CGFloat(asteroid.currPosX), y: CGFloat(asteroid.currPosY)),CGFloat(asteroid.currAngle)))
               }
             data[key] = addSizes
             }
@@ -352,16 +361,17 @@ class Asteriods : Codable {
         let angleThree : Float = Float.random(in: 0.0...180.0)
         let angleFour : Float = Float.random(in: 0.0...180.0)
         
-        asteroids[1]?.append(Asteroid(velocityX: cos(angleOne) * 0.5, velocityY: sin(angleOne) * 0.5, currPosX: 0.0, currPosY: 0.0, currAngle: angleOne))
-        asteroids[1]?.append(Asteroid(velocityX: cos(angleTwo) * 0.5, velocityY: sin(angleTwo) * 0.5, currPosX: Float(frame.midX), currPosY: 0.0, currAngle: angleTwo))
-        asteroids[1]?.append(Asteroid(velocityX: cos(angleThree) * 0.5, velocityY: sin(angleThree) * 0.5, currPosX: 0.0, currPosY: Float(frame.height), currAngle: angleThree))
-        asteroids[1]?.append(Asteroid(velocityX: cos(angleFour) * 0.5, velocityY: sin(angleFour) * 0.5, currPosX: Float(frame.midX), currPosY: Float(frame.height), currAngle: angleFour))
+        asteroids[1]?.append(Asteroid(velocityX: cos(angleOne) * 0.5, velocityY: sin(angleOne) * 0.5, currPosX: 0.0, currPosY: 0.0, currAngle: angleOne, rotateDirection: 1))
+        asteroids[1]?.append(Asteroid(velocityX: cos(angleTwo) * 0.5, velocityY: sin(angleTwo) * 0.5, currPosX: Float(frame.midX), currPosY: 0.0, currAngle: angleTwo, rotateDirection: 0))
+        asteroids[1]?.append(Asteroid(velocityX: cos(angleThree) * 0.5, velocityY: sin(angleThree) * 0.5, currPosX: 0.0, currPosY: Float(frame.height), currAngle: angleThree, rotateDirection: 0))
+        asteroids[1]?.append(Asteroid(velocityX: cos(angleFour) * 0.5, velocityY: sin(angleFour) * 0.5, currPosX: Float(frame.midX), currPosY: Float(frame.height), currAngle: angleFour, rotateDirection: 1))
         
         for _ in 0 ..< asteroidCount {
             let angle : Float = Float.random(in: 0.0...180.0)
             let randIndex : Int = Int.random(in: 0...3)
             let posArray : [CGFloat] = [frame.height * 0.33, frame.height * 0.5, frame.height * 0.66, frame.height]
-            asteroids[1]?.append(Asteroid(velocityX: cos(angle) * 0.5, velocityY: sin(angle) * 0.5, currPosX: 0.0, currPosY: Float(posArray[randIndex]), currAngle: angle))
+            let rotateDir : Int = Int.random(in: 0...1)
+            asteroids[1]?.append(Asteroid(velocityX: cos(angle) * 0.5, velocityY: sin(angle) * 0.5, currPosX: 0.0, currPosY: Float(posArray[randIndex]), currAngle: angle, rotateDirection: rotateDir))
         }
         
     }
@@ -378,10 +388,10 @@ class Asteriods : Codable {
             let angleThree : Float = Float.random(in: 0.0...180.0)
             let angleFour : Float = Float.random(in: 0.0...180.0)
             
-            asteroids[1]?.append(Asteroid(velocityX: cos(angleOne) * 0.5, velocityY: sin(angleOne) * 0.5, currPosX: 0.0, currPosY: 0.0, currAngle: angleOne))
-            asteroids[1]?.append(Asteroid(velocityX: cos(angleTwo) * 0.5, velocityY: sin(angleTwo) * 0.5, currPosX: Float(frame.midX), currPosY: 0.0, currAngle: angleTwo))
-            asteroids[1]?.append(Asteroid(velocityX: cos(angleThree) * 0.5, velocityY: sin(angleThree) * 0.5, currPosX: 0.0, currPosY: Float(frame.height), currAngle: angleThree))
-            asteroids[1]?.append(Asteroid(velocityX: cos(angleFour) * 0.5, velocityY: sin(angleFour) * 0.5, currPosX: Float(frame.midX), currPosY: Float(frame.height), currAngle: angleFour))
+            asteroids[1]?.append(Asteroid(velocityX: cos(angleOne) * 0.5, velocityY: sin(angleOne) * 0.5, currPosX: 0.0, currPosY: 0.0, currAngle: angleOne, rotateDirection: 0))
+            asteroids[1]?.append(Asteroid(velocityX: cos(angleTwo) * 0.5, velocityY: sin(angleTwo) * 0.5, currPosX: Float(frame.midX), currPosY: 0.0, currAngle: angleTwo, rotateDirection: 1))
+            asteroids[1]?.append(Asteroid(velocityX: cos(angleThree) * 0.5, velocityY: sin(angleThree) * 0.5, currPosX: 0.0, currPosY: Float(frame.height), currAngle: angleThree, rotateDirection: 1))
+            asteroids[1]?.append(Asteroid(velocityX: cos(angleFour) * 0.5, velocityY: sin(angleFour) * 0.5, currPosX: Float(frame.midX), currPosY: Float(frame.height), currAngle: angleFour, rotateDirection: 0))
             
         }
     }

@@ -37,8 +37,8 @@ class ShipView : UIView {
         UIColor(hue: 0.3194, saturation: 1, brightness: 1, alpha: 1.0).setStroke()
         drawPath.stroke()
         
-        shipExhaust.bounds = CGRect(x: 0.0, y: 0.0, width: 15.0, height: 5.0)
-        shipExhaust.center = CGPoint(x: rect.width / 2, y: rect.height - 4)
+        shipExhaust.bounds = CGRect(x: 0.0, y: 0.0, width: 15.0, height: 20.0)
+        shipExhaust.center = CGPoint(x: rect.width / 2, y: rect.height - 2)
         addSubview(shipExhaust)
     }
     

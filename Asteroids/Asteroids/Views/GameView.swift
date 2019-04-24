@@ -17,7 +17,7 @@ protocol GameViewDelegate {
     func rotatePushed(_ gameView : GameView, sender : Any)
     func rotatePushedEnd(_ gameView : GameView, sender : Any)
     func getFrame(_ gameView : GameView) -> ((x: CGFloat, y: CGFloat), CGFloat)
-    func getAsteroidInfo(_ gameView : GameView) -> [Int : [(x: CGFloat, y: CGFloat)]]
+    func getAsteroidInfo(_ gameView : GameView) -> [Int : [((x: CGFloat, y: CGFloat), CGFloat)]]
     func getLaserInfo(_ gameView : GameView) -> [((x: CGFloat, y: CGFloat), CGFloat)]
     func updateFrame(_ gameView: GameView, newPoint : CGPoint)
     func getNumLives(_ gameView: GameView) -> Int
@@ -217,13 +217,13 @@ class GameView : UIView {
                 laserViews[i].isHidden = false
             }
         }
-        if let dict : [Int : [(x: CGFloat, y: CGFloat)]] = delegate?.getAsteroidInfo(self) {
+        if let dict : [Int : [((x: CGFloat, y: CGFloat), CGFloat)]] = delegate?.getAsteroidInfo(self) {
             for (key, list) in dict {
                 if key == 1 {
                         for i in 0 ..< largeViews.count {
                              if i < list.count {
-                                largeViews[i].center = CGPoint(x: list[i].x, y: list[i].y)
-                                largeViews[i].bounds = CGRect(x: 0.0, y: 0.0, width: 75.0, height: 75.0)
+                                largeViews[i].center = CGPoint(x: list[i].0.x, y: list[i].0.y)
+                                largeViews[i].transform  = CGAffineTransform(rotationAngle: (list[i].1 - (2.0 * .pi) / 180.0))
                                 largeViews[i].isHidden = false
                             }
                             else {
@@ -234,7 +234,8 @@ class GameView : UIView {
                    else if key == 2 {
                         for i in 0 ..< mediumViews.count {
                              if i < list.count{
-                               mediumViews[i].center = CGPoint(x: list[i].x, y: list[i].y)
+                               mediumViews[i].center = CGPoint(x: list[i].0.x, y: list[i].0.y)
+                               mediumViews[i].transform  = CGAffineTransform(rotationAngle: (list[i].1 - (2.0 * .pi) / 180.0))
                                mediumViews[i].isHidden = false
                             }
                             else {
@@ -246,7 +247,8 @@ class GameView : UIView {
                     else if key == 3 {
                         for i in 0 ..< smallViews.count {
                              if i < list.count {
-                                smallViews[i].center = CGPoint(x: list[i].x, y: list[i].y)
+                                smallViews[i].center = CGPoint(x: list[i].0.x, y: list[i].0.y)
+                                smallViews[i].transform  = CGAffineTransform(rotationAngle: (list[i].1 - (2.0 * .pi) / 180.0))
                                 smallViews[i].isHidden = false
                             }
                             else {

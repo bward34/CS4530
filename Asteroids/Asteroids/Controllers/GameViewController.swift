@@ -79,7 +79,7 @@ class GameViewController : UIViewController, GameViewDelegate {
         return ((x: CGFloat(asteriods.ship.currPosX), y: CGFloat(asteriods.ship.currPosY)), CGFloat(asteriods.ship.currAngle))
     }
     
-    func getAsteroidInfo(_ gameView: GameView) -> [Int : [(x: CGFloat, y: CGFloat)]] {
+    func getAsteroidInfo(_ gameView: GameView) -> [Int : [((x: CGFloat, y: CGFloat), CGFloat)]] {
         return asteriods.asteroidInfo()
     }
     
