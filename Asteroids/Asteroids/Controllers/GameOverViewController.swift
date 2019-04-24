@@ -9,8 +9,13 @@
 import UIKit
 
 class GameOverViewController : UIViewController, GameOverViewDelegate {
-
+    
+    var currentScore : Int = 0
+    var highScores : [HighScore] = []
+    var addScore : Bool
+    
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        addScore = true
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
     
@@ -23,11 +28,42 @@ class GameOverViewController : UIViewController, GameOverViewDelegate {
     }
     
     override func viewDidLoad() {
+        gameOverView.gameScore.text = "Your Score: \(currentScore)"
         gameOverView.delegate = self
+        if let lastScore = highScores.last?.playerScore {
+            if Int(lastScore)! > currentScore && highScores.count == 10 {
+                addScore = false
+            }
+        }
+        gameOverView.reloadData()
     }
     
     func goHome(_ gameOverView: GameOverView) {
+        
+        if addScore {
+            let newHighScore : HighScore = HighScore()
+            newHighScore.playerName = gameOverView.playerNameField.text!
+            newHighScore.playerScore = String(currentScore)
+            if highScores.count == 10 {
+                highScores.removeLast()
+            }
+            highScores.append(newHighScore)
+            let sortedScores : [HighScore] = highScores.sorted(by: {($0.playerScore as NSString).integerValue > ($1.playerScore as NSString).integerValue })
+            
+            let documentsDirectory = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+            do {
+                try sortedScores.save(to: documentsDirectory.appendingPathComponent(Constants.scoreList))
+            } catch let error where error is Asteriods.Error {
+                print(error)
+            } catch {
+                print(error)
+            }
+        }
         self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
+    }
+    
+    func checkScore(_ gameOverView: GameOverView) -> Bool {
+        return addScore
     }
     
     required init?(coder aDecoder: NSCoder) {

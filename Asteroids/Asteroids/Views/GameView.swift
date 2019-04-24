@@ -38,14 +38,16 @@ class GameView : UIView {
     var delegate : GameViewDelegate?
     
     var ship: ShipView
-    var asteroidViews : [ Int : [Any]]
+    //var asteroidViews : [ Int : [Any]]
+    var largeViews : [LargeAsteroidView]
+    var mediumViews : [MediumAsteroidView]
+    var smallViews : [SmallAsteroidView]
     var laserViews : [LaserView]
     
     override init(frame: CGRect) {
-        let large : [LargeAsteroidView] = []
-        let medium : [MediumAsteroidView] = []
-        let small : [SmallAsteroidView] = []
-        asteroidViews = [1 : large, 2 : medium, 3 : small]
+        largeViews = []
+        mediumViews = []
+        smallViews = []
         laserViews = []
         rotateLeftButton = UIButton()
         rotateRightButton = UIButton()
@@ -55,12 +57,8 @@ class GameView : UIView {
         scoreLabel = UILabel()
         livesLabel = UILabel()
         ship = ShipView()
-        super.init(frame : frame)
         
-        let backgroundImage = UIImageView(frame: UIScreen.main.bounds)
-        backgroundImage.image = UIImage(named: "stars.jpg")
-        backgroundImage.contentMode = UIView.ContentMode.scaleAspectFill
-        insertSubview(backgroundImage, at: 0)
+        super.init(frame : frame)
         
         accelerateButton.addTarget(self, action: #selector(accelerate), for: UIControl.Event.touchDown)
         accelerateButton.addTarget(self, action: #selector(acclerateEnd), for: UIControl.Event.touchUpInside)
@@ -131,6 +129,39 @@ class GameView : UIView {
         
         laserButton.bottomAnchor.constraint(equalTo: rotateLeftButton.bottomAnchor).isActive = true
         laserButton.leftAnchor.constraint(equalTo: rotateLeftButton.leftAnchor, constant: 80).isActive = true
+        
+        for _ in 0 ..< 100 {
+            let largeView : LargeAsteroidView = LargeAsteroidView()
+            largeView.bounds = CGRect(x: 0.0, y: 0.0, width: 75.0, height: 75.0)
+            addSubview(largeView)
+            largeView.isHidden = true
+            largeViews.append(largeView)
+            
+            let mediumView : MediumAsteroidView = MediumAsteroidView()
+            mediumView.bounds = CGRect(x: 0.0, y: 0.0, width: 35.0, height: 35.0)
+            addSubview(mediumView)
+            mediumView.isHidden = true
+            mediumViews.append(mediumView)
+            
+            let smallView : SmallAsteroidView = SmallAsteroidView()
+            smallView.bounds = CGRect(x: 0.0, y: 0.0, width: 20.0, height: 20.0)
+            addSubview(smallView)
+            smallView.isHidden = true
+            smallViews.append(smallView)
+            
+            let backgroundImage = UIImageView(frame: UIScreen.main.bounds)
+            backgroundImage.image = UIImage(named: "stars.jpg")
+            backgroundImage.contentMode = UIView.ContentMode.scaleAspectFill
+            insertSubview(backgroundImage, at: 0)
+        }
+        
+        for _ in 0 ..< 200 {
+            let laserView : LaserView = LaserView()
+            laserView.bounds = CGRect.init(x: 0.0, y: 0.0, width: 3.0, height: 10.0)
+            addSubview(laserView)
+            laserView.isHidden = true
+            laserViews.append(laserView)
+        }
     }
     
     override func draw(_ rect: CGRect) {
@@ -158,91 +189,60 @@ class GameView : UIView {
             ship.transform = CGAffineTransform(rotationAngle: (frame.1 - (2.0 * .pi) / 180.0))
         }
         for item in laserViews {
-            item.removeFromSuperview()
+            item.isHidden = true
         }
         if let laserArray : [((x: CGFloat, y: CGFloat), CGFloat)] = delegate?.getLaserInfo(self) {
-            for laser in laserArray {
-                let newLaser : LaserView = LaserView()
-                newLaser.center.x = laser.0.x
-                newLaser.center.y = laser.0.y
-                newLaser.transform  = CGAffineTransform(rotationAngle: (laser.1 - (2.0 * .pi) / 180.0))
-                newLaser.bounds = CGRect.init(x: 0.0, y: 0.0, width: 3.0, height: 10.0)
-                addSubview(newLaser)
-                laserViews.append(newLaser)
+            for  i in 0 ..< laserArray.count {
+                laserViews[i].center.x = laserArray[i].0.x
+                laserViews[i].center.y = laserArray[i].0.y
+                laserViews[i].transform  = CGAffineTransform(rotationAngle: (laserArray[i].1 - (2.0 * .pi) / 180.0))
+                laserViews[i].bounds = CGRect.init(x: 0.0, y: 0.0, width: 3.0, height: 10.0)
+                laserViews[i].isHidden = false
             }
         }
         if let dict : [Int : [(x: CGFloat, y: CGFloat)]] = delegate?.getAsteroidInfo(self) {
             for (key, list) in dict {
-                if list.count == 0 && asteroidViews[key]?.count == 1 {
-                    (asteroidViews[key]?[0] as AnyObject).removeFromSuperview()
-                     asteroidViews[key]?.remove(at: 0)
-                }
-                else if key == 1 {
-                        for i in 0 ..< list.count {
-                            if list.count < asteroidViews[key]!.count {
-                                (asteroidViews[key]?[i] as AnyObject).removeFromSuperview()
-                                asteroidViews[key]?.remove(at: i)
-                                
-                            }
-                            else if list.count != asteroidViews[key]?.count {
-                                let largeAsteroid = LargeAsteroidView()
-                                largeAsteroid.center = CGPoint(x: list[i].x, y: list[i].y)
-                                largeAsteroid.bounds = CGRect.init(x: 0.0, y: 0.0, width: 75.0, height: 75.0)
-                                addSubview(largeAsteroid)
-                                asteroidViews[key]?.append(largeAsteroid)
+                if key == 1 {
+                        for i in 0 ..< largeViews.count {
+                             if i < list.count {
+                                largeViews[i].center = CGPoint(x: list[i].x, y: list[i].y)
+                                largeViews[i].bounds = CGRect(x: 0.0, y: 0.0, width: 75.0, height: 75.0)
+                                largeViews[i].isHidden = false
                             }
                             else {
-                                let updateLarge : LargeAsteroidView = asteroidViews[key]?[i] as! LargeAsteroidView
-                                updateLarge.center = CGPoint(x: list[i].x, y: list[i].y)
-                                updateLarge.bounds = CGRect.init(x: 0.0, y: 0.0, width: 75.0, height: 75.0)
-                                asteroidViews[key]?[i] = updateLarge
+                                largeViews[i].isHidden = true
                             }
                         }
                     }
                    else if key == 2 {
-                        for i in 0 ..< list.count {
-                            if list.count < asteroidViews[key]!.count {
-                                (asteroidViews[key]?[i] as AnyObject).removeFromSuperview()
-                                asteroidViews[key]?.remove(at: i)
-                            }
-                            else if list.count != asteroidViews[key]?.count {
-                                let mediumAsteroid = MediumAsteroidView()
-                                mediumAsteroid.center = CGPoint(x: list[i].x, y: list[i].y)
-                                mediumAsteroid.bounds = CGRect.init(x: 0.0, y: 0.0, width: 35.0, height: 35.0)
-                                addSubview(mediumAsteroid)
-                                asteroidViews[key]?.append(mediumAsteroid)
+                        for i in 0 ..< mediumViews.count {
+                             if i < list.count{
+                               mediumViews[i].center = CGPoint(x: list[i].x, y: list[i].y)
+                               mediumViews[i].isHidden = false
                             }
                             else {
-                                let updateMedium : MediumAsteroidView = asteroidViews[key]?[i] as! MediumAsteroidView
-                                updateMedium.center = CGPoint(x: list[i].x, y: list[i].y)
-                                updateMedium.bounds = CGRect.init(x: 0.0, y: 0.0, width: 35.0, height: 35.0)
-                                asteroidViews[key]?[i] = updateMedium
+                                mediumViews[i].isHidden = true
+
                             }
                         }
                     }
                     else if key == 3 {
-                        for i in 0 ..< list.count {
-                            if list.count < asteroidViews[key]!.count {
-                                (asteroidViews[key]?[i] as AnyObject).removeFromSuperview()
-                                asteroidViews[key]?.remove(at: i)
-                            }
-                            else if list.count != asteroidViews[key]?.count {
-                                let smallAsteroid = SmallAsteroidView()
-                                smallAsteroid.center = CGPoint(x: list[i].x, y: list[i].y)
-                                smallAsteroid.bounds = CGRect.init(x: 0.0, y: 0.0, width: 25.0, height: 25.0)
-                                addSubview(smallAsteroid)
-                                asteroidViews[key]?.append(smallAsteroid)
+                        for i in 0 ..< smallViews.count {
+                             if i < list.count {
+                                smallViews[i].center = CGPoint(x: list[i].x, y: list[i].y)
+                                smallViews[i].isHidden = false
                             }
                             else {
-                                let updateSmall : SmallAsteroidView = asteroidViews[key]?[i] as! SmallAsteroidView
-                                updateSmall.center = CGPoint(x: list[i].x, y: list[i].y)
-                                updateSmall.bounds = CGRect.init(x: 0.0, y: 0.0, width: 20.0, height: 20.0)
-                                asteroidViews[key]?[i] = updateSmall
+                                smallViews[i].isHidden = true
                             }
                         }
                     }
             }
         }
+        self.bringSubviewToFront(rotateLeftButton)
+        self.bringSubviewToFront(rotateRightButton)
+        self.bringSubviewToFront(laserButton)
+        self.bringSubviewToFront(accelerateButton)
     }
     
     @objc func goHome() {

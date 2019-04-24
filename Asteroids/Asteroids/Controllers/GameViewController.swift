@@ -11,7 +11,7 @@ import UIKit
 class GameViewController : UIViewController, GameViewDelegate {
     
     var asteriods : Asteriods
-    
+    var highScores : [HighScore] = []
     var gameViewTimer : Timer
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
@@ -54,6 +54,8 @@ class GameViewController : UIViewController, GameViewDelegate {
         } catch {
             print(error)
         }
+        gameViewTimer.invalidate()
+        asteriods.gameLoop.invalidate()
         dismiss(animated: true, completion: nil)
     }
     
@@ -134,6 +136,8 @@ class GameViewController : UIViewController, GameViewDelegate {
                 print(error)
             }
             let gameOverController : GameOverViewController = GameOverViewController()
+            gameOverController.highScores = highScores
+            gameOverController.currentScore = asteriods.score
             present(gameOverController, animated: true, completion: nil)
         }
     }

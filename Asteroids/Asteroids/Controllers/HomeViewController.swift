@@ -10,6 +10,7 @@ import UIKit
 
 class HomeViewController : UIViewController, HomeViewDelegate {
     var game : Asteriods?
+    var highScores : [HighScore] = []
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
@@ -39,11 +40,13 @@ class HomeViewController : UIViewController, HomeViewDelegate {
         else {
             newGameViewController.asteriods = Asteriods()
         }
+        newGameViewController.highScores = highScores
         present(newGameViewController, animated: true, completion: nil)
     }
     
     func showHighScore(_ homeView: HomeView) {
         let highScoreViewController = HighScoreViewController()
+        highScoreViewController.highScores = highScores
         present(highScoreViewController, animated: true, completion: nil)
     }
     
@@ -55,6 +58,8 @@ class HomeViewController : UIViewController, HomeViewDelegate {
             let documentDirectory = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
             let jsonData = try! Data(contentsOf: documentDirectory.appendingPathComponent(Constants.gamesList))
             game = try! JSONDecoder().decode(Asteriods.self, from: jsonData)
+            let scoreJsonData = try! Data(contentsOf: documentDirectory.appendingPathComponent(Constants.scoreList))
+            highScores = try! JSONDecoder().decode([HighScore].self, from: scoreJsonData)
         }
         
         if game != nil {

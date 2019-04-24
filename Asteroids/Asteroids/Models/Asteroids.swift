@@ -51,13 +51,11 @@ class Asteriods : Codable {
     var lives : Int
     var score : Int
     var asteroidCount : Int
+    var listEmptyCount : Int
     var shipRespwanedDate : Date
     var shipNeedsRespwan : Bool
     var gameInProgresss : Bool
     var gameComplete : Bool
-    var largeEmpty : Bool
-    var mediumEmpty : Bool
-    var smallEmpty : Bool
     
     enum AsteroidKeys : CodingKey {
         case ship
@@ -71,10 +69,12 @@ class Asteriods : Codable {
         case smallEmpty
         case largeEmpty
         case mediumEmpty
+        case listCount
     }
     
     init() {
         asteroidCount = 0
+        listEmptyCount = 0
         fireCount = 0
         frame = CGRect()
         gameLoop = Timer()
@@ -91,9 +91,6 @@ class Asteriods : Codable {
         shipNeedsRespwan = false
         gameComplete = false
         gameInProgresss = false
-        largeEmpty = false
-        mediumEmpty = false
-        smallEmpty = false
         ship = Ship(acclerationX: 0.0, acclerationY: 0.0, velocityX: 0.0, velocityY: 0.0, currPosX: 0.0, currPosY: 0.0, currAngle: 0.0)
     }
     
@@ -127,31 +124,31 @@ class Asteriods : Codable {
                 else {
                     objectRadius = 10.0
                 }
-                for i in 0 ..< list.count {
-                    for (index, item) in lasers.enumerated() {
-                        let xDiffLaser : Double = Double(item.currPos.x - list[i].currPosX)
-                        let yDiffLaser : Double = Double(item.currPos.y - list[i].currPosY)
-                        let radiusLaser : Double = Double(objectRadius + 2.0)
-                        if pow(xDiffLaser, 2) + pow(yDiffLaser, 2) <=  pow(radiusLaser, 2) {
-                            lasers.remove(at: index)
-                            popPushAsteroid(size: size, asteroid: list[i], index: i)
-                            print("lasers Colided \(Date())")
+                    for i in 0 ..< list.count {
+                        for (index, item) in lasers.enumerated() {
+                            let xDiffLaser : Double = Double(item.currPos.x - list[i].currPosX)
+                            let yDiffLaser : Double = Double(item.currPos.y - list[i].currPosY)
+                            let radiusLaser : Double = Double(objectRadius + 2.0)
+                            if pow(xDiffLaser, 2) + pow(yDiffLaser, 2) <=  pow(radiusLaser, 2) {
+                                lasers.remove(at: index)
+                                popPushAsteroid(size: size, asteroid: list[i], index: i)
+                                print("lasers Colided \(Date())")
+                            }
                         }
+                        let xDiffShip : Double = Double(ship.currPosX - list[i].currPosX)
+                        let yDiffShip : Double = Double(ship.currPosY - list[i].currPosY)
+                        let radiusShip : Double = Double(objectRadius + 10.0)
+                        if pow(xDiffShip, 2) + pow(yDiffShip, 2) <=  pow(radiusShip, 2) && (ship.currPosX != 0.0 && ship.currPosY != 0.0) {
+                            print("Ship Colided \(Date())")
+                            let currentDate : Date = Date()
+                            let elapsed : TimeInterval = currentDate.timeIntervalSince(shipRespwanedDate)
+                            if elapsed > 3 {
+                                respawnShip()
+                            }
+                            else {
+                                shipNeedsRespwan = false
+                            }
                     }
-                    let xDiffShip : Double = Double(ship.currPosX - list[i].currPosX)
-                    let yDiffShip : Double = Double(ship.currPosY - list[i].currPosY)
-                    let radiusShip : Double = Double(objectRadius + 10.0)
-                    if pow(xDiffShip, 2) + pow(yDiffShip, 2) <=  pow(radiusShip, 2) && (ship.currPosX != 0.0 && ship.currPosY != 0.0) {
-                        print("Ship Colided \(Date())")
-                        let currentDate : Date = Date()
-                        let elapsed : TimeInterval = currentDate.timeIntervalSince(shipRespwanedDate)
-                        if elapsed > 3 {
-                            respawnShip()
-                        }
-                        else {
-                            shipNeedsRespwan = false
-                        }
-                }
             }
         }
     }
@@ -185,10 +182,10 @@ class Asteriods : Codable {
                 asteroids[2]?.append(newAsteroid)
                 count += 1
             }
-            if asteroids[size]?.count == 0 {
-                largeEmpty = true
-            }
             score += 100
+            if asteroids[size]?.count == 0 {
+                listEmptyCount += 1
+            }
         }
         else if size == 2 {
             asteroids[size]?.remove(at: index)
@@ -204,19 +201,21 @@ class Asteriods : Codable {
                 asteroids[3]?.append(newAsteroid)
                 count += 1
             }
-            if asteroids[size]?.count == 0 {
-                mediumEmpty = true
-            }
             score += 150
+            if asteroids[size]?.count == 0 {
+                listEmptyCount += 1
+            }
         }
         else {
           asteroids[size]?.remove(at: index)
-            if asteroids[size]?.count == 0 {
-                smallEmpty = true
-            }
             score += 200
+            if asteroids[size]?.count == 0 {
+                listEmptyCount += 1
+            }
         }
-        if largeEmpty && smallEmpty && mediumEmpty {
+        if listEmptyCount == 3 {
+            listEmptyCount = 0
+            lives = 3
             asteroidCount += 1
             addAsteroids()
         }
@@ -348,10 +347,6 @@ class Asteriods : Codable {
     
     func addAsteroids() {
         
-        largeEmpty = false
-        mediumEmpty = false
-        smallEmpty = false
-        
         let angleOne : Float = Float.random(in: 0.0...180.0)
         let angleTwo : Float = Float.random(in: 0.0...180.0)
         let angleThree : Float = Float.random(in: 0.0...180.0)
@@ -428,9 +423,7 @@ class Asteriods : Codable {
         asteroidCount = try values.decode(Int.self, forKey: AsteroidKeys.asteroidCount)
         gameInProgresss = try values.decode(Bool.self, forKey: AsteroidKeys.gameProgress)
         gameComplete = try values.decode(Bool.self, forKey: AsteroidKeys.gameComplete)
-        largeEmpty = try values.decode(Bool.self, forKey: AsteroidKeys.largeEmpty)
-        mediumEmpty = try values.decode(Bool.self, forKey: AsteroidKeys.mediumEmpty)
-        smallEmpty = try values.decode(Bool.self, forKey: AsteroidKeys.smallEmpty)
+        listEmptyCount = try values.decode(Int.self, forKey: AsteroidKeys.listCount)
         gameLoop = Timer()
         oldTime = Date()
         shipRespwanedDate = Date()
@@ -453,9 +446,7 @@ class Asteriods : Codable {
         try container.encode(asteroidCount, forKey: AsteroidKeys.asteroidCount)
         try container.encode(gameInProgresss, forKey: AsteroidKeys.gameProgress)
         try container.encode(gameComplete, forKey: AsteroidKeys.gameComplete)
-        try container.encode(gameComplete, forKey: AsteroidKeys.largeEmpty)
-        try container.encode(gameComplete, forKey: AsteroidKeys.mediumEmpty)
-        try container.encode(gameComplete, forKey: AsteroidKeys.smallEmpty)
+        try container.encode(listEmptyCount, forKey: AsteroidKeys.listCount)
     }
     
     enum Error: Swift.Error {

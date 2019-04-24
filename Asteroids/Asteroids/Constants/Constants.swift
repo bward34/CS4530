@@ -10,5 +10,5 @@ import Foundation
 
 enum Constants {
     static let gamesList : String = "gamesState.json"
-    static let socreList : String = "highScores.json"
+    static let scoreList : String = "highScores.json"
 }

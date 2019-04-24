@@ -10,6 +10,7 @@ import UIKit
 
 protocol GameOverViewDelegate {
     func goHome(_ gameOverView : GameOverView)
+    func checkScore(_ gameOverView : GameOverView) -> Bool
 }
 
 class GameOverView : UIView {
@@ -17,12 +18,16 @@ class GameOverView : UIView {
     var delegate : GameOverViewDelegate?
     
     var gameOverLabel : UILabel
+    var gameScore : UILabel
     var goHomeButton : UIButton
+    var playerNameField: UITextField
     
     var stackView : UIStackView
     
     override init(frame: CGRect) {
+        playerNameField = UITextField()
         gameOverLabel = UILabel()
+        gameScore = UILabel()
         goHomeButton = UIButton()
         stackView = UIStackView()
         super.init(frame: frame)
@@ -31,7 +36,6 @@ class GameOverView : UIView {
         backgroundImage.image = UIImage(named: "galaxy.jpeg")
         backgroundImage.contentMode = UIView.ContentMode.scaleAspectFill
         insertSubview(backgroundImage, at: 0)
-        
         goHomeButton.addTarget(self, action: #selector(goHome), for: UIControl.Event.touchUpInside)
     }
     
@@ -42,6 +46,24 @@ class GameOverView : UIView {
         gameOverLabel.font = UIFont(name: "Future-Earth", size: 40)
         gameOverLabel.textAlignment = NSTextAlignment.center
         gameOverLabel.textColor = .white
+        
+        gameScore.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(gameScore)
+        gameScore.font = UIFont(name: "Future-Earth", size: 20)
+        gameScore.textAlignment = NSTextAlignment.center
+        gameScore.textColor = .white
+        
+        playerNameField.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(playerNameField)
+        playerNameField.backgroundColor = UIColor.black
+        playerNameField.font = UIFont(name: "Future-Earth", size: 16)
+        playerNameField.textColor = UIColor(hue: 0.3194, saturation: 1, brightness: 1, alpha: 1.0)
+        playerNameField.layer.cornerRadius = 5
+        playerNameField.layer.borderWidth = 2
+        playerNameField.layer.borderColor = UIColor(hue: 0.3194, saturation: 1, brightness: 1, alpha: 1.0).cgColor
+        playerNameField.returnKeyType = .done
+        playerNameField.attributedPlaceholder = NSAttributedString(string:"Enter name for High Score", attributes: [NSAttributedString.Key.foregroundColor: UIColor(hue: 0.3194, saturation: 1, brightness: 1, alpha: 1.0)])
+        playerNameField.addTarget(self, action: #selector(closeKeyBoard), for: .editingDidEndOnExit)
         
         goHomeButton.translatesAutoresizingMaskIntoConstraints = false
         addSubview(goHomeButton)
@@ -59,17 +81,38 @@ class GameOverView : UIView {
         stackView.alignment = .center
         stackView.distribution = .fillProportionally
         stackView.axis = .vertical
-        stackView.spacing = 30.0
+        stackView.spacing = 15.0
         
         stackView.addArrangedSubview(gameOverLabel)
+        stackView.addArrangedSubview(gameScore)
+        stackView.addArrangedSubview(playerNameField)
         stackView.addArrangedSubview(goHomeButton)
         
         let view : [String : Any] = ["titleLabel" : gameOverLabel,
+                                     "gameScore" : gameScore,
+                                     "playerNameField" : playerNameField,
                                      "newGameButton" : goHomeButton]
         
         stackView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-[titleLabel]-|", options: [], metrics: nil, views: view))
+        stackView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-[gameScore]-|", options: [], metrics: nil, views: view))
+        stackView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-(<=\(frame.width * 0.25))-[playerNameField]-(<=\(frame.width * 0.25))-|", options: [], metrics: nil, views: view))
         stackView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-(<=\(frame.width * 0.25))-[newGameButton]-(<=\(frame.width * 0.25))-|", options: [], metrics: nil, views: view))
         
+        if let addScore = delegate?.checkScore(self) {
+            if !addScore {
+                playerNameField.isHidden = true
+            }
+        }
+    }
+    
+    func reloadData() {
+        setNeedsDisplay()
+    }
+    
+    @objc func closeKeyBoard(sender: Any) {
+        if let textField = sender as? UITextField {
+            textField.resignFirstResponder()
+        }
     }
     
     @objc func goHome() {

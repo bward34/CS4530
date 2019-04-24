@@ -10,7 +10,7 @@ import UIKit
 
 class HighScoreViewController : UIViewController, HighScoreViewDelegate, UITableViewDelegate, UITableViewDataSource {
     
-    var highScores : [HighScore] = []
+    var highScores : [HighScore]?
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
@@ -26,6 +26,8 @@ class HighScoreViewController : UIViewController, HighScoreViewDelegate, UITable
     
     override func viewDidLoad() {
         highScoreView.delegate = self
+        highScoreView.highScoreTableView.dataSource = self
+        highScoreView.highScoreTableView.delegate = self
         highScoreView.highScoreTableView.backgroundColor = .clear
         highScoreView.highScoreTableView.isOpaque = false
         highScoreView.highScoreTableView.separatorColor = UIColor(hue: 0.3194, saturation: 1, brightness: 1, alpha: 1.0)
@@ -36,22 +38,25 @@ class HighScoreViewController : UIViewController, HighScoreViewDelegate, UITable
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return highScores.count
+        return highScores!.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: HighScoreViewTableCell.self)) as? HighScoreViewTableCell else { fatalError("Could not dequeue cell type: \(HighScoreViewTableCell.self)")}
         _ = cell.increment
+        cell.layer.backgroundColor = UIColor.clear.cgColor
         return cell
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        cell.textLabel?.text = highScores[indexPath.row].playerName
-        cell.detailTextLabel?.text = highScores[indexPath.row].playerScore
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        //probably not needed?
+        cell.textLabel?.text = highScores?[indexPath.row].playerName
+        cell.textLabel?.font = UIFont(name: "Future-Earth", size: 12)
+        cell.textLabel?.textColor = UIColor(hue: 0.3194, saturation: 1, brightness: 1, alpha: 1.0)
+        cell.detailTextLabel?.text = highScores?[indexPath.row].playerScore
+        cell.detailTextLabel?.font = UIFont(name: "Future-Earth", size: 12)
+        cell.detailTextLabel?.textColor = UIColor(hue: 0.3194, saturation: 1, brightness: 1, alpha: 1.0)
+        cell.backgroundColor = UIColor.clear
+        cell.selectionStyle = .none
     }
     
     required init?(coder aDecoder: NSCoder) {

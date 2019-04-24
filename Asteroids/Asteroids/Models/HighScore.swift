@@ -13,6 +13,11 @@ class HighScore : Codable {
     var playerName : String
     var playerScore : String
     
+    init() {
+        playerName = ""
+        playerScore = "0"
+    }
+    
     enum CodingKeys : CodingKey {
         case playerName
         case playerScore
@@ -31,6 +36,14 @@ class HighScore : Codable {
 }
 
 extension Array where Element == HighScore {
+    func save(to url: URL) throws {
+        guard let jsonData = try? JSONEncoder().encode(self) else {
+            throw Asteriods.Error.encoding
+        }
+        guard (try? jsonData.write(to: url)) != nil else {
+            throw Asteriods.Error.writing
+        }
+    }
     
     init(from url: URL) throws {
         let jsonData = try! Data(contentsOf: url)
