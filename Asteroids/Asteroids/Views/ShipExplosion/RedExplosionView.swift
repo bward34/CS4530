@@ -23,8 +23,6 @@ class RedExplosionView : UIView {
         faceRect = CGRect(x: bounds.width * 0.1 , y: 0.0, width: bounds.width * 0.8, height: bounds.width * 0.8)
         faceRect.origin.y = (bounds.height - faceRect.height) / 2.0
         context.addEllipse(in: faceRect)
-//        context.setFillColor(UIColor.red.cgColor)
-//        context.drawPath(using: .fill)
         context.setStrokeColor(UIColor.red.cgColor)
         context.setLineWidth(3.0)
         context.drawPath(using: .stroke)

@@ -28,6 +28,8 @@ class GameOverViewController : UIViewController, GameOverViewDelegate {
     }
     
     override func viewDidLoad() {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
         gameOverView.gameScore.text = "Your Score: \(currentScore)"
         gameOverView.delegate = self
         if let lastScore = highScores.last?.playerScore {
@@ -64,6 +66,20 @@ class GameOverViewController : UIViewController, GameOverViewDelegate {
     
     func checkScore(_ gameOverView: GameOverView) -> Bool {
         return addScore
+    }
+    
+    @objc func keyboardWillShow(notification: NSNotification) {
+        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
+            if self.view.frame.origin.y == 0 {
+                self.view.frame.origin.y -= keyboardSize.height
+            }
+        }
+    }
+    
+    @objc func keyboardWillHide(notification: NSNotification) {
+        if self.view.frame.origin.y != 0 {
+            self.view.frame.origin.y = 0
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {

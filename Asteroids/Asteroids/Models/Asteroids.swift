@@ -29,11 +29,11 @@ struct Asteroid : Codable {
 }
 
 struct Laser {
-   var accleration : (x : Float, y : Float)
-   var currPos : (x : Float, y : Float)
-   var velocity : (x : Float, y : Float)
-   var currAngle : Float
-   var timeSpawned : Date
+    var accleration : (x : Float, y : Float)
+    var currPos : (x : Float, y : Float)
+    var velocity : (x : Float, y : Float)
+    var currAngle : Float
+    var timeSpawned : Date
 }
 
 class Asteriods : Codable {
@@ -118,49 +118,49 @@ class Asteriods : Codable {
     }
     
     func detectCollision() {
-            for (size, list) in asteroids {
-                let objectRadius : Double
-                if size == 1{
-                    objectRadius = 37.5
-                }
-                else if size == 2 {
-                    objectRadius = 17.5
-                }
-                else {
-                    objectRadius = 10.0
-                }
-                    for i in 0 ..< list.count {
-                        for (index, item) in lasers.enumerated() {
-                            let xDiffLaser : Double = Double(item.currPos.x - list[i].currPosX)
-                            let yDiffLaser : Double = Double(item.currPos.y - list[i].currPosY)
-                            let radiusLaser : Double = Double(objectRadius + 2.0)
-                            if pow(xDiffLaser, 2) + pow(yDiffLaser, 2) <=  pow(radiusLaser, 2) {
-                                lasers.remove(at: index)
-                                popPushAsteroid(size: size, asteroid: list[i], index: i)
-                                print("lasers Colided \(Date())")
-                            }
-                        }
-                        let xDiffShip : Double = Double(ship.currPosX - list[i].currPosX)
-                        let yDiffShip : Double = Double(ship.currPosY - list[i].currPosY)
-                        let radiusShip : Double = Double(objectRadius + 10.0)
-                        if pow(xDiffShip, 2) + pow(yDiffShip, 2) <=  pow(radiusShip, 2) && (ship.currPosX != 0.0 && ship.currPosY != 0.0) {
-                            print("Ship Colided \(Date())")
-                            let currentDate : Date = Date()
-                            let elapsed : TimeInterval = currentDate.timeIntervalSince(shipRespwanedDate)
-                            if elapsed > 5 {
-                                lastShipPoint = (x: ship.currPosX, y: ship.currPosY)
-                                respawnShip()
-                            }
-                            else {
-                                shipNeedsRespwan = false
-                            }
-                    }
+        for (size, list) in asteroids {
+            let objectRadius : Double
+            if size == 1{
+                objectRadius = 37.5
             }
-                let currentDate : Date = Date()
-                let elapsed : TimeInterval = currentDate.timeIntervalSince(shipRespwanedDate)
-                if elapsed > 2 {
-                    shipNeedsRespwan = false
+            else if size == 2 {
+                objectRadius = 17.5
+            }
+            else {
+                objectRadius = 10.0
+            }
+            for i in 0 ..< list.count {
+                for (index, item) in lasers.enumerated() {
+                    let xDiffLaser : Double = Double(item.currPos.x - list[i].currPosX)
+                    let yDiffLaser : Double = Double(item.currPos.y - list[i].currPosY)
+                    let radiusLaser : Double = Double(objectRadius + 2.0)
+                    if pow(xDiffLaser, 2) + pow(yDiffLaser, 2) <=  pow(radiusLaser, 2) {
+                        if index <= lasers.count {
+                            lasers.remove(at: index)
+                            popPushAsteroid(size: size, asteroid: list[i], index: i)
+                        }
+                    }
                 }
+                let xDiffShip : Double = Double(ship.currPosX - list[i].currPosX)
+                let yDiffShip : Double = Double(ship.currPosY - list[i].currPosY)
+                let radiusShip : Double = Double(objectRadius + 10.0)
+                if pow(xDiffShip, 2) + pow(yDiffShip, 2) <=  pow(radiusShip, 2) && (ship.currPosX != 0.0 && ship.currPosY != 0.0) {
+                    let currentDate : Date = Date()
+                    let elapsed : TimeInterval = currentDate.timeIntervalSince(shipRespwanedDate)
+                    if elapsed > 5 {
+                        lastShipPoint = (x: ship.currPosX, y: ship.currPosY)
+                        respawnShip()
+                    }
+                    else {
+                        shipNeedsRespwan = false
+                    }
+                }
+            }
+            let currentDate : Date = Date()
+            let elapsed : TimeInterval = currentDate.timeIntervalSince(shipRespwanedDate)
+            if elapsed > 2 {
+                shipNeedsRespwan = false
+            }
         }
     }
     
@@ -220,7 +220,7 @@ class Asteriods : Codable {
             }
         }
         else {
-          asteroids[size]?.remove(at: index)
+            asteroids[size]?.remove(at: index)
             score += 200
             if asteroids[size]?.count == 0 {
                 listEmptyCount += 1
@@ -240,14 +240,16 @@ class Asteriods : Codable {
         }
         
         if rotateRight {
-           ship.currAngle += (3.0 * .pi) / 180.0
+            ship.currAngle += (3.0 * .pi) / 180.0
         }
         
         if thruster {
             ship.acclerationX =  sin(ship.currAngle) * 350.0
             ship.acclerationY =  -cos(ship.currAngle) * 350.0
-            ship.velocityX += ship.acclerationX * Float(elapsedTime)
-            ship.velocityY += ship.acclerationY * Float(elapsedTime)
+            if(abs(ship.velocityX) < 400 && abs(ship.velocityY) < 400) {
+                ship.velocityX += ship.acclerationX * Float(elapsedTime)
+                ship.velocityY += ship.acclerationY * Float(elapsedTime)
+            }
         }
         else {
             ship.acclerationX =  -ship.velocityX * 3.0
@@ -255,7 +257,7 @@ class Asteriods : Codable {
             ship.velocityX -= ship.acclerationX * Float(elapsedTime)
             ship.velocityY -= ship.acclerationY * Float(elapsedTime)
         }
-
+        
         ship.currPosX += ship.velocityX * Float(elapsedTime)
         ship.currPosY += ship.velocityY * Float(elapsedTime)
         
@@ -299,7 +301,7 @@ class Asteriods : Codable {
                     asteroids[key]?[i].currPosY = Float(frame.maxY)
                 }
                 else if asteroids[key]![i].currPosY > Float(frame.maxY) {
-                     asteroids[key]?[i].currPosY = 0
+                    asteroids[key]?[i].currPosY = 0
                 }
             }
         }
@@ -309,7 +311,7 @@ class Asteriods : Codable {
         var indexes : [Int] = []
         for i in 0 ..< lasers.count {
             let currDate : Date = Date()
-            if currDate.timeIntervalSince(lasers[i].timeSpawned) > 2 {
+            if currDate.timeIntervalSince(lasers[i].timeSpawned) > 0.5 {
                 indexes.append(i)
             }
         }
@@ -335,11 +337,11 @@ class Asteriods : Codable {
         }
         
     }
-
+    
     func updateLasers() {
         if fire && fireCount >= 15 {
             let currDate : Date = Date()
-            lasers.append(Laser(accleration: (x: 0.0, y: 0.0), currPos: (x: ship.currPosX, y: ship.currPosY), velocity: (x: sin(ship.currAngle) * 1.5, y: -cos(ship.currAngle) * 1.5), currAngle: ship.currAngle, timeSpawned: currDate))
+            lasers.append(Laser(accleration: (x: 0.0, y: 0.0), currPos: (x: ship.currPosX, y: ship.currPosY), velocity: (x: sin(ship.currAngle) * 6.0, y: -cos(ship.currAngle) * 6.0), currAngle: ship.currAngle, timeSpawned: currDate))
             fireCount = 0
         }
     }
@@ -348,11 +350,11 @@ class Asteriods : Codable {
         var data : [Int : [((x: CGFloat, y: CGFloat), CGFloat)]] = [:]
         for (key, list) in asteroids {
             var addSizes : [((x: CGFloat, y: CGFloat), CGFloat)] = []
-              for asteroid in list {
+            for asteroid in list {
                 addSizes.append(((x: CGFloat(asteroid.currPosX), y: CGFloat(asteroid.currPosY)),CGFloat(asteroid.currAngle)))
-              }
-            data[key] = addSizes
             }
+            data[key] = addSizes
+        }
         return data
     }
     
@@ -456,7 +458,7 @@ class Asteriods : Codable {
         lastShipPoint = (x: 0.0, y: 0.0)
         shipNeedsRespwan = false
     }
-
+    
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: AsteroidKeys.self)
         try container.encode(ship, forKey: AsteroidKeys.ship)

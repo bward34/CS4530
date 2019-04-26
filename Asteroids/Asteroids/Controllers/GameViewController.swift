@@ -103,7 +103,6 @@ class GameViewController : UIViewController, GameViewDelegate {
         return (x: CGFloat(asteriods.lastShipPoint.x), y: CGFloat(asteriods.lastShipPoint.y))
     }
     
-    
     func updateFrame(_ gameView: GameView, newPoint: CGPoint) {
         asteriods.ship.currPosX = Float(newPoint.x)
         asteriods.ship.currPosY = Float(newPoint.y)

@@ -98,21 +98,25 @@ class GameView : UIView {
         addSubview(livesLabel)
         
         accelerateButton.translatesAutoresizingMaskIntoConstraints = false
+        accelerateButton.contentEdgeInsets = UIEdgeInsets(top: 15.0, left: 15.0, bottom: 0.0, right: 15.0)
         accelerateButton.setTitle("Acclerate", for: .normal)
         accelerateButton.titleLabel?.font = UIFont(name: "Future-Earth", size: 12)
         addSubview(accelerateButton)
         
         laserButton.translatesAutoresizingMaskIntoConstraints = false
+        laserButton.contentEdgeInsets = UIEdgeInsets(top: 15.0, left: 15.0, bottom: 0.0, right: 15.0)
         laserButton.setTitle("FIRE", for: .normal)
         laserButton.titleLabel?.font = UIFont(name: "Future-Earth", size: 12)
         addSubview(laserButton)
         
         rotateLeftButton.translatesAutoresizingMaskIntoConstraints = false
+        rotateLeftButton.contentEdgeInsets = UIEdgeInsets(top: 15.0, left: 15.0, bottom: 0.0, right: 15.0)
         rotateLeftButton.setTitle("LEFT", for: .normal)
         rotateLeftButton.titleLabel?.font = UIFont(name: "Future-Earth", size: 12)
         addSubview(rotateLeftButton)
         
         rotateRightButton.translatesAutoresizingMaskIntoConstraints = false
+        rotateRightButton.contentEdgeInsets = UIEdgeInsets(top: 15.0, left: 15.0, bottom: 0.0, right: 15.0)
         rotateRightButton.setTitle("RIGHT", for: .normal)
         rotateRightButton.titleLabel?.font = UIFont(name: "Future-Earth", size: 12)
         addSubview(rotateRightButton)
@@ -196,11 +200,7 @@ class GameView : UIView {
         backgroundImage.contentMode = UIView.ContentMode.scaleAspectFill
         insertSubview(backgroundImage, at: 0)
     }
-    
-    override func draw(_ rect: CGRect) {
-    }
-    
-    
+
     func reloadData() {
        setNeedsDisplay()
     }
@@ -325,6 +325,7 @@ class GameView : UIView {
         self.bringSubviewToFront(rotateRightButton)
         self.bringSubviewToFront(laserButton)
         self.bringSubviewToFront(accelerateButton)
+        self.bringSubviewToFront(homeButton)
     }
     
     @objc func goHome() {
