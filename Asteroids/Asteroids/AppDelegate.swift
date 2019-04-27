@@ -33,9 +33,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
             
             if type(of: topController) == GameViewController.self {
+                (topController as! GameViewController).asteriods.gameLoop.invalidate()
+                (topController as! GameViewController).gameViewTimer.invalidate()
                 let documentsDirectory = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
                 do {
                     try (topController as! GameViewController).asteriods.save(to: documentsDirectory.appendingPathComponent(Constants.gamesList))
+                } catch let error where error is Asteriods.Error {
+                    print(error)
+                } catch {
+                    print(error)
+                }
+                do {
+                    try (topController as! GameViewController).highScores.save(to: documentsDirectory.appendingPathComponent(Constants.scoreList))
                 } catch let error where error is Asteriods.Error {
                     print(error)
                 } catch {

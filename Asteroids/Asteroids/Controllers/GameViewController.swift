@@ -54,6 +54,13 @@ class GameViewController : UIViewController, GameViewDelegate {
         } catch {
             print(error)
         }
+        do {
+            try highScores.save(to: documentsDirectory.appendingPathComponent(Constants.scoreList))
+        } catch let error where error is Asteriods.Error {
+            print(error)
+        } catch {
+            print(error)
+        }
         gameViewTimer.invalidate()
         asteriods.gameLoop.invalidate()
         dismiss(animated: true, completion: nil)

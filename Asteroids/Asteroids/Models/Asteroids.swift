@@ -135,7 +135,7 @@ class Asteriods : Codable {
                     let yDiffLaser : Double = Double(item.currPos.y - list[i].currPosY)
                     let radiusLaser : Double = Double(objectRadius + 2.0)
                     if pow(xDiffLaser, 2) + pow(yDiffLaser, 2) <=  pow(radiusLaser, 2) {
-                        if index <= lasers.count {
+                        if index <= lasers.count - 1 {
                             lasers.remove(at: index)
                             popPushAsteroid(size: size, asteroid: list[i], index: i)
                         }
@@ -150,6 +150,7 @@ class Asteriods : Codable {
                     if elapsed > 5 {
                         lastShipPoint = (x: ship.currPosX, y: ship.currPosY)
                         respawnShip()
+                        return
                     }
                     else {
                         shipNeedsRespwan = false
@@ -169,6 +170,10 @@ class Asteriods : Codable {
         if lives != 0 {
             ship.currPosX = Float(frame.midX)
             ship.currPosY = Float(frame.midY)
+            ship.acclerationX = 0.0
+            ship.acclerationY = 0.0
+            ship.velocityY = 0.0
+            ship.velocityX = 0.0
             shipRespwanedDate = Date()
             shipNeedsRespwan = true
         }
@@ -181,6 +186,7 @@ class Asteriods : Codable {
     func popPushAsteroid(size : Int, asteroid : Asteroid, index : Int) {
         if size == 1 {
             asteroids[size]?.remove(at: index)
+            listEmptyCount += 1
             var count : Int = 0
             while count < 2 {
                 var newAsteroid : Asteroid = Asteroid(velocityX: 0.0, velocityY: 0.0, currPosX: 0.0, currPosY: 0.0, currAngle: 0.0, rotateDirection: 0)
@@ -195,12 +201,10 @@ class Asteriods : Codable {
                 count += 1
             }
             score += 100
-            if asteroids[size]?.count == 0 {
-                listEmptyCount += 1
-            }
         }
         else if size == 2 {
             asteroids[size]?.remove(at: index)
+            listEmptyCount += 1
             var count : Int = 0
             while count < 2 {
                 var newAsteroid : Asteroid = Asteroid(velocityX: 0.0, velocityY: 0.0, currPosX: 0.0, currPosY: 0.0, currAngle: 0.0, rotateDirection: 0)
@@ -215,18 +219,14 @@ class Asteriods : Codable {
                 count += 1
             }
             score += 150
-            if asteroids[size]?.count == 0 {
-                listEmptyCount += 1
-            }
         }
         else {
             asteroids[size]?.remove(at: index)
+            listEmptyCount += 1
             score += 200
-            if asteroids[size]?.count == 0 {
-                listEmptyCount += 1
-            }
         }
-        if listEmptyCount == 3 {
+        //Begin new wave
+        if listEmptyCount == 28 + (7 * asteroidCount) {
             listEmptyCount = 0
             lives = 3
             asteroidCount += 1

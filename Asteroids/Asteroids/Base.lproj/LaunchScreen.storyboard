@@ -18,8 +18,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="1366" height="1024"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="galaxy.jpeg" translatesAutoresizingMaskIntoConstraints="NO" id="5J5-o8-vPj">
-                                <rect key="frame" x="0.0" y="0.0" width="812" height="375"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="galaxy.jpeg" translatesAutoresizingMaskIntoConstraints="NO" id="5J5-o8-vPj">
+                                <rect key="frame" x="0.0" y="0.0" width="1366" height="1060"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                         </subviews>
@@ -29,7 +29,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="50.246305418719217" y="372"/>
+            <point key="canvasLocation" x="50.073206442166907" y="371.484375"/>
         </scene>
     </scenes>
     <resources>
