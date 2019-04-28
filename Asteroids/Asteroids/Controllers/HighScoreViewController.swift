@@ -56,7 +56,6 @@ class HighScoreViewController : UIViewController, HighScoreViewDelegate, UITable
         cell.detailTextLabel?.font = UIFont(name: "Future-Earth", size: 12)
         cell.detailTextLabel?.textColor = UIColor(hue: 0.3194, saturation: 1, brightness: 1, alpha: 1.0)
         cell.backgroundColor = UIColor.clear
-        cell.selectionStyle = .none
     }
     
     required init?(coder aDecoder: NSCoder) {

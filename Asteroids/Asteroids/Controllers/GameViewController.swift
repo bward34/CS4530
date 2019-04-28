@@ -114,7 +114,7 @@ class GameViewController : UIViewController, GameViewDelegate {
         asteriods.ship.currPosX = Float(newPoint.x)
         asteriods.ship.currPosY = Float(newPoint.y)
     }
-    
+
     func rotatePushed(_ gameView: GameView, sender: Any) {
         if let button = sender as? UIButton {
             if button == gameView.rotateLeftButton {

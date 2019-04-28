@@ -58,6 +58,7 @@ class Asteriods : Codable {
     var shipNeedsRespwan : Bool
     var gameInProgresss : Bool
     var gameComplete : Bool
+    var firstLoop : Bool
     
     enum AsteroidKeys : CodingKey {
         case ship
@@ -93,6 +94,7 @@ class Asteriods : Codable {
         shipNeedsRespwan = false
         gameComplete = false
         gameInProgresss = false
+        firstLoop = true
         lastShipPoint = (x: 0.0, y: 0.0)
         ship = Ship(acclerationX: 0.0, acclerationY: 0.0, velocityX: 0.0, velocityY: 0.0, currPosX: 0.0, currPosY: 0.0, currAngle: 0.0)
     }
@@ -147,7 +149,13 @@ class Asteriods : Codable {
                 if pow(xDiffShip, 2) + pow(yDiffShip, 2) <=  pow(radiusShip, 2) && (ship.currPosX != 0.0 && ship.currPosY != 0.0) {
                     let currentDate : Date = Date()
                     let elapsed : TimeInterval = currentDate.timeIntervalSince(shipRespwanedDate)
-                    if elapsed > 5 {
+                    if firstLoop {
+                        firstLoop = false
+                        lastShipPoint = (x: ship.currPosX, y: ship.currPosY)
+                        respawnShip()
+                        return
+                    }
+                    else if elapsed > 3 {
                         lastShipPoint = (x: ship.currPosX, y: ship.currPosY)
                         respawnShip()
                         return
@@ -161,6 +169,9 @@ class Asteriods : Codable {
             let elapsed : TimeInterval = currentDate.timeIntervalSince(shipRespwanedDate)
             if elapsed > 2 {
                 shipNeedsRespwan = false
+            }
+            else if !firstLoop {
+                shipNeedsRespwan = true
             }
         }
     }
@@ -194,9 +205,10 @@ class Asteriods : Codable {
                 newAsteroid.currPosY = asteroid.currPosY
                 newAsteroid.rotateDirection = Int.random(in: 0...1)
                 let angle : Float = Float.random(in: 0.0...180.0)
+                let constant : Float = Float.random(in: 0.7...1.5)
                 newAsteroid.currAngle = angle
-                newAsteroid.velocityX = cos(angle)
-                newAsteroid.velocityY = sin(angle)
+                newAsteroid.velocityX = cos(angle) * constant
+                newAsteroid.velocityY = sin(angle) * constant
                 asteroids[2]?.append(newAsteroid)
                 count += 1
             }
@@ -212,9 +224,10 @@ class Asteriods : Codable {
                 newAsteroid.currPosY = asteroid.currPosY
                 newAsteroid.rotateDirection = Int.random(in: 0...1)
                 let angle : Float = Float.random(in: 0.0...180.0)
+                let constant : Float = Float.random(in: 0.7...1.5)
                 newAsteroid.currAngle = angle
-                newAsteroid.velocityX = cos(angle)
-                newAsteroid.velocityY = sin(angle)
+                newAsteroid.velocityX = cos(angle) * constant
+                newAsteroid.velocityY = sin(angle) * constant
                 asteroids[3]?.append(newAsteroid)
                 count += 1
             }
@@ -457,6 +470,7 @@ class Asteriods : Codable {
         fireCount = 0
         lastShipPoint = (x: 0.0, y: 0.0)
         shipNeedsRespwan = false
+        firstLoop = true
     }
     
     func encode(to encoder: Encoder) throws {

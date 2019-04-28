@@ -45,6 +45,21 @@ class HomeViewController : UIViewController, HomeViewDelegate {
     }
     
     func showHighScore(_ homeView: HomeView) {
+        let documentsDirectory = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+        do {
+            try game?.save(to: documentsDirectory.appendingPathComponent(Constants.gamesList))
+        } catch let error where error is Asteriods.Error {
+            print(error)
+        } catch {
+            print(error)
+        }
+        do {
+            try highScores.save(to: documentsDirectory.appendingPathComponent(Constants.scoreList))
+        } catch let error where error is Asteriods.Error {
+            print(error)
+        } catch {
+            print(error)
+        }
         let highScoreViewController = HighScoreViewController()
         highScoreViewController.highScores = highScores
         present(highScoreViewController, animated: true, completion: nil)
@@ -67,8 +82,12 @@ class HomeViewController : UIViewController, HomeViewDelegate {
                 homeView.newGameButton.setTitle("New Game", for: .normal)
                 game = Asteriods()
             }
-            else {
+            else if game!.gameInProgresss {
               homeView.newGameButton.setTitle("Resume Game", for: .normal)
+            }
+            else {
+                homeView.newGameButton.setTitle("New Game", for: .normal)
+                game = Asteriods()
             }
         }
         else {

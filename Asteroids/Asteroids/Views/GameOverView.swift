@@ -75,13 +75,13 @@ class GameOverView : UIView {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(stackView)
         stackView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 50).isActive = true
-        stackView.heightAnchor.constraint(equalToConstant: 350).isActive = true
+        stackView.heightAnchor.constraint(equalToConstant: 250).isActive = true
         stackView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: 12.0).isActive = true
         stackView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -12.0).isActive = true
         stackView.alignment = .center
         stackView.distribution = .fillProportionally
         stackView.axis = .vertical
-        stackView.spacing = 30.0
+        stackView.spacing = 15.0
         
         stackView.addArrangedSubview(gameOverLabel)
         stackView.addArrangedSubview(gameScore)

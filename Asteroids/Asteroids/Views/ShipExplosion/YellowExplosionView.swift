@@ -10,7 +10,7 @@ import UIKit
 
 class YellowExplosionView : UIView {
     
-    var faceRect : CGRect = CGRect.zero
+    var yellowRect : CGRect = CGRect.zero
     
     override init(frame: CGRect) {
         super.init(frame: .zero)
@@ -20,9 +20,9 @@ class YellowExplosionView : UIView {
     
     override func draw(_ rect: CGRect) {
         let context: CGContext = UIGraphicsGetCurrentContext()!
-        faceRect = CGRect(x: bounds.width * 0.1 , y: 0.0, width: bounds.width * 0.8, height: bounds.width * 0.8)
-        faceRect.origin.y = (bounds.height - faceRect.height) / 2.0
-        context.addEllipse(in: faceRect)
+        yellowRect = CGRect(x: bounds.width * 0.1 , y: 0.0, width: bounds.width * 0.8, height: bounds.width * 0.8)
+        yellowRect.origin.y = (bounds.height - yellowRect.height) / 2.0
+        context.addEllipse(in: yellowRect)
         context.setStrokeColor(UIColor.yellow.cgColor)
         context.setLineWidth(3.0)
         context.drawPath(using: .stroke)

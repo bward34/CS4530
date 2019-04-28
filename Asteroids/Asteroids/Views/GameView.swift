@@ -36,7 +36,6 @@ class GameView : UIView {
     
     var scoreLabel : UILabel
     var livesLabel : UILabel
-    var copyRightLabel : UILabel
     
     var delegate : GameViewDelegate?
     
@@ -64,7 +63,6 @@ class GameView : UIView {
         homeButton = UIButton()
         scoreLabel = UILabel()
         livesLabel = UILabel()
-        copyRightLabel = UILabel()
         ship = ShipView()
         yellowExplosion = YellowExplosionView()
         redExplosion = RedExplosionView()
@@ -126,12 +124,6 @@ class GameView : UIView {
         homeButton.titleLabel?.font = UIFont(name: "Future-Earth", size: 12)
         addSubview(homeButton)
         
-        copyRightLabel.translatesAutoresizingMaskIntoConstraints = false
-        copyRightLabel.font = UIFont(name: "Future-Earth", size: 6)
-        copyRightLabel.text = "©2019 Brandon Ward"
-        copyRightLabel.textColor = .white
-        bringSubviewToFront(copyRightLabel)
-        addSubview(copyRightLabel)
         
         homeButton.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 20).isActive = true
         homeButton.rightAnchor.constraint(equalTo: self.safeAreaLayoutGuide.rightAnchor, constant: -20).isActive = true
@@ -153,9 +145,6 @@ class GameView : UIView {
         
         laserButton.bottomAnchor.constraint(equalTo: rotateLeftButton.bottomAnchor).isActive = true
         laserButton.leftAnchor.constraint(equalTo: rotateLeftButton.leftAnchor, constant: 80).isActive = true
-        
-        copyRightLabel.bottomAnchor.constraint(equalTo: rotateLeftButton.bottomAnchor).isActive = true
-        copyRightLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
         
         yellowExplosion.bounds = CGRect(x: 0.0, y: 0.0, width: 45.0, height: 45.0)
         yellowExplosion.isHidden = true
@@ -333,7 +322,9 @@ class GameView : UIView {
     }
     
     @objc func fire() {
-        delegate?.firePushed(self)
+        if !ship.isHidden {
+            delegate?.firePushed(self)
+        }
     }
     
     @objc func fireEnd() {
@@ -341,8 +332,10 @@ class GameView : UIView {
     }
     
     @objc func accelerate() {
-        delegate?.accleratePushed(self)
-        showThruster = true
+        if !ship.isHidden {
+            delegate?.accleratePushed(self)
+            showThruster = true
+        }
     }
     
     @objc func acclerateEnd() {
@@ -351,7 +344,9 @@ class GameView : UIView {
     }
     
     @objc func rotateShip(sender : Any) {
-        delegate?.rotatePushed(self, sender: sender)
+        if !ship.isHidden {
+            delegate?.rotatePushed(self, sender: sender)
+        }
     }
     
     @objc func rotateShipEnd(sender : Any) {

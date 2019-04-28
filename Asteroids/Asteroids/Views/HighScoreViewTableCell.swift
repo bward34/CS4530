@@ -16,7 +16,7 @@ class HighScoreViewTableCell: UITableViewCell {
     }
     
     override func draw(_ rect: CGRect) {
-        selectionStyle = .gray
+        selectionStyle = .none
     }
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
