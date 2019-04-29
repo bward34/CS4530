@@ -155,7 +155,7 @@ class Asteriods : Codable {
                         respawnShip()
                         return
                     }
-                    else if elapsed > 3 {
+                    else if elapsed > 4 {
                         lastShipPoint = (x: ship.currPosX, y: ship.currPosY)
                         respawnShip()
                         return
@@ -241,7 +241,6 @@ class Asteriods : Codable {
         //Begin new wave
         if listEmptyCount == 28 + (7 * asteroidCount) {
             listEmptyCount = 0
-            lives = 3
             asteroidCount += 1
             addAsteroids()
         }
@@ -329,7 +328,9 @@ class Asteriods : Codable {
             }
         }
         for i in 0 ..< indexes.count {
-            lasers.remove(at: indexes[i])
+            if i <= lasers.count - 1 {
+                lasers.remove(at: indexes[i])
+            }
         }
         for i in 0 ..< lasers.count {
             lasers[i].currPos.x += lasers[i].velocity.x
