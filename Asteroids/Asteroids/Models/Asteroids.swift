@@ -196,8 +196,10 @@ class Asteriods : Codable {
     
     func popPushAsteroid(size : Int, asteroid : Asteroid, index : Int) {
         if size == 1 {
-            asteroids[size]?.remove(at: index)
-            listEmptyCount += 1
+            if index <= asteroids[size]!.count - 1 {
+                asteroids[size]?.remove(at: index)
+                listEmptyCount += 1
+            }
             var count : Int = 0
             while count < 2 {
                 var newAsteroid : Asteroid = Asteroid(velocityX: 0.0, velocityY: 0.0, currPosX: 0.0, currPosY: 0.0, currAngle: 0.0, rotateDirection: 0)
@@ -215,8 +217,10 @@ class Asteriods : Codable {
             score += 100
         }
         else if size == 2 {
-            asteroids[size]?.remove(at: index)
-            listEmptyCount += 1
+            if index <= asteroids[size]!.count - 1 {
+                asteroids[size]?.remove(at: index)
+                listEmptyCount += 1
+            }
             var count : Int = 0
             while count < 2 {
                 var newAsteroid : Asteroid = Asteroid(velocityX: 0.0, velocityY: 0.0, currPosX: 0.0, currPosY: 0.0, currAngle: 0.0, rotateDirection: 0)
@@ -234,8 +238,10 @@ class Asteriods : Codable {
             score += 150
         }
         else {
-            asteroids[size]?.remove(at: index)
-            listEmptyCount += 1
+            if index <= asteroids[size]!.count - 1 {
+                asteroids[size]?.remove(at: index)
+                listEmptyCount += 1
+            }
             score += 200
         }
         //Begin new wave

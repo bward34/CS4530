@@ -138,13 +138,13 @@ class GameView : UIView {
         rotateLeftButton.leftAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leftAnchor, constant: 20).isActive = true
         
         rotateRightButton.bottomAnchor.constraint(equalTo: rotateLeftButton.bottomAnchor).isActive = true
-        rotateRightButton.leftAnchor.constraint(equalTo: laserButton.leftAnchor, constant: 75).isActive = true
+        rotateRightButton.leftAnchor.constraint(equalTo: laserButton.rightAnchor, constant: 1).isActive = true
         
         accelerateButton.bottomAnchor.constraint(equalTo: rotateLeftButton.bottomAnchor).isActive = true
         accelerateButton.rightAnchor.constraint(equalTo: self.safeAreaLayoutGuide.rightAnchor, constant: -20).isActive = true
         
         laserButton.bottomAnchor.constraint(equalTo: rotateLeftButton.bottomAnchor).isActive = true
-        laserButton.leftAnchor.constraint(equalTo: rotateLeftButton.leftAnchor, constant: 80).isActive = true
+        laserButton.leftAnchor.constraint(equalTo: rotateLeftButton.rightAnchor, constant: 1).isActive = true
         
         yellowExplosion.bounds = CGRect(x: 0.0, y: 0.0, width: 45.0, height: 45.0)
         yellowExplosion.isHidden = true
